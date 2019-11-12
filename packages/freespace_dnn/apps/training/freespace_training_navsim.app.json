@@ -1,0 +1,72 @@
+{
+  "name": "navsim_freespace_training",
+  "config": {
+    "websight": {
+      "WebsightServer": {
+        "webroot": "packages/sight/webroot",
+        "assetroot": "../isaac_assets",
+        "port": 3000,
+        "ui_config": {
+          "windows": {
+            "Path Segmentation - Color": {
+              "renderer": "2d",
+              "dims": {
+                "width": 512,
+                "height": 256
+              },
+              "channels": [
+                {
+                  "name": "navsim_freespace_training/freespace_training.color_camera_viewer/isaac.viewers.ColorCameraViewer/Color",
+                  "active": true
+                }
+              ]
+            },
+            "Path Segmentation - Segmentation": {
+              "renderer": "2d",
+              "dims": {
+                "width": 512,
+                "height": 256
+              },
+              "channels": [
+                {
+                  "name": "navsim_freespace_training/freespace_training.segmentation_viewer/isaac.viewers.SegmentationCameraViewer/Classes",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "assets": {}
+        }
+      }
+    }
+  },
+  "graph": {
+    "nodes": [
+      {
+        "name": "simulation",
+        "subgraph": "packages/navsim/apps/navsim.subgraph.json"
+      },
+      {
+        "name": "freespace_training",
+        "subgraph": "packages/freespace_dnn/apps/training/freespace_dnn_training.subgraph.json"
+      }
+    ],
+    "edges": [
+      {
+        "source": "simulation.interface/output/color",
+        "target": "freespace_training.interface/subgraph/color"
+      },
+      {
+        "source": "simulation.interface/output/segmentation",
+        "target": "freespace_training.interface/subgraph/segmentation"
+      },
+      {
+        "source": "freespace_training.interface/subgraph/teleport_command",
+        "target": "simulation.interface/input/teleport_command"
+      }
+    ]
+  },
+  "config_files": [
+    "packages/freespace_dnn/apps/training/navsim_rng_warehouse.config.json"
+  ]
+}

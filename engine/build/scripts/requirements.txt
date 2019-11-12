@@ -1,0 +1,16 @@
+tensorflow-gpu==1.13.1
+pycapnp>=0.6.3
+keras
+Pillow
+scipy
+gym==0.10.5
+graphviz
+onnxmltools
+
+# Deps for voice command training app
+h5py
+librosa>=0.6.3
+numpy
+scikit-learn
+SoundFile>=0.10.2
+tqdm

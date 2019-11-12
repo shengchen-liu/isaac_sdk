@@ -1,0 +1,231 @@
+{
+  "name": "path_segmentation_inference",
+  "modules": [
+      "freespace_dnn",
+      "ml",
+      "navigation",
+      "segway",
+      "sensors:joystick",
+      "zed",
+      "viewers"
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "name": "joystick",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.Joystick",
+            "type": "isaac::Joystick"
+          }
+        ]
+      },
+      {
+        "name": "segway_rmp",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.SegwayRmpDriver",
+            "type": "isaac::SegwayRmpDriver"
+          },
+          {
+            "name": "isaac.alice.Failsafe",
+            "type": "isaac::alice::Failsafe"
+          }
+        ]
+      },
+      {
+        "name": "diffbase_joystick",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.navigation.RobotRemoteControl",
+            "type": "isaac::navigation::RobotRemoteControl"
+          },
+          {
+            "name": "isaac.alice.FailsafeHeartbeat",
+            "type": "isaac::alice::FailsafeHeartbeat"
+          }
+        ]
+      },
+      {
+        "name": "camera",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "zed",
+            "type": "isaac::ZedCamera"
+          }
+        ]
+      },
+      {
+        "name": "viewer",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "color",
+            "type": "isaac::viewers::ColorCameraViewer"
+          }
+        ]
+      },
+      {
+        "name": "segmentation",
+        "subgraph": "packages/freespace_dnn/apps/path_segmentation_inference.subgraph.json"
+      },
+      {
+        "name": "regulate_prediction",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.ml.BinarizePredictions",
+            "type": "isaac::ml::BinarizePredictions"
+          }
+        ]
+      },
+      {
+        "name": "visualize_prediction",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.freespace_dnn.VisualizeSegmentation",
+            "type": "isaac::freespace_dnn::VisualizeSegmentation"
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "joystick/isaac.Joystick/js_state",
+        "target": "diffbase_joystick/isaac.navigation.RobotRemoteControl/js_state"
+      },
+      {
+        "source": "diffbase_joystick/isaac.navigation.RobotRemoteControl/segway_cmd",
+        "target": "segway_rmp/isaac.SegwayRmpDriver/segway_cmd"
+      },
+      {
+        "source": "camera/zed/left_camera_rgb",
+        "target": "viewer/color/color_listener"
+      },
+      {
+        "source": "camera/zed/left_camera_rgb",
+        "target": "segmentation.subgraph/interface/rgb_image"
+      },
+      {
+        "source": "segmentation.subgraph/interface/image_tensor",
+        "target": "visualize_prediction/isaac.freespace_dnn.VisualizeSegmentation/image_tensor"
+      },
+      {
+        "source": "segmentation.subgraph/interface/segmentation_prediction",
+        "target": "regulate_prediction/isaac.ml.BinarizePredictions/segmentation_prediction"
+      },
+      {
+        "source": "regulate_prediction/isaac.ml.BinarizePredictions/binary_prediction",
+        "target": "visualize_prediction/isaac.freespace_dnn.VisualizeSegmentation/segmentation_prediction"
+      }
+    ]
+  },
+  "config": {
+    "camera": {
+      "zed": {
+        "resolution": "672x376",
+        "tick_period": "60Hz"
+      }
+    },
+    "viewer": {
+      "color": {
+        "reduce_scale": 2
+      }
+    },
+    "diffbase_joystick": {
+      "isaac.alice.FailsafeHeartbeat": {
+        "interval": 0.25,
+        "failsafe_name": "segway",
+        "heartbeat_name": "deadman_switch"
+      },
+      "isaac.navigation.RobotRemoteControl": {
+        "tick_period": "10ms"
+      }
+    },
+    "regulate_prediction": {
+      "isaac.ml.BinarizePredictions": {
+        "threshold": 0.4
+      }
+    },
+    "viewer": {
+      "color": {
+        "reduce_scale": 2
+      }
+    },
+    "segway_rmp": {
+      "isaac.SegwayRmpDriver": {
+        "ip": "192.168.0.40",
+        "speed_limit_linear": 1.25,
+        "tick_period": "20ms"
+      },
+      "isaac.alice.Failsafe": {
+        "name": "segway"
+      }
+    },
+    "websight": {
+      "WebsightServer": {
+        "webroot": "packages/sight/webroot",
+        "assetroot": "../isaac-lfs/sight/assets",
+        "port": 3000,
+        "ui_config": {
+          "windows": {
+            "Path Segmentation - Color Camera": {
+              "renderer": "2d",
+              "dims": {
+                "width": 640,
+                "height": 360
+              },
+              "channels": [
+                { "name": "path_segmentation_inference/viewer/color/Color" }
+              ]
+            },
+            "Path Segmentation - Inference overlay": {
+              "renderer": "2d",
+              "dims": {
+                "width": 512,
+                "height": 256
+              },
+              "channels": [
+                {
+                  "name": "path_segmentation_inference/visualize_prediction/isaac.freespace_dnn.VisualizeSegmentation/color_image",
+                  "active": true
+                },
+                {
+                  "name": "path_segmentation_inference/visualize_prediction/isaac.freespace_dnn.VisualizeSegmentation/inference_overlay",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "assets": {}
+        }
+      }
+    }
+  }
+}

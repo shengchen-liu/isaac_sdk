@@ -1,0 +1,174 @@
+{
+  "modules": [
+    "flatsim",
+    "viewers"
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "name": "subgraph",
+        "components": [
+          {
+            "name": "MessageLedger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "interface",
+            "type": "isaac::alice::Subgraph"
+          }
+        ]
+      },
+      {
+        "name": "base_simulation",
+        "components": [
+          {
+            "name": "HolonomicBaseSimulator",
+            "type": "isaac::flatsim::HolonomicBaseSimulator"
+          },
+          {
+            "name": "MessageLedger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "Failsafe",
+            "type": "isaac::alice::Failsafe"
+          }
+        ]
+      },
+      {
+        "name": "TimeSyncedTcpConnections",
+        "components": [
+          {
+            "name": "TimeSynchronizer",
+            "type": "isaac::alice::TimeSynchronizer"
+          },
+          {
+            "name": "MessageLedger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "ActuatorPublisher",
+            "type": "isaac::alice::TcpPublisher"
+          },
+          {
+            "name": "RigidBodySubscriber",
+            "type": "isaac::alice::TcpSubscriber"
+          },
+          {
+            "name": "CameraSubscriber",
+            "type": "isaac::alice::TcpSubscriber"
+          }
+        ]
+      },
+      {
+        "name": "PoseInitializers",
+        "components": [
+          {
+            "name": "camera_initializer",
+            "type": "isaac::alice::PoseInitializer"
+          }
+        ]
+      },
+      {
+        "name": "camera_viewer",
+        "components": [
+          {
+            "name": "MessageLedger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "DepthCameraViewer",
+            "type": "isaac::viewers::DepthCameraViewer"
+          },
+          {
+            "name": "ColorCameraViewer",
+            "type": "isaac::viewers::ColorCameraViewer"
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "base_simulation/HolonomicBaseSimulator/state",
+        "target": "subgraph/interface/state"
+      },
+      {
+        "source": "TimeSyncedTcpConnections/CameraSubscriber/DepthSensor",
+        "target": "subgraph/interface/depth"
+      },
+      {
+        "source": "TimeSyncedTcpConnections/CameraSubscriber/ColorSensor",
+        "target": "subgraph/interface/color"
+      },
+      {
+        "source": "TimeSyncedTcpConnections/CameraSubscriber/DepthSensor",
+        "target": "camera_viewer/DepthCameraViewer/depth_listener"
+      },
+      {
+        "source": "TimeSyncedTcpConnections/CameraSubscriber/ColorSensor",
+        "target": "camera_viewer/ColorCameraViewer/color_listener"
+      },
+      {
+        "source": "subgraph/interface/command",
+        "target": "base_simulation/HolonomicBaseSimulator/command"
+      },
+      {
+        "source": "base_simulation/HolonomicBaseSimulator/physics_actuation",
+        "target": "TimeSyncedTcpConnections/ActuatorPublisher/physics_actuation"
+      },
+      {
+        "source": "TimeSyncedTcpConnections/RigidBodySubscriber/bodies",
+        "target": "base_simulation/HolonomicBaseSimulator/physics_bodies"
+      }
+    ]
+  },
+  "config": {
+    "base_simulation": {
+      "HolonomicBaseSimulator": {
+        "flip_front_left_wheel": true,
+        "flip_front_right_wheel": true,
+        "flip_back_wheel": true,
+        "joint_name_front_left_wheel": "axle_2_joint",
+        "joint_name_front_right_wheel": "axle_1_joint",
+        "joint_name_back_wheel": "axle_0_joint",
+        "max_safe_speed": 1.0,
+        "max_angular_speed": 4.0,
+        "max_wheel_acceleration": 1.0,
+        "tick_period": "100Hz"
+      },
+      "Failsafe": {
+        "name": "robot_failsafe"
+      }
+    },
+    "camera_viewer": {
+      "DepthCameraViewer": {
+        "camera_name": "camera",
+        "max_visualization_depth": 2
+      },
+      "ColorCameraViewer": {
+        "camera_name": "camera"
+      }
+    },
+    "PoseInitializers": {
+      "camera_initializer": {
+        "lhs_frame": "robot",
+        "rhs_frame": "camera",
+        "pose": [0.406, -0.579, 0.579, -0.406, 0.08, 0.04, 0.17]
+      }
+    },
+    "TimeSyncedTcpConnections": {
+      "RigidBodySubscriber": {
+        "port": 5001,
+        "host": "localhost"
+      },
+      "ActuatorPublisher": {
+        "port": 5002,
+        "host": "localhost"
+      },
+      "CameraSubscriber": {
+        "port": 5003,
+        "host": "localhost"
+      }
+    }
+  }
+}

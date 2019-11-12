@@ -1,0 +1,113 @@
+{
+  "name": "object_detection",
+  "modules": [ ],
+  "config_files": [
+    "apps/kaya/robots/kaya_v2.config.json"
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "name": "inference",
+        "subgraph": "packages/yolo/apps/yolo_detection.subgraph.json"
+      },
+      {
+        "name": "image_throttle",
+        "components": [
+          {
+            "name": "isaac.alice.MessageLedger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.alice.Throttle",
+            "type": "isaac::alice::Throttle"
+          }
+        ]
+      },
+      {
+        "name": "2d_kaya",
+        "subgraph": "apps/kaya/2d_kaya.subgraph.json"
+      },
+      {
+        "name": "commander",
+        "subgraph": "packages/navigation/apps/holonomic_base_commander.subgraph.json"
+      },
+      {
+        "name": "odometry",
+        "subgraph": "packages/navigation/apps/holonomic_base_imu_odometry.subgraph.json"
+      }
+    ],
+    "edges": [
+      {
+        "source": "2d_kaya.subgraph/interface/base_state",
+        "target": "odometry.subgraph/interface/state"
+      },
+      {
+        "source": "commander.subgraph/interface/command",
+        "target": "2d_kaya.subgraph/interface/base_command"
+      },
+      {
+        "source": "2d_kaya.subgraph/interface/realsense_color",
+        "target": "image_throttle/isaac.alice.Throttle/input"
+      },
+      {
+        "source": "image_throttle/isaac.alice.Throttle/output",
+        "target": "inference.subgraph/interface/image"
+      }
+    ]
+  },
+  "config": {
+    "odometry.odometry": {
+      "HolonomicBaseWheelImuOdometry": {
+        "use_imu": false
+      }
+    },
+    "image_throttle": {
+      "isaac.alice.Throttle": {
+        "data_channel": "input",
+        "output_channel": "output",
+        "minimum_interval": 0.2,
+        "use_signal_channel": false
+      }
+    },
+    "inference.yolo_tensorrt_inference": {
+      "YoloTensorRTInference": {
+        "yolo_config_json": {
+          "yolo_dimensions": [416, 416],
+          "batch_size": 1,
+          "weights_file_path": "./external/yolo_tensorrt_test_data_gtc2019_demo/gtc_demo.weights",
+          "config_file_path": "./external/yolo_tensorrt_test_data_gtc2019_demo/yolov3-tiny_synthetic_gtc.cfg",
+          "tensorrt_folder_path": "../",
+          "num_classes": 3,
+          "network_type": "yolov3-tiny"
+        }
+      }
+    },
+    "inference.detection_decoder": {
+      "DetectionDecoder": {
+        "labels_file_path": "./external/yolo_tensorrt_test_data_gtc2019_demo/labels_demo.txt",
+        "nms_threshold": 0.6,
+        "confidence_threshold": 0.6
+      }
+    },
+    "websight": {
+      "WebsightServer": {
+        "port": 3000,
+        "ui_config": {
+          "windows": {
+            "Detector Kaya - Objects": {
+              "renderer": "2d",
+              "channels": [
+                {
+                  "name": "object_detection/2d_kaya.kaya_hardware.camera/color_viewer/Color"
+                },
+                {
+                  "name": "object_detection/inference.bounding_box_visualizer/DetectionsViewer/detections"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

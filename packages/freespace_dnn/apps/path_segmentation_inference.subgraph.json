@@ -1,0 +1,163 @@
+{
+  "name": "segmentation",
+  "modules": [
+      "ml",
+      "ml:tensorflow"
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "name": "subgraph",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "interface",
+            "type": "isaac::alice::Subgraph"
+          }
+        ]
+      },
+      {
+        "name": "color_camera_encoder",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.ml.ColorCameraEncoderCpu",
+            "type": "isaac::ml::ColorCameraEncoderCpu"
+          }
+        ]
+      },
+      {
+        "name": "tensorflow_inference",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.ml.TensorflowInference",
+            "type": "isaac::ml::TensorflowInference"
+          }
+        ]
+      },
+      {
+        "name": "tensor_reshape_after_image_encoder",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.ml.TensorReshape",
+            "type": "isaac::ml::TensorReshape"
+          }
+        ]
+      },
+      {
+        "name": "tensor_reshape_before_segmentation_decoder",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.ml.TensorReshape",
+            "type": "isaac::ml::TensorReshape"
+          }
+        ]
+      },
+      {
+        "name": "segmentation_decoder",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.ml.SegmentationDecoder",
+            "type": "isaac::ml::SegmentationDecoder"
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "subgraph/interface/rgb_image",
+        "target": "color_camera_encoder/isaac.ml.ColorCameraEncoderCpu/rgb_image"
+      },
+      {
+        "source": "color_camera_encoder/isaac.ml.ColorCameraEncoderCpu/tensor",
+        "target": "tensor_reshape_after_image_encoder/isaac.ml.TensorReshape/input_tensors"
+      },
+      {
+        "source": "color_camera_encoder/isaac.ml.ColorCameraEncoderCpu/tensor",
+        "target": "subgraph/interface/image_tensor"
+      },
+      {
+        "source": "tensor_reshape_after_image_encoder/isaac.ml.TensorReshape/output_tensors",
+        "target": "tensorflow_inference/isaac.ml.TensorflowInference/input_tensors"
+      },
+      {
+        "source": "tensorflow_inference/isaac.ml.TensorflowInference/output_tensors",
+        "target": "tensor_reshape_before_segmentation_decoder/isaac.ml.TensorReshape/input_tensors"
+      },
+      {
+        "source": "tensor_reshape_before_segmentation_decoder/isaac.ml.TensorReshape/output_tensors",
+        "target": "segmentation_decoder/isaac.ml.SegmentationDecoder/tensors"
+      },
+      {
+        "source": "segmentation_decoder/isaac.ml.SegmentationDecoder/segmentation_prediction",
+        "target": "subgraph/interface/segmentation_prediction"
+      }
+    ]
+  },
+  "config": {
+    "tensorflow_inference": {
+     "isaac.ml.TensorflowInference": {
+        "model_file_path": "./external/path_segmentation_pretrained_models/path_segmentation_model.pb",
+        "config_file_path": "./external/path_segmentation_pretrained_models/allow_growth.cfg",
+        "input_tensor_info": [
+          {
+           "ops_name": "input",
+           "index": 0,
+           "dims": [1, 256, 512, 3]
+          }
+        ],
+        "output_tensor_info": [
+          {
+           "ops_name": "output",
+           "index": 0,
+           "dims": [1, 256, 512, 1]
+          }
+        ]
+      }
+    },
+    "color_camera_encoder": {
+      "isaac.ml.ColorCameraEncoderCpu": {
+        "rows": 256,
+        "cols": 512,
+        "pixel_normalization_mode": "PositiveNegative"
+      }
+    },
+    "segmentation_decoder": {
+      "isaac.ml.SegmentationDecoder": {
+        "class_names": ["floor"]
+      }
+    },
+    "tensor_reshape_after_image_encoder": {
+      "isaac.ml.TensorReshape": {
+        "output_tensors_dimension": [[1, 256, 512, 3]]
+      }
+    },
+    "tensor_reshape_before_segmentation_decoder": {
+      "isaac.ml.TensorReshape": {
+        "output_tensors_dimension": [[256, 512, 1]]
+      }
+    }
+  }
+}

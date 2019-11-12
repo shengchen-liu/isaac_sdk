@@ -1,0 +1,502 @@
+{
+  "name": "waste_sorting",
+  "modules": [
+    "map",
+    "navigation",
+    "perception",
+    "perception:april_tags",
+    "planner",
+    "utils",
+    "viewers"
+  ],
+  "config_files": [
+    "apps/assets/maps/gtc_triangle_190317.config.json",
+    "apps/kaya/robots/kaya_v2.config.json"
+  ],
+  "graph_files": [
+    "apps/assets/maps/gtc_triangle_190317.graph.json"
+  ],
+  "scheduler": {
+    "default_execution_group_config": [{
+      "worker_cores":  [0, 1, 2, 3],
+      "blocker_cores": [0, 1, 2, 3]
+    }]
+  },
+  "graph": {
+    "nodes": [
+      {
+        "name": "inference",
+        "subgraph": "packages/yolo/apps/yolo_detection.subgraph.json"
+      },
+      {
+        "name": "2d_kaya",
+        "subgraph": "apps/kaya/2d_kaya.subgraph.json"
+      },
+      {
+        "name": "commander",
+        "subgraph": "packages/navigation/apps/holonomic_base_commander.subgraph.json"
+      },
+      {
+        "name": "odometry",
+        "subgraph": "packages/navigation/apps/holonomic_base_imu_odometry.subgraph.json"
+      },
+      {
+        "name": "local_map",
+        "subgraph": "packages/navigation/apps/local_map.subgraph.json"
+      },
+      {
+        "name": "behavior_waste_sorting",
+        "subgraph": "apps/kaya/behavior_waste_sorting.subgraph.json"
+      },
+      {
+        "name": "scan_localization",
+        "components": [
+          {
+            "name": "message_ledger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.navigation.ParticleFilterLocalization",
+            "type": "isaac::navigation::ParticleFilterLocalization"
+          },
+          {
+            "name": "initial_pose",
+            "type": "isaac::alice::PoseInitializer"
+          },
+          {
+            "name": "flatscan_viewer",
+            "type": "isaac::viewers::FlatscanViewer"
+          },
+          {
+            "name": "robot_viewer",
+            "type": "isaac::navigation::RobotViewer"
+          }
+        ]
+      },
+      {
+        "name": "april_tags_detection",
+        "components": [
+          {
+            "name": "isaac.alice.MessageLedger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.perception.AprilTagsDetection",
+            "type": "isaac::perception::AprilTagsDetection"
+          },
+          {
+            "name": "isaac.viewers.FiducialsViewer",
+            "type": "isaac::viewers::FiducialsViewer"
+          },
+          {
+            "name": "isaac.alice.Throttle",
+            "type": "isaac::alice::Throttle"
+          }
+        ]
+      },
+      {
+        "name": "shared_robot_model",
+        "components": [
+          {
+            "name": "RangeScanModel",
+            "type": "isaac::navigation::RangeScanModelFlatloc"
+          },
+          {
+            "name": "DifferentialBaseModel",
+            "type": "isaac::planner::DifferentialBaseModel"
+          },
+          {
+            "name": "SphericalRobotShapeComponent",
+            "type": "isaac::planner::SphericalRobotShapeComponent"
+          }
+        ]
+      },
+      {
+        "name": "obstacle_world",
+        "components": [
+          {
+            "name": "obstacle_world",
+            "type": "isaac::navigation::ObstacleWorld"
+          }
+        ]
+      },
+      {
+        "name": "yolo_image_throttle",
+        "components": [
+          {
+            "name": "isaac.alice.MessageLedger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.alice.Throttle",
+            "type": "isaac::alice::Throttle"
+          }
+        ]
+      },
+      {
+        "name": "detection_unprojection",
+        "components": [
+          {
+            "name": "isaac.alice.MessageLedger",
+            "type": "isaac::alice::MessageLedger"
+          },
+          {
+            "name": "isaac.navigation.DetectionUnprojection",
+            "type": "isaac::utils::DetectionUnprojection"
+          },
+          {
+            "name": "isaac.viewers.Detections3Viewer",
+            "type": "isaac::viewers::Detections3Viewer"
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "2d_kaya.subgraph/interface/realsense_color",
+        "target": "april_tags_detection/isaac.alice.Throttle/input"
+      },
+      {
+        "source": "april_tags_detection/isaac.alice.Throttle/output",
+        "target": "april_tags_detection/isaac.perception.AprilTagsDetection/image"
+      },
+      {
+        "source": "april_tags_detection/isaac.perception.AprilTagsDetection/april_tags",
+        "target": "april_tags_detection/isaac.viewers.FiducialsViewer/fiducials"
+      },
+      {
+        "source": "2d_kaya.subgraph/interface/base_state",
+        "target": "odometry.subgraph/interface/state"
+      },
+      {
+        "source": "behavior_waste_sorting.subgraph/interface/command",
+        "target": "commander.subgraph/interface/control"
+      },
+      {
+        "source": "inference.subgraph/interface/detections",
+        "target": "behavior_waste_sorting.subgraph/interface/detections"
+      },
+      {
+        "source": "commander.subgraph/interface/command",
+        "target": "2d_kaya.subgraph/interface/base_command"
+      },
+      {
+        "source": "2d_kaya.subgraph/interface/flatscan",
+        "target": "local_map.subgraph/interface/flatscan"
+      },
+      {
+        "source": "2d_kaya.subgraph/interface/imu_raw",
+        "target": "odometry.subgraph/interface/imu_raw"
+      },
+      {
+        "source": "2d_kaya.subgraph/interface/flatscan",
+        "target": "scan_localization/isaac.navigation.ParticleFilterLocalization/flatscan"
+      },
+      {
+        "source": "2d_kaya.subgraph/interface/flatscan",
+        "target": "scan_localization/flatscan_viewer/flatscan"
+      },
+      {
+        "source": "odometry.subgraph/interface/odometry",
+        "target": "behavior_waste_sorting.subgraph/interface/odometry"
+      },
+      {
+        "source": "2d_kaya.subgraph/interface/realsense_color",
+        "target": "yolo_image_throttle/isaac.alice.Throttle/input"
+      },
+      {
+        "source": "yolo_image_throttle/isaac.alice.Throttle/output",
+        "target": "inference.subgraph/interface/image"
+      },
+      {
+        "source": "detection_unprojection/isaac.navigation.DetectionUnprojection/detections_with_poses",
+        "target": "behavior_waste_sorting.subgraph/interface/detections_with_poses"
+      },
+      {
+        "source": "detection_unprojection/isaac.navigation.DetectionUnprojection/detections_with_poses",
+        "target": "detection_unprojection/isaac.viewers.Detections3Viewer/detections"
+      },
+      {
+        "source": "inference.subgraph/interface/detections",
+        "target": "detection_unprojection/isaac.navigation.DetectionUnprojection/detections"
+      },
+      {
+        "source": "2d_kaya.subgraph/interface/realsense_depth",
+        "target": "detection_unprojection/isaac.navigation.DetectionUnprojection/depth_image"
+      }
+    ]
+  },
+  "config": {
+    "local_map.local_map": {
+      "isaac.navigation.OccupancyToBinaryMap": {
+        "is_optimistic": true
+      },
+      "isaac.navigation.LocalMap": {
+        "flatscan_frame": "robot",
+        "map_decay_factor": 0.98,
+        "dimensions": [
+          128,
+          128
+        ],
+        "map_offset_relative": [
+          -0.125,
+          -0.5
+        ],
+        "cell_size": 0.025,
+        "wall_thickness": 0.05
+      },
+      "cleanup": {
+        "clear_region": [[-0.0, 0.0],[-0.0, 0.0]]
+      },
+      "isaac.navigation.BinaryToDistanceMap": {
+        "obstacle_world_component": "obstacle_world/obstacle_world"
+      }
+    },
+    "scan_localization": {
+      "isaac.navigation.ParticleFilterLocalization": {
+        "flatscan_frame": "robot",
+        "num_particles": 50,
+        "initial_sigma": [
+          0.1,
+          0.1,
+          0.1
+        ],
+        "absolute_predict_sigma": [
+          0.001,
+          0.001,
+          0.002
+        ],
+        "relative_predict_sigma": [
+          0.2,
+          0.2,
+          0.2
+        ]
+      },
+      "flatscan_viewer": {
+        "flatscan_frame": "robot"
+      },
+      "initial_pose": {
+        "lhs_frame": "world",
+        "rhs_frame": "robot_init",
+        "pose": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.7,
+          1.53,
+          0.0
+        ],
+        "attach_interactive_marker": true
+      },
+      "robot_viewer": {
+        "tick_period": "50Hz",
+        "robot_model": "shared_robot_model/SphericalRobotShapeComponent"
+      }
+    },
+    "behavior_waste_sorting.lqr": {
+      "isaac.planner.HolonomicBaseLqrPlanner": {
+        "manual_mode_channel": "commander.robot_remote/isaac.navigation.RobotRemoteControl/manual_mode",
+        "robot_model": "shared_robot_model/SphericalRobotShapeComponent"
+      }
+    },
+    "april_tags_detection": {
+      "isaac.perception.AprilTagsDetection": {
+        "max_tags": 50
+      },
+      "isaac.viewers.FiducialsViewer": {
+        "id_specific_configs": {
+          "tag36h11_3": {
+            "text_below": "Metal",
+            "color_fill": "#C0C0C05C"
+          },
+          "tag36h11_1": {
+            "text_below": "Compost",
+            "color_fill": "#FFA95F5C"
+          },
+          "tag36h11_5": {
+            "text_below": "Paper",
+            "color_fill": "#F2EECB5C"
+          },
+          "tag36h11_0": {
+            "text_below": "Paper -->",
+            "text_above": "<-- Metal"
+          },
+          "tag36h11_6": {
+            "text_below": "Metal -->",
+            "text_above": "<-- Compost"
+          },
+          "tag36h11_4": {
+            "text_below": "Compost -->",
+            "text_above": "<-- Paper"
+          }
+        }
+      },
+      "isaac.alice.Throttle": {
+        "data_channel": "input",
+        "output_channel": "output",
+        "minimum_interval": 0.5,
+        "use_signal_channel": false
+      }
+    },
+    "yolo_image_throttle": {
+      "isaac.alice.Throttle": {
+        "data_channel": "input",
+        "output_channel": "output",
+        "minimum_interval": 0.2,
+        "use_signal_channel": false
+      }
+    },
+    "inference.yolo_tensorrt_inference": {
+      "YoloTensorRTInference": {
+        "yolo_config_json": {
+          "yolo_dimensions": [416, 416],
+          "batch_size": 1,
+          "weights_file_path": "./external/yolo_tensorrt_test_data_gtc2019_demo/gtc_demo.weights",
+          "config_file_path": "./external/yolo_tensorrt_test_data_gtc2019_demo/yolov3-tiny_synthetic_gtc.cfg",
+          "tensorrt_folder_path": "../",
+          "num_classes": 3,
+          "network_type": "yolov3-tiny"
+        }
+      }
+    },
+    "inference.detection_decoder": {
+      "DetectionDecoder": {
+        "labels_file_path": "./external/yolo_tensorrt_test_data_gtc2019_demo/labels_demo.txt",
+        "nms_threshold": 0.6,
+        "confidence_threshold": 0.6
+      }
+    },
+    "detection_unprojection": {
+      "isaac.navigation.DetectionUnprojection": {
+        "spread": [3, 3],
+        "tick_period": "10Hz"
+      },
+      "isaac.viewers.Detections3Viewer": {
+        "radius": 0.05
+      }
+    },
+    "shared_robot_model": {
+      "RangeScanModel": {
+        "invalid_range_threshold": 0.0,
+        "max_beam_error_far": 0.1,
+        "max_beam_error_near": 0.2,
+        "max_weight": 0.5,
+        "out_of_range_threshold": 2.0,
+        "percentile": 0.9,
+        "sharpness": 10
+      },
+      "SphericalRobotShapeComponent": {
+        "obstacle_world_component": "obstacle_world/obstacle_world"
+      }
+    },
+    "websight": {
+      "WebsightServer": {
+        "port": 3000,
+        "ui_config": {
+          "windows": {
+            "Kaya Waste Sorting - Map View": {
+              "renderer": "2d",
+              "dims": {
+                "width": 432,
+                "height": 548
+              },
+              "channels": [
+                {
+                  "name": "waste_sorting/map/occupancy/map"
+                },
+                {
+                  "name": "waste_sorting/behavior_waste_sorting.lqr/isaac.planner.HolonomicBaseLqrPlanner/static_obstacles"
+                },
+                {
+                  "name": "waste_sorting/behavior_waste_sorting.goal_viewer/isaac.viewers.GoalViewer/goal"
+                },
+                {
+                  "name": "waste_sorting/detection_unprojection/isaac.viewers.Detections3Viewer/detections"
+                },
+                {
+                  "name": "waste_sorting/local_map.local_map/isaac.navigation.LocalMap/local_map",
+                  "active": false
+                },
+                {
+                  "name": "waste_sorting/behavior_waste_sorting.lqr/isaac.planner.HolonomicBaseLqrPlanner/plan"
+                },
+                {
+                  "name": "waste_sorting/map/restricted_area/polygons",
+                  "active": false
+                },
+                {
+                  "name": "waste_sorting/scan_localization/flatscan_viewer/beam_lines",
+                  "active": false
+                },
+                {
+                  "name": "waste_sorting/scan_localization/flatscan_viewer/beam_endpoints"
+                },
+                {
+                  "name": "waste_sorting/scan_localization/robot_viewer/trail"
+                },
+                {
+                  "name": "waste_sorting/scan_localization/isaac.navigation.ParticleFilterLocalization/particles",
+                  "active": false
+                },
+                {
+                  "name": "waste_sorting/scan_localization/robot_viewer/robot"
+                }
+              ]
+            },
+            "Kaya Waste Sorting - Local View": {
+              "renderer": "2d",
+              "dims": {
+                "width": 1280,
+                "height": 720
+              },
+              "zoom": 2.0,
+              "channels": [
+                {
+                  "name": "waste_sorting/local_map.local_map/isaac.navigation.LocalMap/local_map"
+                },
+                {
+                  "name": "waste_sorting/scan_localization/robot_viewer/robot"
+                },
+                {
+                  "name": "waste_sorting/behavior_waste_sorting.lqr/isaac.planner.HolonomicBaseLqrPlanner/plan"
+                }
+              ]
+            },
+            "Kaya Waste Sorting - Detections": {
+              "renderer": "2d",
+              "channels": [
+                {
+                  "name": "waste_sorting/2d_kaya.kaya_hardware.camera/color_viewer/Color"
+                },
+                {
+                  "name": "waste_sorting/inference.bounding_box_visualizer/DetectionsViewer/detections"
+                }
+              ]
+            },
+            "Kaya Waste Sorting - Approach Status": {
+              "renderer": "plot",
+              "channels": [
+                {
+                  "name": "waste_sorting/behavior_waste_sorting.approach_object/isaac.kaya.ApproachObject/is_target_too_close_to_wall"
+                },
+                {
+                  "name": "waste_sorting/behavior_waste_sorting.approach_object/isaac.kaya.ApproachObject/is_target_closer_than_object"
+                },
+                {
+                  "name": "waste_sorting/behavior_waste_sorting.approach_object/isaac.kaya.ApproachObject/is_arrived"
+                },
+                {
+                  "name": "waste_sorting/behavior_waste_sorting.approach_object/isaac.kaya.ApproachObject/is_detour_needed"
+                },
+                {
+                  "name": "waste_sorting/behavior_waste_sorting.approach_object/isaac.kaya.ApproachObject/detour_winner"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

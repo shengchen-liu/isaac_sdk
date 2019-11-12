@@ -1,0 +1,4 @@
+{
+  "graphs": ["kaya_full_graph.json"],
+  "configs": ["kaya_full_config.json"]
+}

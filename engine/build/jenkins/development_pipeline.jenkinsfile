@@ -1,0 +1,337 @@
+// ISAAC SDK Development Pipeline
+//
+// This will take care of building and doing basic tests for merge requests
+// It will help to give developers faster feedback and for code reviewers
+// to verify the compliance of the commit
+//
+// Copyright (c) 2019, NVIDIA CORPORATION. All rights reserved.
+//
+// NVIDIA CORPORATION and its licensors retain all intellectual property
+// and proprietary rights in and to this software, related documentation
+// and any modifications thereto. Any use, reproduction, disclosure or
+// distribution of this software and related documentation without an express
+// license agreement from NVIDIA CORPORATION is strictly prohibited.
+
+def build_isaac() {
+    def BUILD_STATUS=''
+    script {
+        try {
+            BUILD_STATUS = sh(
+                script: 'bazel test --config=lint ...',
+                returnStdout: true
+            ).trim()
+        } catch (Exception e) {
+            BUILD_STATUS = "ERROR: Linter test failed\n\n${BUILD_STATUS}"
+            sh 'exit 1'
+        }
+
+        try {
+            BUILD_STATUS = sh(
+                script: "bazel build --remote_http_cache=${env.BAZEL_CACHE} ...",
+                returnStdout: true
+            ).trim()
+        } catch (Exception e) {
+            BUILD_STATUS = "ERROR: Build failed\n\n${BUILD_STATUS}"
+            sh 'exit 1'
+        }
+    }
+    return BUILD_STATUS
+}
+
+def get_docker_args(String cache_volume="") {
+
+    if(cache_volume != "") {
+        cache_flags = "--mount source=${cache_volume},target=/root"
+    } else {
+        cache_flags = ""
+    }
+    return "-v /var/run/docker.sock:/var/run/docker.sock:rw \
+        -v \$WORKSPACE:/src/workspace \
+         ${cache_flags} \
+        -e USER=0 \
+        -e LOGNAME=0 \
+        -u 0"
+}
+
+// Call gerrit over SSH and set the verified score of the CL along with a status message
+def set_gerrit_verified( String score="0", String gerritMessage = "Not verified" ) {
+    withCredentials([
+        sshUserPrivateKey(
+            credentialsId: env.CREDENTIALS_ID,
+            keyFileVariable: 'SSH_CREDENTIALS_FILE',
+            usernameVariable: 'SSH_CREDENTIALS_USER'
+        )
+    ]) {
+        try {
+            sh "ssh -i '$SSH_CREDENTIALS_FILE' \
+            -o StrictHostKeyChecking=no \
+            -p 29418 ${SSH_CREDENTIALS_USER}@${env.GERRIT_SERVER} \
+            gerrit review \
+                --label \\'Code-Review=${score}\\' \
+                --message \\'${gerritMessage}\\' \
+                -n OWNER \
+                ${params.GERRIT_CHANGE_NUMBER},${params.GERRIT_PATCHSET_NUMBER}"
+        }
+        catch (Exception e) {
+            slack_notify('danger', "Failed to set gerrit Code Review score for ${format_short_message()}: ${e}")
+        }
+    }
+}
+
+def get_cl_url() {
+    return "https://${GERRIT_SERVER}/r/#/c/${params.GERRIT_CHANGE_NUMBER}/${params.GERRIT_PATCHSET_NUMBER}"
+}
+
+// Returns a formatted message to provide feedback to the team
+def format_short_message() {
+    return "Code Review ${currentBuild.currentResult.toLowerCase()} for ${get_git_message()} [${get_cl_url()}]"
+}
+
+// Returns the short git commit message
+def get_git_message() {
+    return env.GIT_COMMIT_SHORT
+}
+
+// Switch between slack channels depending if this is running on
+// a dev environment or on production
+def get_slack_channel() {
+    if(env.IS_DEV) {
+        return "#isaac-ci-dev"
+    } else {
+        return "#rdk-team-ci"
+    }
+}
+
+// Sends a notification to slack
+def slack_notify(String slackColor="warning", slackMessage = "Build finished" ) {
+    status = currentBuild.currentResult.toLowerCase()
+    try {
+        slackSend(
+            message: slackMessage,
+            attachments: """[
+                {
+                "color": "${slackColor}",
+                "fallback": "Build ${status}: ${env.BUILD_URL}",
+                "actions": [
+                    {
+                        "type": "button",
+                        "text": "See build log",
+                        "url": "${env.BUILD_URL}/console"
+                    },
+                    {
+                        "type": "button",
+                        "text": "See commit",
+                        "url": "${get_cl_url()}"
+                    }
+                ]
+                }
+            ]
+            """,
+            channel: get_slack_channel()
+        )
+    }
+    catch (Exception e) {
+        emailext (
+            to: 'isacc-sdk-ci@exchange.nvidia.com',
+            subject: "[CI-CD][ISAAC] Slack notifications failing",
+            mimeType: 'text/html',
+            body: """
+            <html>
+                <body>
+                    <h1>
+                        Slack notifications are failing
+                    </h1>
+                    <p>
+                        <dl>
+                            <dt>Build URL</dt>
+                            <dd>
+                                <a href="${env.BUILD_URL}">
+                                    ${env.JOB_NAME}
+                                    [${env.BUILD_NUMBER}]
+                                </a>
+                            </dd>
+                            <dt>Original message</dt>
+                            <dd><code>${slackMessage}</code></dd>
+                        </dl>
+                    </p>
+                </body>
+            </html>
+            """
+        )
+    }
+}
+
+def checkout_gerrit_ref() {
+    withCredentials([
+        sshUserPrivateKey(
+            credentialsId: env.CREDENTIALS_ID,
+            keyFileVariable: 'SSH_CREDENTIALS_FILE',
+            usernameVariable: 'SSH_CREDENTIALS_USER'
+        )
+    ]) {
+        sh """
+            export GERRIT_REF=`ssh -i "${SSH_CREDENTIALS_FILE}" \
+                -o StrictHostKeyChecking=no \
+                -p 29418\
+                ${SSH_CREDENTIALS_USER}@${GERRIT_SERVER}\
+                gerrit query\
+                    project:robotics/isaac\
+                    status:open change:${params.GERRIT_CHANGE_NUMBER}\
+                    limit:1 \
+                    --patch-sets | \
+                    grep -o -E 'refs\\/changes\\/.*\\/${params.GERRIT_PATCHSET_NUMBER}\$'`
+            ssh-agent bash -c 'ssh-add $SSH_CREDENTIALS_FILE; \
+            git fetch ssh://$SSH_CREDENTIALS_USER@$GERRIT_SERVER:12001/robotics/isaac \
+            \$GERRIT_REF && git checkout FETCH_HEAD'
+        """
+    }
+}
+def send_email_notification( String destinataries ) {
+    emailext (
+        to: destinataries,
+        subject: "[CI-CD][Isaac] ${format_short_message()}",
+        mimeType: 'text/html',
+        body: """
+        <html>
+            <body>
+                <h1>
+                    ${currentBuild.currentResult.toLowerCase()}
+                </h1>
+                <p>
+                    You can view the console output
+                    at <a href='${env.BUILD_URL}/console#footer'>
+                        ${env.JOB_NAME}
+                        [${env.BUILD_NUMBER}]
+                    </a> or <a href='${get_cl_url()}'>review the CL</a>
+                </p>
+                <p>
+                    <h2>Test results</h2>
+                    <pre>${env.BUILD_STATUS}</pre>
+                </p>
+            </body>
+        </html>
+        """
+    )
+}
+pipeline {
+    agent none
+    environment {
+        GERRIT_SERVER="git-master.nvidia.com"
+        CREDENTIALS_ID="isaac-git-master"
+        BAZEL_CACHE="http://isaac-sdk-build-01.nvidia.com:8080"
+        CI_EMAIL_NOTICE_DESTINATARY = "isacc-sdk-ci@exchange.nvidia.com"
+    }
+    parameters {
+        string(
+            name: 'GERRIT_CHANGE_NUMBER',
+            description: "The Gerrit Change number"
+        )
+        string(
+            name: 'GERRIT_PATCHSET_NUMBER',
+            description: "The Gerrit patchSet number"
+        )
+        string(
+            name: 'REF',
+            description: "Required parameter in NGC",
+            defaultValue: 'master'
+        )
+    }
+    options {
+        ansiColor('xterm')
+        timestamps()
+        timeout(time: 1, unit: 'HOURS')
+    }
+    stages {
+        stage ("First Run") {
+            agent none
+            // NGCC recommends to abort the build on first run. This first run is used
+            // for Jenkins to pick up the parameters and create the required hooks for
+            // this pipeline
+            steps {
+                script {
+                    if (params.jenkins_init) {
+                        currentBuild.result = 'ABORTED'
+                        error("Initial dummy build for Jenkins configs")
+                    }
+                }
+            }
+        }
+        stage("Build and Test") {
+            agent {
+                node {
+                    label 'isaac'
+                }
+            }
+            stages {
+                stage("Checkout from Gerrit") {
+                    steps {
+                        script {
+                            git(
+                                url: "ssh://${env.GERRIT_SERVER}:12001/robotics/isaac",
+                                credentialsId: env.CREDENTIALS_ID
+                            )
+                            checkout_gerrit_ref()
+                            env.GIT_COMMIT_SHORT = sh(
+                                script: "git log --oneline -1",
+                                returnStdout: true
+                            ).trim()
+                            env.GIT_COMMIT_AUTHOR = sh(
+                                script: "git log --format='%ae' -1",
+                                returnStdout: true
+                            ).trim()
+                        }
+                    }
+                }
+                stage("Prepare docker environment") {
+                    steps {
+                        script {
+                            sh "engine/build/jenkins/scripts/setup_docker_volumes.sh"
+                        }
+                    }
+                }
+                stage("Build and Test") {
+                    agent {
+                         dockerfile {
+                            label 'isaac'
+                            reuseNode true
+                            filename 'docker/Dockerfile'
+                            dir 'engine/build'
+                            args "${get_docker_args()}"
+                        }
+                    }
+                    steps {
+                        dir(WORKSPACE) {
+                            script {
+                                env.BUILD_STATUS = build_isaac()
+                            }
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    script {
+                        if(env.BUILD_STATUS==null) {
+                            env.BUILD_STATUS = "An error ocurred during build. Please review the logs"
+                        }
+                        withEnv(["BUILD_STATUS=${env.BUILD_STATUS}"]){
+                            env.SHORT_STATUS = sh returnStdout: true, script:'echo "$BUILD_STATUS" | grep -w "ERROR\\|FAIL\\|WARN" | sed -r "s/\\x1B\\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" | pr -T -o 2'
+                            env.BUILD_STATUS = sh returnStdout: true, script:'echo "$BUILD_STATUS" | aha --no-header'
+                        }
+                    }
+                    cleanWs()
+                }
+                success {
+                    set_gerrit_verified("+1", "✅ Build successful. ${BUILD_URL}console#footer '\n${env.SHORT_STATUS}'")
+                }
+                failure {
+                    set_gerrit_verified("-1", "❌ Build failed. ${BUILD_URL}console#footer '\n${env.SHORT_STATUS}'")
+                    send_email_notification( "${env.CI_EMAIL_NOTICE_DESTINATARY}; ${env.GIT_COMMIT_AUTHOR}" )
+                }
+                aborted {
+                    send_email_notification(env.CI_EMAIL_NOTICE_DESTINATARY)
+                }
+            }
+        }
+    }
+}
