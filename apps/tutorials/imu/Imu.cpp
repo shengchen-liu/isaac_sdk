@@ -16,6 +16,9 @@ namespace isaac {
 // Goal tolerance in meters
 constexpr double kGoalTolerance = 0.1;
 
+ImuDriver::ImuDriver() {};
+ImuDriver::~ImuDriver() {};
+
 void ImuDriver::start() {
   // This part will be run once in the beginning of the program
 

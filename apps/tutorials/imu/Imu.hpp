@@ -20,31 +20,33 @@ namespace isaac {
 
 // A simple C++ codelet that prints periodically
 class ImuDriver : public alice::Codelet {
- public:
-  // Has whatever needs to be run in the beginning of the program
-  void start() override;
-  // Has whatever needs to be run repeatedly
-  void tick() override;
+  public:
+    ImuDriver();
+    ~ImuDriver();
+    // Has whatever needs to be run in the beginning of the program
+    void start() override;
+    // Has whatever needs to be run repeatedly
+    void tick() override;
 
 
-  // Output goal for the robot
-  ISAAC_PROTO_TX(Goal2Proto, goal);
-  // Feedback about imu
-  ISAAC_PROTO_RX(ImuProto, feedback);
+    // Output goal for the robot
+    ISAAC_PROTO_TX(Goal2Proto, goal);
+    // Feedback about imu
+    ISAAC_PROTO_RX(ImuProto, feedback);
 
-  // Desired x and y position of the robot on map in meters
-  ISAAC_PARAM(Vector2d, desired_position, Vector2d(9.0, 25.0));
+    // Desired x and y position of the robot on map in meters
+    ISAAC_PARAM(Vector2d, desired_position, Vector2d(9.0, 25.0));
 
-  // Message to be printed at every tick
-  ISAAC_PARAM(std::string, message, "Hello World!");
- private:
- // Publishes a goal message with given target position.
-  void publishGoal(const Vector2d& position);
+    // Message to be printed at every tick
+    ISAAC_PARAM(std::string, message, "Hello World!");
+  private:
+  // Publishes a goal message with given target position.
+    void publishGoal(const Vector2d& position);
 
-  // Location of the last goal that is transmitted
-  Vector2d goal_position_;
-  // Timestamp of the last goal that is transmitted
-  int64_t goal_timestamp_;
+    // Location of the last goal that is transmitted
+    Vector2d goal_position_;
+    // Timestamp of the last goal that is transmitted
+    int64_t goal_timestamp_;
 };
 
 }  // namespace isaac
