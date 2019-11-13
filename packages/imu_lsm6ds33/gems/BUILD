@@ -8,20 +8,23 @@ distribution of this software and related documentation without an express
 license agreement from NVIDIA CORPORATION is strictly prohibited.
 """
 
-load("//engine/build:isaac.bzl", "isaac_app")
+load("//engine/build:isaac.bzl", "isaac_cc_binary", "isaac_cc_library")
 
-isaac_app(
-    name = "imu",
-    app_json_file = "imu.app.json",
-    modules = [
-        "imu",
-    ],
-)
-
-isaac_app(
+isaac_cc_library(
     name = "imu_lsm6ds33",
-    app_json_file = "imu_lsm6ds33.app.json",
-    modules = [
-        'imu_lsm6ds33',
+    srcs = [
+        "imu_lsm6ds33.cpp",
+    ],
+    hdrs = [
+        "imu_lsm6ds33.hpp",
+        "rmp_types.hpp"
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//engine/core",
+        "//engine/gems/coms:socket",
+        "//engine/gems/math",
+        "//engine/gems/serialization:crc16",
+        "//engine/gems/sight",
     ],
 )

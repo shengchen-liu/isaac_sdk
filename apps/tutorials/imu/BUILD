@@ -8,20 +8,19 @@ distribution of this software and related documentation without an express
 license agreement from NVIDIA CORPORATION is strictly prohibited.
 """
 
-load("//engine/build:isaac.bzl", "isaac_app")
+load("//engine/build:isaac.bzl", "isaac_app", "isaac_cc_module")
 
-isaac_app(
-    name = "imu",
-    app_json_file = "imu.app.json",
-    modules = [
-        "imu",
-    ],
+isaac_cc_module(
+    name = "imu_components1",
+    srcs = ["Imu.cpp"],
+    hdrs = ["Imu.hpp"],
 )
 
 isaac_app(
-    name = "imu_lsm6ds33",
-    app_json_file = "imu_lsm6ds33.app.json",
+    name = "imu",
+    data = ["fast_ping.json"],
     modules = [
-        'imu_lsm6ds33',
+        "//apps/tutorials/imu:imu_components1",
+        "//apps/tutorials/webinar_1:go_to_mockup",
     ],
 )

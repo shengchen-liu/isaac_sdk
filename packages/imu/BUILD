@@ -1,4 +1,3 @@
-
 """
 Copyright (c) 2019, NVIDIA CORPORATION. All rights reserved.
 
@@ -9,18 +8,13 @@ distribution of this software and related documentation without an express
 license agreement from NVIDIA CORPORATION is strictly prohibited.
 """
 
-load("//engine/build:isaac.bzl", "isaac_cc_module", "isaac_component")
-
-isaac_cc_module(
-    name = "imu",
-    deps = [
-        ":imu_driver",
-    ],
+filegroup(
+    name = "libimu_module.so",
+    tags = ["manual"],
+    data = select({
+        "//engine/build:platform_x86_64": ["//packages_x86_64/imu:libimu_module.so_release"],
+        "//engine/build:platform_jetpack42": ["//packages_jetpack42/imu:libimu_module.so_release"],
+    }),
+    visibility = ["//visibility:public"],
 )
 
-isaac_component(
-    name = "imu_driver",
-    deps = [
-        "//engine/gems/state:io"
-    ],
-)
