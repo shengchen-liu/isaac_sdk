@@ -37,11 +37,10 @@ void ImuDriver::start() {
   //   bazel run //apps/tutorials/ping -- --config apps/tutorials/ping/fast_ping.json
   goal_timestamp_ = 0;
   goal_position_ = Vector2d::Zero();
+  tickBlocking();
   segway_.reset(new drivers::Segway(get_ip(), get_port()));
+  segway_->start();
 
-  // segway_->start();
-
-  tickPeriodically();
 }
 
 void ImuDriver::publishGoal(const Vector2d& position){
@@ -73,8 +72,8 @@ void ImuDriver::tick() {
     publishGoal(position);
   }
 
-  auto state = segway_->getSegwayState();
-  std::cout<<state.linear_accel_msp2<<std::endl;
+  // auto state = segway_->getSegwayState();
+  // std::cout<<state.linear_accel_msp2<<std::endl;
 
 
   // Process feedback
@@ -84,7 +83,7 @@ void ImuDriver::tick() {
         if (goal_timestamp_ != acqtime) {
           return;
         }
-        const float A_x = feedback_proto.getLinearAccelerationX();
+        // const float A_x = feedback_proto.getLinearAccelerationX();
         // std::cout<<A_x<<std::endl;
         // // Show information on WebSight
         // show("arrived", arrived ? 1.0 : 0.0);
