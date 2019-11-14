@@ -8,12 +8,17 @@ distribution of this software and related documentation without an express
 license agreement from NVIDIA CORPORATION is strictly prohibited.
 """
 
-load("//engine/build:isaac.bzl", "isaac_app", "isaac_cc_module")
+load("//engine/build:isaac.bzl", "isaac_app", "isaac_cc_module", "isaac_component")
 
 isaac_cc_module(
     name = "imu_components1",
-    srcs = ["Imu.cpp"],
-    hdrs = ["Imu.hpp"],
+    srcs = ["ImuDriver.cpp"],
+    hdrs = ["ImuDriver.hpp"],
+    deps = [
+        "//engine/gems/state:io",
+        "//messages/state:differential_base",
+        "//apps/tutorials/imu/gems:segway",
+    ]
 )
 
 isaac_app(
@@ -24,3 +29,4 @@ isaac_app(
         "//apps/tutorials/webinar_1:go_to_mockup",
     ],
 )
+

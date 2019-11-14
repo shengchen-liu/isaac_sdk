@@ -17,12 +17,17 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 #include "engine/core/math/pose2.hpp"
 
 namespace isaac {
+  namespace drivers{
+    class Segway;
+  }
+}
+
+
+namespace isaac {
 
 // A simple C++ codelet that prints periodically
 class ImuDriver : public alice::Codelet {
   public:
-    ImuDriver();
-    ~ImuDriver();
     // Has whatever needs to be run in the beginning of the program
     void start() override;
     // Has whatever needs to be run repeatedly
@@ -39,6 +44,13 @@ class ImuDriver : public alice::Codelet {
 
     // Message to be printed at every tick
     ISAAC_PARAM(std::string, message, "Hello World!");
+
+     // Isaac will use this IP to talk to segway
+    ISAAC_PARAM(std::string, ip, "192.168.0.40");
+
+    // Isaac will use this port to talk to segway
+    ISAAC_PARAM(int, port, 8080);
+
   private:
   // Publishes a goal message with given target position.
     void publishGoal(const Vector2d& position);
@@ -47,6 +59,9 @@ class ImuDriver : public alice::Codelet {
     Vector2d goal_position_;
     // Timestamp of the last goal that is transmitted
     int64_t goal_timestamp_;
+
+    std::unique_ptr<drivers::Segway> segway_;
+
 };
 
 }  // namespace isaac

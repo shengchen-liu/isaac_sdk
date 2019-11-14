@@ -66,6 +66,7 @@ void Segway::configureResponses() {
   for (size_t i = 0; i < 4; i++) {
     sendCommandU(RMP_CONFIGURATION_MESSAGE, RMP_CMD_SET_USER_FB_1_BITMAP + i,
                  activation_code_frame[i]);
+    // LOG_INFO("sendCommandU");
   }
 }
 

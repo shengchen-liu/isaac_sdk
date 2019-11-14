@@ -7,17 +7,23 @@ and any modifications thereto. Any use, reproduction, disclosure or
 distribution of this software and related documentation without an express
 license agreement from NVIDIA CORPORATION is strictly prohibited.
 */
-#include "Imu.hpp"
+#include "ImuDriver.hpp"
 
 #include "messages/math.hpp"
+
+#include <cmath>
+#include "engine/alice/components/Failsafe.hpp"
+#include "engine/core/constants.hpp"
+#include "engine/gems/sight/sight.hpp"
+#include "engine/gems/state/io.hpp"
+#include "messages/state/differential_base.hpp"
+#include "apps/tutorials/imu/gems/segway.hpp"
 
 namespace isaac {
 
 // Goal tolerance in meters
 constexpr double kGoalTolerance = 0.1;
 
-ImuDriver::ImuDriver() {};
-ImuDriver::~ImuDriver() {};
 
 void ImuDriver::start() {
   // This part will be run once in the beginning of the program
@@ -31,6 +37,10 @@ void ImuDriver::start() {
   //   bazel run //apps/tutorials/ping -- --config apps/tutorials/ping/fast_ping.json
   goal_timestamp_ = 0;
   goal_position_ = Vector2d::Zero();
+  segway_.reset(new drivers::Segway(get_ip(), get_port()));
+
+  // segway_->start();
+
   tickPeriodically();
 }
 
@@ -63,6 +73,10 @@ void ImuDriver::tick() {
     publishGoal(position);
   }
 
+  auto state = segway_->getSegwayState();
+  std::cout<<state.linear_accel_msp2<<std::endl;
+
+
   // Process feedback
   rx_feedback().processLatestNewMessage(
       [this](auto feedback_proto, int64_t pubtime, int64_t acqtime) {
@@ -71,7 +85,7 @@ void ImuDriver::tick() {
           return;
         }
         const float A_x = feedback_proto.getLinearAccelerationX();
-        std::cout<<A_x<<std::endl;
+        // std::cout<<A_x<<std::endl;
         // // Show information on WebSight
         // show("arrived", arrived ? 1.0 : 0.0);
       });

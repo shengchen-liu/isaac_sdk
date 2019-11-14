@@ -19,7 +19,7 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 
 #include "engine/core/constants.hpp"
 #include "engine/gems/coms/socket.hpp"
-#include "packages/segway/gems/rmp_types.hpp"
+#include "rmp_types.hpp"
 
 namespace isaac {
 namespace drivers {

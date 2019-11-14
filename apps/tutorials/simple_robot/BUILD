@@ -24,3 +24,17 @@ isaac_app(
         "velodyne_lidar",
     ],
 )
+isaac_app(
+    name = "simple_robot_imu",
+    data = [
+        "//apps/carter:2d_carter_subgraph",
+        "//packages/navigation/apps:differential_base_commander_subgraph",
+    ],
+    modules = [
+        "imu",
+        "navigation",
+        "segway",
+        "sensors:joystick",
+        "velodyne_lidar",
+    ],
+)

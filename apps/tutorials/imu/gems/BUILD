@@ -8,7 +8,7 @@ distribution of this software and related documentation without an express
 license agreement from NVIDIA CORPORATION is strictly prohibited.
 """
 
-load("//engine/build:isaac.bzl", "isaac_cc_binary", "isaac_cc_library")
+load("//engine/build:isaac.bzl", "isaac_cc_binary", "isaac_cc_library", "isaac_cc_module")
 
 isaac_cc_library(
     name = "segway",
@@ -22,6 +22,21 @@ isaac_cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "//engine/core",
+        "//engine/gems/coms:socket",
+        "//engine/gems/math",
+        "//engine/gems/serialization:crc16",
+        "//engine/gems/sight",
+    ],
+)
+
+isaac_cc_module(
+    name = "segway",
+    srcs = ["segway.cpp"],
+    hdrs = [
+        "rmp_types.hpp",
+        "segway.hpp",
+    ],
+    deps = [
         "//engine/gems/coms:socket",
         "//engine/gems/math",
         "//engine/gems/serialization:crc16",
