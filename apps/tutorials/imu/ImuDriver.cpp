@@ -18,6 +18,9 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 #include "engine/gems/state/io.hpp"
 #include "messages/state/differential_base.hpp"
 #include "apps/tutorials/imu/gems/segway.hpp"
+#include "apps/tutorials/imu/gems/RTIMUHal.hpp"
+#include "apps/tutorials/imu/gems/RTIMUSettings.hpp"
+#include "apps/tutorials/imu/gems/RTIMU.hpp"
 
 namespace isaac {
 
@@ -38,8 +41,18 @@ void ImuDriver::start() {
   goal_timestamp_ = 0;
   goal_position_ = Vector2d::Zero();
   tickBlocking();
-  segway_.reset(new drivers::Segway(get_ip(), get_port()));
-  segway_->start();
+
+  // drivers::RTIMUSettings* RTsettings = new drivers::RTIMUSettings("RTIMULib");
+  // std::cout<<RTsettings->m_imuType<<std::endl;
+  // rtimusettings_.reset(new drivers::RTIMUSettings());
+
+  rtimu_.reset(new drivers::RTIMU());
+  // RTIMU *imu = RTIMU::createIMU(settings);
+
+  rtimuhal_.reset(new drivers::RTIMUHal());
+  rtimuhal_->HALOpen();
+  // segway_.reset(new drivers::Segway(get_ip(), get_port()));
+  // segway_->start();
 
 }
 
