@@ -22,6 +22,12 @@ namespace isaac {
   }
 }
 
+namespace isaac{
+  namespace drivers{
+    class RTIMUHal;
+  }
+}
+
 
 namespace isaac {
 
@@ -61,6 +67,7 @@ class ImuDriver : public alice::Codelet {
     int64_t goal_timestamp_;
 
     std::unique_ptr<drivers::Segway> segway_;
+    std::unique_ptr<drivers::RTIMUHal> rtimuhal_;
 
 };
 

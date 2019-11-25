@@ -29,6 +29,49 @@ isaac_cc_library(
     ],
 )
 
+isaac_cc_library(
+    name = "RTIMUHal",
+    srcs = [
+        "RTIMUHal.cpp",
+    ],
+    hdrs = [
+        "RTIMUHal.hpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//engine/core",
+        "//engine/gems/coms:socket",
+        "//engine/gems/math",
+        "//engine/gems/serialization:crc16",
+        "//engine/gems/sight",
+    ],
+)
+
+isaac_cc_library(
+    name = "RTIMUSettings",
+    srcs = [
+        "RTIMUSettings.cpp",
+    ],
+    hdrs = [
+        "RTIMUSettings.hpp",
+        "RTMath.hpp",
+        "RTIMUHal.hpp",
+        "RTIMU.hpp",
+        "RTFusion.hpp",
+        "RTIMULibDefs.hpp",
+        "RTIMUDefs.hpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//engine/core",
+        "//engine/gems/coms:socket",
+        "//engine/gems/math",
+        "//engine/gems/serialization:crc16",
+        "//engine/gems/sight",
+    ],
+)
+
+
 isaac_cc_module(
     name = "segway",
     srcs = ["segway.cpp"],

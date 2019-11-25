@@ -18,6 +18,7 @@ isaac_cc_module(
         "//engine/gems/state:io",
         "//messages/state:differential_base",
         "//apps/tutorials/imu/gems:segway",
+        "//apps/tutorials/imu/gems:RTIMUHal",
     ]
 )
 
