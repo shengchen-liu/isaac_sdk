@@ -23,6 +23,9 @@
 
 #define RTIMU_FUZZY_ACCEL_ZERO 0.05
 
+
+
+
 namespace isaac
 {
 namespace drivers
@@ -84,6 +87,39 @@ RTIMU *RTIMU::createIMU(RTIMUSettings *settings)
     }
 }
 
+RTIMU::RTIMU()
+{
+
+    m_compassCalibrationMode = false;
+    m_accelCalibrationMode = false;
+
+    m_runtimeMagCalValid = false;
+
+    for (int i = 0; i < 3; i++)
+    {
+        m_runtimeMagCalMax[i] = -1000;
+        m_runtimeMagCalMin[i] = 1000;
+    }
+
+    int m_fusionType = RTFUSION_TYPE_RTQF;
+    switch (m_settings->m_fusionType)
+    {
+        // case RTFUSION_TYPE_KALMANSTATE4:
+        //     m_fusion = new RTFusionKalman4();
+        //     break;
+
+        // case RTFUSION_TYPE_RTQF:
+        //     m_fusion = new RTFusionRTQF();
+        //     break;
+
+    default:
+        m_fusion = new RTFusion();
+        break;
+    }
+    
+    HAL_INFO1("Using fusion algorithm %s\n", RTFusion::fusionName(m_fusionType));
+}
+
 RTIMU::RTIMU(RTIMUSettings *settings)
 {
     m_settings = settings;
@@ -101,13 +137,13 @@ RTIMU::RTIMU(RTIMUSettings *settings)
 
     switch (m_settings->m_fusionType)
     {
-    // case RTFUSION_TYPE_KALMANSTATE4:
-    //     m_fusion = new RTFusionKalman4();
-    //     break;
+        // case RTFUSION_TYPE_KALMANSTATE4:
+        //     m_fusion = new RTFusionKalman4();
+        //     break;
 
-    // case RTFUSION_TYPE_RTQF:
-    //     m_fusion = new RTFusionRTQF();
-    //     break;
+        // case RTFUSION_TYPE_RTQF:
+        //     m_fusion = new RTFusionRTQF();
+        //     break;
 
     default:
         m_fusion = new RTFusion();
@@ -1014,8 +1050,6 @@ bool RTIMULSM6DS33LIS3MDL::setCompass()
     std::cout << "LIS3MDL Compass set" << std::endl;
     return true;
 }
-
-
 
 int RTIMULSM6DS33LIS3MDL::IMUGetPollInterval()
 {

@@ -38,6 +38,12 @@
 
 #define RTIMU_AXIS_ROTATION_COUNT 24
 
+#define RTFUSION_TYPE_NULL                  0                   // just a dummy to keep things happy if not needed
+#define RTFUSION_TYPE_KALMANSTATE4          1                   // kalman state is the quaternion pose
+#define RTFUSION_TYPE_RTQF                  2                   // RT quaternion fusion
+
+#define RTFUSION_TYPE_COUNT                 3                   // number of fusion algorithm types
+
 namespace isaac
 {
 namespace drivers
@@ -60,6 +66,7 @@ public:
 
     //  Constructor/destructor
 
+    RTIMU();
     RTIMU(RTIMUSettings *settings);
     virtual ~RTIMU();
 
