@@ -20,7 +20,7 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 #include "apps/tutorials/imu/gems/segway.hpp"
 #include "apps/tutorials/imu/gems/RTIMUHal.hpp"
 // #include "apps/tutorials/imu/gems/RTIMUSettings.hpp"
-// #include "apps/tutorials/imu/gems/RTIMU.hpp"
+#include "apps/tutorials/imu/gems/RTIMU.hpp"
 
 namespace isaac {
 
@@ -49,8 +49,9 @@ void ImuDriver::start() {
   // rtimu_.reset(new drivers::RTIMU());
   // RTIMU *imu = RTIMU::createIMU(settings);
 
-  rtimuhal_.reset(new drivers::RTIMUHal());
-  rtimuhal_->HALOpen();
+  rtimu_.reset(new drivers::RTIMU::createIMU());
+  // rtimuhal_.reset(new drivers::RTIMUHal());
+  // rtimuhal_->HALOpen();
   // segway_.reset(new drivers::Segway(get_ip(), get_port()));
   // segway_->start();
 

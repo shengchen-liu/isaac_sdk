@@ -71,6 +71,30 @@ isaac_cc_library(
     ],
 )
 
+isaac_cc_library(
+    name = "RTIMU",
+    srcs = [
+        "RTIMU.cpp",
+    ],
+    hdrs = [
+        "RTIMUSettings.hpp",
+        "RTMath.hpp",
+        "RTIMUHal.hpp",
+        "RTIMU.hpp",
+        "RTFusion.hpp",
+        "RTIMULibDefs.hpp",
+        "RTIMUDefs.hpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//engine/core",
+        "//engine/gems/coms:socket",
+        "//engine/gems/math",
+        "//engine/gems/serialization:crc16",
+        "//engine/gems/sight",
+    ],
+)
+
 
 isaac_cc_module(
     name = "segway",

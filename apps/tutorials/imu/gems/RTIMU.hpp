@@ -1,6 +1,6 @@
 #pragma once
-#include "RTMath.hpp"
-#include "RTFusion.hpp"
+// #include "RTMath.hpp"
+// #include "RTFusion.hpp"
 #include "RTIMULibDefs.hpp"
 #include "RTIMUSettings.hpp"
 
@@ -62,7 +62,7 @@ public:
     //  IMUs should always be created with the following call
     //it's just a declaration, not a definition!
     //The * belongs to the return type (RTIMU), and not to the function name, i.e.:
-    static RTIMU *createIMU(RTIMUSettings *settings);
+    static RTIMU *createIMU();
 
     //  Constructor/destructor
 
@@ -228,6 +228,7 @@ namespace drivers
 class RTIMULSM6DS33LIS3MDL : public RTIMU
 {
 public:
+    RTIMULSM6DS33LIS3MDL();
     RTIMULSM6DS33LIS3MDL(RTIMUSettings *settings);
     ~RTIMULSM6DS33LIS3MDL();
 

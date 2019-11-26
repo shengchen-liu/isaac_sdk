@@ -108,9 +108,6 @@ void RTIMUSettings::setDefaults()
     m_I2CSlaveAddress = 0;
     m_busIsI2C = true;
     m_I2CBus = 1;
-    m_SPIBus = 0;
-    m_SPISelect = 0;
-    m_SPISpeed = 500000;
     m_fusionType = 3;
     m_axisRotation = 0;
     m_compassCalValid = false;
@@ -194,18 +191,6 @@ bool RTIMUSettings::loadSettings()
         else if (strcmp(key, RTIMULIB_I2C_BUS) == 0)
         {
             m_I2CBus = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_SPI_BUS) == 0)
-        {
-            m_SPIBus = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_SPI_SELECT) == 0)
-        {
-            m_SPISelect = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_SPI_SPEED) == 0)
-        {
-            m_SPISpeed = atoi(val);
         }
         else if (strcmp(key, RTIMULIB_I2C_SLAVEADDRESS) == 0)
         {
@@ -729,22 +714,7 @@ bool RTIMUSettings::saveSettings()
     setComment("");
     setComment("I2C Bus (between 0 and 7) ");
     setValue(RTIMULIB_I2C_BUS, m_I2CBus);
-
-    setBlank();
-    setComment("");
-    setComment("SPI Bus (between 0 and 7) ");
-    setValue(RTIMULIB_SPI_BUS, m_SPIBus);
-
-    setBlank();
-    setComment("");
-    setComment("SPI select (between 0 and 1) ");
-    setValue(RTIMULIB_SPI_SELECT, m_SPISelect);
-
-    setBlank();
-    setComment("");
-    setComment("SPI Speed in Hz");
-    setValue(RTIMULIB_SPI_SPEED, (int)m_SPISpeed);
-
+    
     setBlank();
     setComment("");
     setComment("I2C slave address (filled in automatically by auto discover) ");

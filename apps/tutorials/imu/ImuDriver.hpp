@@ -28,6 +28,12 @@ namespace isaac{
   }
 }
 
+namespace isaac{
+  namespace drivers{
+    class RTIMU;
+  }
+}
+
 
 namespace isaac {
 
@@ -68,6 +74,7 @@ class ImuDriver : public alice::Codelet {
 
     std::unique_ptr<drivers::Segway> segway_;
     std::unique_ptr<drivers::RTIMUHal> rtimuhal_;
+    std::unique_ptr<drivers::RTIMU> rtimu_;
 
 };
 

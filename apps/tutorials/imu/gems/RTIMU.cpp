@@ -64,31 +64,34 @@ float RTIMU::m_axisRotation[RTIMU_AXIS_ROTATION_COUNT][9] = {
     {0, 0, -1, -1, 0, 0, 0, 1, 0} // RTIMU_XWEST_YDOWN
 };
 
-RTIMU *RTIMU::createIMU(RTIMUSettings *settings)
+RTIMU *RTIMU::createIMU()
 {
-    switch (settings->m_imuType)
-    {
-    case RTIMU_TYPE_LSM6DS33LIS3MDL:
-        return new RTIMULSM6DS33LIS3MDL(settings);
+    return new RTIMULSM6DS33LIS3MDL();
 
-    case RTIMU_TYPE_AUTODISCOVER:
-        if (settings->discoverIMU(settings->m_imuType, settings->m_busIsI2C, settings->m_I2CSlaveAddress))
-        {
-            settings->saveSettings();
-            return RTIMU::createIMU(settings);
-        }
-        return new RTIMUNull(settings);
+    // switch (settings->m_imuType)
+    // {
+    // case RTIMU_TYPE_LSM6DS33LIS3MDL:
+    //     return new RTIMULSM6DS33LIS3MDL(settings);
 
-    case RTIMU_TYPE_NULL:
-        return new RTIMUNull(settings);
+    // case RTIMU_TYPE_AUTODISCOVER:
+    //     if (settings->discoverIMU(settings->m_imuType, settings->m_busIsI2C, settings->m_I2CSlaveAddress))
+    //     {
+    //         settings->saveSettings();
+    //         return RTIMU::createIMU(settings);
+    //     }
+    //     return new RTIMUNull(settings);
 
-    default:
-        return NULL;
-    }
+    // case RTIMU_TYPE_NULL:
+    //     return new RTIMUNull(settings);
+
+    // default:
+    //     return NULL;
+    // }
 }
 
 RTIMU::RTIMU()
 {
+    m_sampleRate = 100;
 
     m_compassCalibrationMode = false;
     m_accelCalibrationMode = false;
@@ -556,6 +559,12 @@ namespace isaac
 {
 namespace drivers
 {
+
+RTIMULSM6DS33LIS3MDL::RTIMULSM6DS33LIS3MDL() : RTIMU()
+{
+    m_sampleRate = 100;
+}
+
 RTIMULSM6DS33LIS3MDL::RTIMULSM6DS33LIS3MDL(RTIMUSettings *settings) : RTIMU(settings)
 {
     m_sampleRate = 100;
