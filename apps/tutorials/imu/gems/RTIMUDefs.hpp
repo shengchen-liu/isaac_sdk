@@ -1,3 +1,5 @@
+#pragma once
+
 //  IMU type codes
 //
 //  For compatibility, only add new codes at the end to avoid renumbering

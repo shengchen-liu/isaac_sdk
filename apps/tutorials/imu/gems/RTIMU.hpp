@@ -1,6 +1,6 @@
 #pragma once
-// #include "RTMath.hpp"
-// #include "RTFusion.hpp"
+#include "RTMath.hpp"
+#include "RTFusion.hpp"
 #include "RTIMULibDefs.hpp"
 #include "RTIMUSettings.hpp"
 
@@ -184,75 +184,5 @@ protected:
     static float m_axisRotation[RTIMU_AXIS_ROTATION_COUNT][9]; // array of rotation matrices
 };
 
-} // namespace drivers
-} // namespace isaac
-
-namespace isaac
-{
-namespace drivers
-{
-class RTIMUNull : public RTIMU
-{
-public:
-    RTIMUNull(RTIMUSettings *settings);
-    ~RTIMUNull();
-
-    // The timestamp parameter is assumed to be from RTMath::currentUSecsSinceEpoch()
-
-    void setIMUData(const RTIMU_DATA &data);
-
-    virtual const char *IMUName() { return "Null IMU"; }
-    virtual int IMUType() { return RTIMU_TYPE_NULL; }
-    virtual bool IMUInit();
-    virtual int IMUGetPollInterval();
-    virtual bool IMURead();
-    virtual bool IMUGyroBiasValid() { return true; }
-
-private:
-    uint64_t m_timestamp;
-};
-} // namespace drivers
-} // namespace isaac
-
-namespace isaac
-{
-namespace drivers
-{
-class RTIMULSM6DS33LIS3MDL : public RTIMU
-{
-public:
-    RTIMULSM6DS33LIS3MDL();
-    RTIMULSM6DS33LIS3MDL(RTIMUSettings *settings);
-    ~RTIMULSM6DS33LIS3MDL();
-
-    virtual const char *IMUName() { return "LSM6DS33 + LIS3MDL"; }
-    virtual int IMUType() { return RTIMU_TYPE_LSM6DS33LIS3MDL; }
-    virtual bool IMUInit();
-    virtual int IMUGetPollInterval();
-    virtual bool IMURead();
-
-private:
-    bool setGyroSampleRate();
-    bool setGyro();
-    bool setAccel();
-    bool setCompass();
-
-    unsigned char m_gyroAccelSlaveAddr; // I2C address of LSM6DS33
-    unsigned char m_compassSlaveAddr;   // I2C address of LIS3MDL
-
-    RTFLOAT m_gyroScale;
-    RTFLOAT m_accelScale;
-    RTFLOAT m_compassScale;
-
-#ifdef LSM6DS33LIS3MDL_CACHE_MODE
-    bool m_firstTime; // if first sample
-
-    LSM6DS33LIS3MDL_CACHE_BLOCK m_cache[LSM6DS33LIS3MDL_CACHE_BLOCK_COUNT]; // the cache itself
-    int m_cacheIn;                                                          // the in index
-    int m_cacheOut;                                                         // the out index
-    int m_cacheCount;                                                       // number of used cache blocks
-
-#endif
-};
 } // namespace drivers
 } // namespace isaac

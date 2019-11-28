@@ -60,6 +60,7 @@ isaac_cc_library(
         "RTFusion.hpp",
         "RTIMULibDefs.hpp",
         "RTIMUDefs.hpp",
+        "RTIMULSM6DS33LIS3MDL.hpp",
     ],
     visibility = ["//visibility:public"],
     deps = [

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "RTMath.hpp"
 #include "RTIMUDefs.hpp"
 

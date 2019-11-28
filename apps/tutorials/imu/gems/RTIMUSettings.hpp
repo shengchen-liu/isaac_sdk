@@ -1,5 +1,6 @@
 #pragma once
-#include "RTMath.hpp"
+
+// #include "RTMath.hpp"
 #include "RTIMUHal.hpp"
 
 //  Settings keys
@@ -18,37 +19,6 @@
 #define RTIMULIB_HUMIDITY_TYPE "HumidityType"
 #define RTIMULIB_I2C_HUMIDITYADDRESS "I2CHumidityAddress"
 
-//  MPU9150 settings keys
-
-#define RTIMULIB_MPU9150_GYROACCEL_SAMPLERATE "MPU9150GyroAccelSampleRate"
-#define RTIMULIB_MPU9150_COMPASS_SAMPLERATE "MPU9150CompassSampleRate"
-#define RTIMULIB_MPU9150_GYROACCEL_LPF "MPU9150GyroAccelLpf"
-#define RTIMULIB_MPU9150_GYRO_FSR "MPU9150GyroFSR"
-#define RTIMULIB_MPU9150_ACCEL_FSR "MPU9150AccelFSR"
-
-//  MPU9250 settings keys
-
-#define RTIMULIB_MPU9250_GYROACCEL_SAMPLERATE "MPU9250GyroAccelSampleRate"
-#define RTIMULIB_MPU9250_COMPASS_SAMPLERATE "MPU9250CompassSampleRate"
-#define RTIMULIB_MPU9250_GYRO_LPF "MPU9250GyroLpf"
-#define RTIMULIB_MPU9250_ACCEL_LPF "MPU9250AccelLpf"
-#define RTIMULIB_MPU9250_GYRO_FSR "MPU9250GyroFSR"
-#define RTIMULIB_MPU9250_ACCEL_FSR "MPU9250AccelFSR"
-
-//  GD20HM303D settings keys
-
-#define RTIMULIB_GD20HM303D_GYRO_SAMPLERATE "GD20HM303DGyroSampleRate"
-#define RTIMULIB_GD20HM303D_GYRO_BW "GD20HM303DGyroBW"
-#define RTIMULIB_GD20HM303D_GYRO_HPF "GD20HM303DGyroHpf"
-#define RTIMULIB_GD20HM303D_GYRO_FSR "GD20HM303DGyroFsr"
-
-#define RTIMULIB_GD20HM303D_ACCEL_SAMPLERATE "GD20HM303DAccelSampleRate"
-#define RTIMULIB_GD20HM303D_ACCEL_FSR "GD20HM303DAccelFsr"
-#define RTIMULIB_GD20HM303D_ACCEL_LPF "GD20HM303DAccelLpf"
-
-#define RTIMULIB_GD20HM303D_COMPASS_SAMPLERATE "GD20HM303DCompassSampleRate"
-#define RTIMULIB_GD20HM303D_COMPASS_FSR "GD20HM303DCompassFsr"
-
 //  LSM6DS33LIS3MDL defaults
 
 #define RTIMULIB_LSM6DS33LIS3MDL_GYRO_SAMPLERATE "LSM6DS33LIS3MDLGyroSampleRate"
@@ -62,70 +32,6 @@
 
 #define RTIMULIB_LSM6DS33LIS3MDL_COMPASS_SAMPLERATE "LSM6DS33LIS3MDLCompassSampleRate"
 #define RTIMULIB_LSM6DS33LIS3MDL_COMPASS_FSR "LSM6DS33LIS3MDLCompassFsr"
-
-//  GD20M303DLHC settings keys
-
-#define RTIMULIB_GD20M303DLHC_GYRO_SAMPLERATE "GD20M303DLHCGyroSampleRate"
-#define RTIMULIB_GD20M303DLHC_GYRO_BW "GD20M303DLHCGyroBW"
-#define RTIMULIB_GD20M303DLHC_GYRO_HPF "GD20M303DLHCGyroHpf"
-#define RTIMULIB_GD20M303DLHC_GYRO_FSR "GD20M303DLHCGyroFsr"
-
-#define RTIMULIB_GD20M303DLHC_ACCEL_SAMPLERATE "GD20M303DLHCAccelSampleRate"
-#define RTIMULIB_GD20M303DLHC_ACCEL_FSR "GD20M303DLHCAccelFsr"
-
-#define RTIMULIB_GD20M303DLHC_COMPASS_SAMPLERATE "GD20M303DLHCCompassSampleRate"
-#define RTIMULIB_GD20M303DLHC_COMPASS_FSR "GD20M303DLHCCompassFsr"
-
-//  GD20HM303DLHC settings keys
-
-#define RTIMULIB_GD20HM303DLHC_GYRO_SAMPLERATE "GD20HM303DLHCGyroSampleRate"
-#define RTIMULIB_GD20HM303DLHC_GYRO_BW "GD20HM303DLHCGyroBW"
-#define RTIMULIB_GD20HM303DLHC_GYRO_HPF "GD20HM303DLHCGyroHpf"
-#define RTIMULIB_GD20HM303DLHC_GYRO_FSR "GD20HM303DLHCGyroFsr"
-
-#define RTIMULIB_GD20HM303DLHC_ACCEL_SAMPLERATE "GD20HM303DLHCAccelSampleRate"
-#define RTIMULIB_GD20HM303DLHC_ACCEL_FSR "GD20HM303DLHCAccelFsr"
-
-#define RTIMULIB_GD20HM303DLHC_COMPASS_SAMPLERATE "GD20HM303DLHCCompassSampleRate"
-#define RTIMULIB_GD20HM303DLHC_COMPASS_FSR "GD20HM303DLHCCompassFsr"
-
-//  LSM9DS0 settings keys
-
-#define RTIMULIB_LSM9DS0_GYRO_SAMPLERATE "LSM9DS0GyroSampleRate"
-#define RTIMULIB_LSM9DS0_GYRO_BW "LSM9DS0GyroBW"
-#define RTIMULIB_LSM9DS0_GYRO_HPF "LSM9DS0GyroHpf"
-#define RTIMULIB_LSM9DS0_GYRO_FSR "LSM9DS0GyroFsr"
-
-#define RTIMULIB_LSM9DS0_ACCEL_SAMPLERATE "LSM9DS0AccelSampleRate"
-#define RTIMULIB_LSM9DS0_ACCEL_FSR "LSM9DS0AccelFsr"
-#define RTIMULIB_LSM9DS0_ACCEL_LPF "LSM9DS0AccelLpf"
-
-#define RTIMULIB_LSM9DS0_COMPASS_SAMPLERATE "LSM9DS0CompassSampleRate"
-#define RTIMULIB_LSM9DS0_COMPASS_FSR "LSM9DS0CompassFsr"
-
-//  LSM9DS1 settings keys
-
-#define RTIMULIB_LSM9DS1_GYRO_SAMPLERATE "LSM9DS1GyroSampleRate"
-#define RTIMULIB_LSM9DS1_GYRO_BW "LSM9DS1GyroBW"
-#define RTIMULIB_LSM9DS1_GYRO_HPF "LSM9DS1GyroHpf"
-#define RTIMULIB_LSM9DS1_GYRO_FSR "LSM9DS1GyroFsr"
-
-#define RTIMULIB_LSM9DS1_ACCEL_SAMPLERATE "LSM9DS1AccelSampleRate"
-#define RTIMULIB_LSM9DS1_ACCEL_FSR "LSM9DS1AccelFsr"
-#define RTIMULIB_LSM9DS1_ACCEL_LPF "LSM9DS1AccelLpf"
-
-#define RTIMULIB_LSM9DS1_COMPASS_SAMPLERATE "LSM9DS1CompassSampleRate"
-#define RTIMULIB_LSM9DS1_COMPASS_FSR "LSM9DS1CompassFsr"
-
-//  BMX055 settings keys
-
-#define RTIMULIB_BMX055_GYRO_SAMPLERATE "BMX055GyroSampleRate"
-#define RTIMULIB_BMX055_GYRO_FSR "BMX055GyroFsr"
-
-#define RTIMULIB_BMX055_ACCEL_SAMPLERATE "BMX055AccelSampleRate"
-#define RTIMULIB_BMX055_ACCEL_FSR "BMX055AccelFsr"
-
-#define RTIMULIB_BMX055_MAG_PRESET "BMX055MagPreset"
 
 //  Gyro bias keys
 
@@ -170,6 +76,52 @@
 #define RTIMULIB_ACCELCAL_MINZ "AccelCalMinZ"
 #define RTIMULIB_ACCELCAL_MAXZ "AccelCalMaxZ"
 
+# define RTFLOAT float
+
+namespace isaac
+{
+namespace drivers
+{
+class RTVector3
+{
+public:
+    RTVector3();
+    RTVector3(RTFLOAT x, RTFLOAT y, RTFLOAT z);
+
+    RTVector3 &operator=(const RTVector3 &vec);
+    const RTVector3 &operator+=(RTVector3 &vec);
+    const RTVector3 &operator-=(RTVector3 &vec);
+
+    RTFLOAT length();
+    void normalize();
+    void zero();
+    const char *display();
+    const char *displayDegrees();
+
+    static float dotProduct(const RTVector3 &a, const RTVector3 &b);
+    static void crossProduct(const RTVector3 &a, const RTVector3 &b, RTVector3 &d);
+
+    void accelToEuler(RTVector3 &rollPitchYaw) const;
+    // void accelToQuaternion(RTQuaternion &qPose) const;
+
+    inline RTFLOAT x() const { return m_data[0]; }
+    inline RTFLOAT y() const { return m_data[1]; }
+    inline RTFLOAT z() const { return m_data[2]; }
+    inline RTFLOAT data(const int i) const { return m_data[i]; }
+
+    inline void setX(const RTFLOAT val) { m_data[0] = val; }
+    inline void setY(const RTFLOAT val) { m_data[1] = val; }
+    inline void setZ(const RTFLOAT val) { m_data[2] = val; }
+    inline void setData(const int i, RTFLOAT val) { m_data[i] = val; }
+    inline void fromArray(RTFLOAT *val) { memcpy(m_data, val, 3 * sizeof(RTFLOAT)); }
+    inline void toArray(RTFLOAT *val) const { memcpy(val, m_data, 3 * sizeof(RTFLOAT)); }
+
+private:
+    float m_data[3];
+};
+} // namespace drivers
+} // namespace isaac
+
 namespace isaac
 {
 namespace drivers
@@ -181,20 +133,20 @@ public:
 
     RTIMUSettings(const char *productType = "RTIMULib");
 
-    //  Alternate constructor allow ini file to be in any directory
+    //     //  Alternate constructor allow ini file to be in any directory
 
-    RTIMUSettings(const char *settingsDirectory, const char *productType);
+    //     RTIMUSettings(const char *settingsDirectory, const char *productType);
 
     //  This function tries to find an IMU. It stops at the first valid one
     //  and returns true or else false
 
-    bool discoverIMU(int &imuType, bool &busIsI2C, unsigned char &slaveAddress);
+    // bool discoverIMU(int &imuType, bool &busIsI2C, unsigned char &slaveAddress);
 
     //  This function sets the settings to default values.
 
     void setDefaults();
 
-    //  This function loads the local variables from the settings file or uses defaults
+    // //  This function loads the local variables from the settings file or uses defaults
 
     virtual bool loadSettings();
 
@@ -204,13 +156,13 @@ public:
 
     //  These are the local variables
 
-    int m_imuType;                      // type code of imu in use
-    int m_fusionType;                   // fusion algorithm type code
-    unsigned char m_I2CSlaveAddress;    // I2C slave address of the imu
-    int m_axisRotation;                 // axis rotation code
+    int m_imuType;                   // type code of imu in use
+    int m_fusionType;                // fusion algorithm type code
+    unsigned char m_I2CSlaveAddress; // I2C slave address of the imu
+    int m_axisRotation;              // axis rotation code
 
     bool m_compassCalValid;    // true if there is valid compass calibration data
-    RTVector3 m_compassCalMin; // the minimum values
+    RTVector3 m_compassCalMin;     // the minimum values
     RTVector3 m_compassCalMax; // the maximum values
 
     bool m_compassCalEllipsoidValid;       // true if the ellipsoid calibration data is valid
@@ -226,40 +178,9 @@ public:
     bool m_gyroBiasValid; // true if the recorded gyro bias is valid
     RTVector3 m_gyroBias; // the recorded gyro bias
 
-    //  IMU-specific vars
+    // //  IMU-specific vars
 
-    //  MPU9150
-
-    int m_MPU9150GyroAccelSampleRate; // the sample rate (samples per second) for gyro and accel
-    int m_MPU9150CompassSampleRate;   // same for the compass
-    int m_MPU9150GyroAccelLpf;        // low pass filter code for the gyro and accel
-    int m_MPU9150GyroFsr;             // FSR code for the gyro
-    int m_MPU9150AccelFsr;            // FSR code for the accel
-
-    //  MPU9250
-
-    int m_MPU9250GyroAccelSampleRate; // the sample rate (samples per second) for gyro and accel
-    int m_MPU9250CompassSampleRate;   // same for the compass
-    int m_MPU9250GyroLpf;             // low pass filter code for the gyro
-    int m_MPU9250AccelLpf;            // low pass filter code for the accel
-    int m_MPU9250GyroFsr;             // FSR code for the gyro
-    int m_MPU9250AccelFsr;            // FSR code for the accel
-
-    //  GD20HM303D
-
-    int m_GD20HM303DGyroSampleRate; // the gyro sample rate
-    int m_GD20HM303DGyroBW;         // the gyro bandwidth code
-    int m_GD20HM303DGyroHpf;        // the gyro high pass filter cutoff code
-    int m_GD20HM303DGyroFsr;        // the gyro full scale range
-
-    int m_GD20HM303DAccelSampleRate; // the accel sample rate
-    int m_GD20HM303DAccelFsr;        // the accel full scale range
-    int m_GD20HM303DAccelLpf;        // the accel low pass filter
-
-    int m_GD20HM303DCompassSampleRate; // the compass sample rate
-    int m_GD20HM303DCompassFsr;        // the compass full scale range
-
-    //  LSM6DS33LIS3MDL defaults
+    // //  LSM6DS33LIS3MDL defaults
 
     int m_LSM6DS33LIS3MDLGyroSampleRate; // the gyro sample rate
     int m_LSM6DS33LIS3MDLGyroHpf;        // the gyro high pass filter cutoff code
@@ -272,70 +193,6 @@ public:
 
     int m_LSM6DS33LIS3MDLCompassSampleRate; // the compass sample rate
     int m_LSM6DS33LIS3MDLCompassFsr;        // the compass full scale range
-
-    //  GD20M303DLHC
-
-    int m_GD20M303DLHCGyroSampleRate; // the gyro sample rate
-    int m_GD20M303DLHCGyroBW;         // the gyro bandwidth code
-    int m_GD20M303DLHCGyroHpf;        // the gyro high pass filter cutoff code
-    int m_GD20M303DLHCGyroFsr;        // the gyro full scale range
-
-    int m_GD20M303DLHCAccelSampleRate; // the accel sample rate
-    int m_GD20M303DLHCAccelFsr;        // the accel full scale range
-
-    int m_GD20M303DLHCCompassSampleRate; // the compass sample rate
-    int m_GD20M303DLHCCompassFsr;        // the compass full scale range
-
-    //  GD20HM303DLHC
-
-    int m_GD20HM303DLHCGyroSampleRate; // the gyro sample rate
-    int m_GD20HM303DLHCGyroBW;         // the gyro bandwidth code
-    int m_GD20HM303DLHCGyroHpf;        // the gyro high pass filter cutoff code
-    int m_GD20HM303DLHCGyroFsr;        // the gyro full scale range
-
-    int m_GD20HM303DLHCAccelSampleRate; // the accel sample rate
-    int m_GD20HM303DLHCAccelFsr;        // the accel full scale range
-
-    int m_GD20HM303DLHCCompassSampleRate; // the compass sample rate
-    int m_GD20HM303DLHCCompassFsr;        // the compass full scale range
-
-    //  LSM9DS0
-
-    int m_LSM9DS0GyroSampleRate; // the gyro sample rate
-    int m_LSM9DS0GyroBW;         // the gyro bandwidth code
-    int m_LSM9DS0GyroHpf;        // the gyro high pass filter cutoff code
-    int m_LSM9DS0GyroFsr;        // the gyro full scale range
-
-    int m_LSM9DS0AccelSampleRate; // the accel sample rate
-    int m_LSM9DS0AccelFsr;        // the accel full scale range
-    int m_LSM9DS0AccelLpf;        // the accel low pass filter
-
-    int m_LSM9DS0CompassSampleRate; // the compass sample rate
-    int m_LSM9DS0CompassFsr;        // the compass full scale range
-
-    //  LSM9DS1
-
-    int m_LSM9DS1GyroSampleRate; // the gyro sample rate
-    int m_LSM9DS1GyroBW;         // the gyro bandwidth code
-    int m_LSM9DS1GyroHpf;        // the gyro high pass filter cutoff code
-    int m_LSM9DS1GyroFsr;        // the gyro full scale range
-
-    int m_LSM9DS1AccelSampleRate; // the accel sample rate
-    int m_LSM9DS1AccelFsr;        // the accel full scale range
-    int m_LSM9DS1AccelLpf;        // the accel low pass filter
-
-    int m_LSM9DS1CompassSampleRate; // the compass sample rate
-    int m_LSM9DS1CompassFsr;        // the compass full scale range
-
-    //  BMX055
-
-    int m_BMX055GyroSampleRate; // the gyro sample rate
-    int m_BMX055GyroFsr;        // the gyro full scale range
-
-    int m_BMX055AccelSampleRate; // the accel sample rate
-    int m_BMX055AccelFsr;        // the accel full scale range
-
-    int m_BMX055MagPreset; // the mag preset code
 
 private:
     void setBlank();
@@ -350,3 +207,4 @@ private:
 };
 } // namespace drivers
 } // namespace isaac
+

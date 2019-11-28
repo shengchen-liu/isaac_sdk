@@ -1,8 +1,7 @@
 #include "RTIMUSettings.hpp"
 #include "RTIMUDefs.hpp"
-// #include "RTIMULibDefs.hpp"
+// #include "RTIMULSM6DS33LIS3MDL.hpp"
 
-// #include "RTIMU.hpp"
 #include <iostream>
 
 #define RATE_TIMER_INTERVAL 2
@@ -25,79 +24,79 @@ RTIMUSettings::RTIMUSettings(const char *productType)
     loadSettings();
 }
 
-RTIMUSettings::RTIMUSettings(const char *settingsDirectory, const char *productType)
-{
-    if (((strlen(productType) + strlen(settingsDirectory)) > 200) || (strlen(productType) == 0))
-    {
-        HAL_ERROR("Product name too long or null - using default\n");
-        strcpy(m_filename, "RTIMULib.ini");
-    }
-    else
-    {
-        sprintf(m_filename, "%s/%s.ini", settingsDirectory, productType);
-    }
-    loadSettings();
-}
+// RTIMUSettings::RTIMUSettings(const char *settingsDirectory, const char *productType)
+// {
+//     if (((strlen(productType) + strlen(settingsDirectory)) > 200) || (strlen(productType) == 0))
+//     {
+//         HAL_ERROR("Product name too long or null - using default\n");
+//         strcpy(m_filename, "RTIMULib.ini");
+//     }
+//     else
+//     {
+//         sprintf(m_filename, "%s/%s.ini", settingsDirectory, productType);
+//     }
+//     loadSettings();
+// }
 
-bool RTIMUSettings::discoverIMU(int &imuType, bool &busIsI2C, unsigned char &slaveAddress)
-{
-    unsigned char result;
-    unsigned char altResult;
+// bool RTIMUSettings::discoverIMU(int &imuType, bool &busIsI2C, unsigned char &slaveAddress)
+// {
+//     unsigned char result;
+//     unsigned char altResult;
 
-    //  auto detect on I2C bus
+//     //  auto detect on I2C bus
 
-    m_busIsI2C = true;
+//     m_busIsI2C = true;
 
-    if (HALOpen())
-    {
-        if (HALRead(LSM6DS33_ADDRESS0, LSM6DS33_WHO_AM_I, 1, &result, ""))
-        {
-            if (result == LSM6DS33_ID)
-            {
-                imuType = RTIMU_TYPE_LSM6DS33LIS3MDL;
-                slaveAddress = LSM6DS33_ADDRESS0;
-                busIsI2C = true;
-                HAL_INFO("Detected LSM6DS33 at standard/standard address\n");
-                return true;
-            }
-        }
+//     if (HALOpen())
+//     {
+//         if (HALRead(LSM6DS33_ADDRESS0, LSM6DS33_WHO_AM_I, 1, &result, ""))
+//         {
+//             if (result == LSM6DS33_ID)
+//             {
+//                 imuType = RTIMU_TYPE_LSM6DS33LIS3MDL;
+//                 slaveAddress = LSM6DS33_ADDRESS0;
+//                 busIsI2C = true;
+//                 HAL_INFO("Detected LSM6DS33 at standard/standard address\n");
+//                 return true;
+//             }
+//         }
 
-        if (HALRead(LSM6DS33_ADDRESS1, LSM6DS33_WHO_AM_I, 1, &result, ""))
-        {
-            if (result == LSM6DS33_ID)
-            {
-                if (HALRead(LIS3MDL_ADDRESS1, LIS3MDL_WHO_AM_I, 1, &altResult, ""))
-                {
-                    if (altResult == LIS3MDL_ID)
-                    {
-                        imuType = RTIMU_TYPE_LSM6DS33LIS3MDL;
-                        slaveAddress = LSM6DS33_ADDRESS1;
-                        busIsI2C = true;
-                        HAL_INFO("Detected LSM6DS33/LIS3MDL at option/option address\n");
-                        std::cout << "FOUND IMU LSM6DS33 and Result was " << static_cast<unsigned>(result) << " alt result was " << static_cast<unsigned>(altResult) << std::endl;
-                        return true;
-                    }
-                }
-                if (HALRead(LIS3MDL_ADDRESS0, LIS3MDL_WHO_AM_I, 1, &altResult, ""))
-                {
-                    if (altResult == LIS3MDL_ID)
-                    {
-                        imuType = RTIMU_TYPE_LSM6DS33LIS3MDL;
-                        slaveAddress = LSM6DS33_ADDRESS1;
-                        busIsI2C = true;
-                        HAL_INFO("Detected LSM6DS33/LIS3MDL at option/standard address\n");
-                        std::cout << "FOUND IMU LIS3MDL and Result was " << static_cast<unsigned>(altResult) << std::endl;
-                        return true;
-                    }
-                }
-            }
-        }
-        HALClose();
-    }
+//         if (HALRead(LSM6DS33_ADDRESS1, LSM6DS33_WHO_AM_I, 1, &result, ""))
+//         {
+//             if (result == LSM6DS33_ID)
+//             {
+//                 if (HALRead(LIS3MDL_ADDRESS1, LIS3MDL_WHO_AM_I, 1, &altResult, ""))
+//                 {
+//                     if (altResult == LIS3MDL_ID)
+//                     {
+//                         imuType = RTIMU_TYPE_LSM6DS33LIS3MDL;
+//                         slaveAddress = LSM6DS33_ADDRESS1;
+//                         busIsI2C = true;
+//                         HAL_INFO("Detected LSM6DS33/LIS3MDL at option/option address\n");
+//                         std::cout << "FOUND IMU LSM6DS33 and Result was " << static_cast<unsigned>(result) << " alt result was " << static_cast<unsigned>(altResult) << std::endl;
+//                         return true;
+//                     }
+//                 }
+//                 if (HALRead(LIS3MDL_ADDRESS0, LIS3MDL_WHO_AM_I, 1, &altResult, ""))
+//                 {
+//                     if (altResult == LIS3MDL_ID)
+//                     {
+//                         imuType = RTIMU_TYPE_LSM6DS33LIS3MDL;
+//                         slaveAddress = LSM6DS33_ADDRESS1;
+//                         busIsI2C = true;
+//                         HAL_INFO("Detected LSM6DS33/LIS3MDL at option/standard address\n");
+//                         std::cout << "FOUND IMU LIS3MDL and Result was " << static_cast<unsigned>(altResult) << std::endl;
+//                         return true;
+//                     }
+//                 }
+//             }
+//         }
+//         HALClose();
+//     }
 
-    HAL_ERROR("No IMU detected\n");
-    return false;
-}
+//     HAL_ERROR("No IMU detected\n");
+//     return false;
+// }
 
 
 void RTIMUSettings::setDefaults()
@@ -361,93 +360,6 @@ bool RTIMUSettings::loadSettings()
         {
             sscanf(val, "%f", &ftemp);
             m_gyroBias.setZ(ftemp);
-
-            //  MPU9150 settings
-        }
-        else if (strcmp(key, RTIMULIB_MPU9150_GYROACCEL_SAMPLERATE) == 0)
-        {
-            m_MPU9150GyroAccelSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_MPU9150_COMPASS_SAMPLERATE) == 0)
-        {
-            m_MPU9150CompassSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_MPU9150_GYROACCEL_LPF) == 0)
-        {
-            m_MPU9150GyroAccelLpf = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_MPU9150_GYRO_FSR) == 0)
-        {
-            m_MPU9150GyroFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_MPU9150_ACCEL_FSR) == 0)
-        {
-            m_MPU9150AccelFsr = atoi(val);
-
-            //  MPU9250 settings
-        }
-        else if (strcmp(key, RTIMULIB_MPU9250_GYROACCEL_SAMPLERATE) == 0)
-        {
-            m_MPU9250GyroAccelSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_MPU9250_COMPASS_SAMPLERATE) == 0)
-        {
-            m_MPU9250CompassSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_MPU9250_GYRO_LPF) == 0)
-        {
-            m_MPU9250GyroLpf = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_MPU9250_ACCEL_LPF) == 0)
-        {
-            m_MPU9250AccelLpf = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_MPU9250_GYRO_FSR) == 0)
-        {
-            m_MPU9250GyroFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_MPU9250_ACCEL_FSR) == 0)
-        {
-            m_MPU9250AccelFsr = atoi(val);
-
-            //  GD20HM303D settings
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303D_GYRO_SAMPLERATE) == 0)
-        {
-            m_GD20HM303DGyroSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303D_GYRO_FSR) == 0)
-        {
-            m_GD20HM303DGyroFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303D_GYRO_HPF) == 0)
-        {
-            m_GD20HM303DGyroHpf = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303D_GYRO_BW) == 0)
-        {
-            m_GD20HM303DGyroBW = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303D_ACCEL_SAMPLERATE) == 0)
-        {
-            m_GD20HM303DAccelSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303D_ACCEL_FSR) == 0)
-        {
-            m_GD20HM303DAccelFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303D_ACCEL_LPF) == 0)
-        {
-            m_GD20HM303DAccelLpf = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303D_COMPASS_SAMPLERATE) == 0)
-        {
-            m_GD20HM303DCompassSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303D_COMPASS_FSR) == 0)
-        {
-            m_GD20HM303DCompassFsr = atoi(val);
-
             //  LSM6DS33LIS3MDL settings
         }
         else if (strcmp(key, RTIMULIB_LSM6DS33LIS3MDL_GYRO_SAMPLERATE) == 0)
@@ -485,173 +397,6 @@ bool RTIMUSettings::loadSettings()
         else if (strcmp(key, RTIMULIB_LSM6DS33LIS3MDL_COMPASS_FSR) == 0)
         {
             m_LSM6DS33LIS3MDLCompassFsr = atoi(val);
-
-            //  GD20M303DLHC settings
-        }
-        else if (strcmp(key, RTIMULIB_GD20M303DLHC_GYRO_SAMPLERATE) == 0)
-        {
-            m_GD20M303DLHCGyroSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20M303DLHC_GYRO_FSR) == 0)
-        {
-            m_GD20M303DLHCGyroFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20M303DLHC_GYRO_HPF) == 0)
-        {
-            m_GD20M303DLHCGyroHpf = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20M303DLHC_GYRO_BW) == 0)
-        {
-            m_GD20M303DLHCGyroBW = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20M303DLHC_ACCEL_SAMPLERATE) == 0)
-        {
-            m_GD20M303DLHCAccelSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20M303DLHC_ACCEL_FSR) == 0)
-        {
-            m_GD20M303DLHCAccelFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20M303DLHC_COMPASS_SAMPLERATE) == 0)
-        {
-            m_GD20M303DLHCCompassSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20M303DLHC_COMPASS_FSR) == 0)
-        {
-            m_GD20M303DLHCCompassFsr = atoi(val);
-
-            //  GD20HM303DLHC settings
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303DLHC_GYRO_SAMPLERATE) == 0)
-        {
-            m_GD20HM303DLHCGyroSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303DLHC_GYRO_FSR) == 0)
-        {
-            m_GD20HM303DLHCGyroFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303DLHC_GYRO_HPF) == 0)
-        {
-            m_GD20HM303DLHCGyroHpf = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303DLHC_GYRO_BW) == 0)
-        {
-            m_GD20HM303DLHCGyroBW = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303DLHC_ACCEL_SAMPLERATE) == 0)
-        {
-            m_GD20HM303DLHCAccelSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303DLHC_ACCEL_FSR) == 0)
-        {
-            m_GD20HM303DLHCAccelFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303DLHC_COMPASS_SAMPLERATE) == 0)
-        {
-            m_GD20HM303DLHCCompassSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_GD20HM303DLHC_COMPASS_FSR) == 0)
-        {
-            m_GD20HM303DLHCCompassFsr = atoi(val);
-
-            //  LSM9DS0 settings
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS0_GYRO_SAMPLERATE) == 0)
-        {
-            m_LSM9DS0GyroSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS0_GYRO_FSR) == 0)
-        {
-            m_LSM9DS0GyroFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS0_GYRO_HPF) == 0)
-        {
-            m_LSM9DS0GyroHpf = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS0_GYRO_BW) == 0)
-        {
-            m_LSM9DS0GyroBW = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS0_ACCEL_SAMPLERATE) == 0)
-        {
-            m_LSM9DS0AccelSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS0_ACCEL_FSR) == 0)
-        {
-            m_LSM9DS0AccelFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS0_ACCEL_LPF) == 0)
-        {
-            m_LSM9DS0AccelLpf = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS0_COMPASS_SAMPLERATE) == 0)
-        {
-            m_LSM9DS0CompassSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS0_COMPASS_FSR) == 0)
-        {
-            m_LSM9DS0CompassFsr = atoi(val);
-
-            //  LSM9DS1 settings
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS1_GYRO_SAMPLERATE) == 0)
-        {
-            m_LSM9DS1GyroSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS1_GYRO_FSR) == 0)
-        {
-            m_LSM9DS1GyroFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS1_GYRO_HPF) == 0)
-        {
-            m_LSM9DS1GyroHpf = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS1_GYRO_BW) == 0)
-        {
-            m_LSM9DS1GyroBW = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS1_ACCEL_SAMPLERATE) == 0)
-        {
-            m_LSM9DS1AccelSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS1_ACCEL_FSR) == 0)
-        {
-            m_LSM9DS1AccelFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS1_ACCEL_LPF) == 0)
-        {
-            m_LSM9DS1AccelLpf = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS1_COMPASS_SAMPLERATE) == 0)
-        {
-            m_LSM9DS1CompassSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_LSM9DS1_COMPASS_FSR) == 0)
-        {
-            m_LSM9DS1CompassFsr = atoi(val);
-
-            //  BMX055 settings
-        }
-        else if (strcmp(key, RTIMULIB_BMX055_GYRO_SAMPLERATE) == 0)
-        {
-            m_BMX055GyroSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_BMX055_GYRO_FSR) == 0)
-        {
-            m_BMX055GyroFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_BMX055_ACCEL_SAMPLERATE) == 0)
-        {
-            m_BMX055AccelSampleRate = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_BMX055_ACCEL_FSR) == 0)
-        {
-            m_BMX055AccelFsr = atoi(val);
-        }
-        else if (strcmp(key, RTIMULIB_BMX055_MAG_PRESET) == 0)
-        {
-            m_BMX055MagPreset = atoi(val);
-
             //  Handle unrecognized key
         }
         else
@@ -801,609 +546,6 @@ bool RTIMUSettings::saveSettings()
     setValue(RTIMULIB_GYRO_BIAS_Y, m_gyroBias.y());
     setValue(RTIMULIB_GYRO_BIAS_Z, m_gyroBias.z());
 
-    //  MPU-9150 settings
-
-    setBlank();
-    setComment("#####################################################################");
-    setComment("");
-    setComment("MPU-9150 settings");
-    setComment("");
-
-    setBlank();
-    setComment("Gyro sample rate (between 5Hz and 1000Hz) ");
-    setValue(RTIMULIB_MPU9150_GYROACCEL_SAMPLERATE, m_MPU9150GyroAccelSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Compass sample rate (between 1Hz and 100Hz) ");
-    setValue(RTIMULIB_MPU9150_COMPASS_SAMPLERATE, m_MPU9150CompassSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro/accel low pass filter - ");
-    setComment("  0 - gyro: 256Hz, accel: 260Hz");
-    setComment("  1 - gyro: 188Hz, accel: 184Hz");
-    setComment("  2 - gyro: 98Hz, accel: 98Hz");
-    setComment("  3 - gyro: 42Hz, accel: 44Hz");
-    setComment("  4 - gyro: 20Hz, accel: 21Hz");
-    setComment("  5 - gyro: 10Hz, accel: 10Hz");
-    setComment("  6 - gyro: 5Hz, accel: 5Hz");
-    setValue(RTIMULIB_MPU9150_GYROACCEL_LPF, m_MPU9150GyroAccelLpf);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro full scale range - ");
-    setComment("  0  - +/- 250 degress per second");
-    setComment("  8  - +/- 500 degress per second");
-    setComment("  16 - +/- 1000 degress per second");
-    setComment("  24 - +/- 2000 degress per second");
-    setValue(RTIMULIB_MPU9150_GYRO_FSR, m_MPU9150GyroFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Accel full scale range - ");
-    setComment("  0  - +/- 2g");
-    setComment("  8  - +/- 4g");
-    setComment("  16 - +/- 8g");
-    setComment("  24 - +/- 16g");
-    setValue(RTIMULIB_MPU9150_ACCEL_FSR, m_MPU9150AccelFsr);
-
-    //  MPU-9250 settings
-
-    setBlank();
-    setComment("#####################################################################");
-    setComment("");
-    setComment("MPU-9250 settings");
-    setComment("");
-
-    setBlank();
-    setComment("Gyro sample rate (between 5Hz and 1000Hz plus 8000Hz and 32000Hz) ");
-    setValue(RTIMULIB_MPU9250_GYROACCEL_SAMPLERATE, m_MPU9250GyroAccelSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Compass sample rate (between 1Hz and 100Hz) ");
-    setValue(RTIMULIB_MPU9250_COMPASS_SAMPLERATE, m_MPU9250CompassSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro low pass filter - ");
-    setComment("  0x11 - 8800Hz, 0.64mS delay");
-    setComment("  0x10 - 3600Hz, 0.11mS delay");
-    setComment("  0x00 - 250Hz, 0.97mS delay");
-    setComment("  0x01 - 184Hz, 2.9mS delay");
-    setComment("  0x02 - 92Hz, 3.9mS delay");
-    setComment("  0x03 - 41Hz, 5.9mS delay");
-    setComment("  0x04 - 20Hz, 9.9mS delay");
-    setComment("  0x05 - 10Hz, 17.85mS delay");
-    setComment("  0x06 - 5Hz, 33.48mS delay");
-    setValue(RTIMULIB_MPU9250_GYRO_LPF, m_MPU9250GyroLpf);
-
-    setBlank();
-    setComment("");
-    setComment("Accel low pass filter - ");
-    setComment("  0x08 - 1130Hz, 0.75mS delay");
-    setComment("  0x00 - 460Hz, 1.94mS delay");
-    setComment("  0x01 - 184Hz, 5.80mS delay");
-    setComment("  0x02 - 92Hz, 7.80mS delay");
-    setComment("  0x03 - 41Hz, 11.80mS delay");
-    setComment("  0x04 - 20Hz, 19.80mS delay");
-    setComment("  0x05 - 10Hz, 35.70mS delay");
-    setComment("  0x06 - 5Hz, 66.96mS delay");
-    setValue(RTIMULIB_MPU9250_ACCEL_LPF, m_MPU9250AccelLpf);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro full scale range - ");
-    setComment("  0  - +/- 250 degress per second");
-    setComment("  8  - +/- 500 degress per second");
-    setComment("  16 - +/- 1000 degress per second");
-    setComment("  24 - +/- 2000 degress per second");
-    setValue(RTIMULIB_MPU9250_GYRO_FSR, m_MPU9250GyroFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Accel full scale range - ");
-    setComment("  0  - +/- 2g");
-    setComment("  8  - +/- 4g");
-    setComment("  16 - +/- 8g");
-    setComment("  24 - +/- 16g");
-    setValue(RTIMULIB_MPU9250_ACCEL_FSR, m_MPU9250AccelFsr);
-
-    //  GD20HM303D settings
-
-    setBlank();
-    setComment("#####################################################################");
-    setComment("");
-    setComment("L3GD20H + LSM303D settings");
-
-    setBlank();
-    setComment("");
-    setComment("Gyro sample rate - ");
-    setComment("  0 = 12.5Hz ");
-    setComment("  1 = 25Hz ");
-    setComment("  2 = 50Hz ");
-    setComment("  3 = 100Hz ");
-    setComment("  4 = 200Hz ");
-    setComment("  5 = 400Hz ");
-    setComment("  6 = 800Hz ");
-    setValue(RTIMULIB_GD20HM303D_GYRO_SAMPLERATE, m_GD20HM303DGyroSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro full scale range - ");
-    setComment("  0 = 245 degrees per second ");
-    setComment("  1 = 500 degrees per second ");
-    setComment("  2 = 2000 degrees per second ");
-    setValue(RTIMULIB_GD20HM303D_GYRO_FSR, m_GD20HM303DGyroFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro high pass filter - ");
-    setComment("  0 - 9 but see the L3GD20H manual for details");
-    setValue(RTIMULIB_GD20HM303D_GYRO_HPF, m_GD20HM303DGyroHpf);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro bandwidth - ");
-    setComment("  0 - 3 but see the L3GD20H manual for details");
-    setValue(RTIMULIB_GD20HM303D_GYRO_BW, m_GD20HM303DGyroBW);
-
-    setBlank();
-    setComment("Accel sample rate - ");
-    setComment("  1 = 3.125Hz ");
-    setComment("  2 = 6.25Hz ");
-    setComment("  3 = 12.5Hz ");
-    setComment("  4 = 25Hz ");
-    setComment("  5 = 50Hz ");
-    setComment("  6 = 100Hz ");
-    setComment("  7 = 200Hz ");
-    setComment("  8 = 400Hz ");
-    setComment("  9 = 800Hz ");
-    setComment("  10 = 1600Hz ");
-    setValue(RTIMULIB_GD20HM303D_ACCEL_SAMPLERATE, m_GD20HM303DAccelSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Accel full scale range - ");
-    setComment("  0 = +/- 2g ");
-    setComment("  1 = +/- 4g ");
-    setComment("  2 = +/- 6g ");
-    setComment("  3 = +/- 8g ");
-    setComment("  4 = +/- 16g ");
-    setValue(RTIMULIB_GD20HM303D_ACCEL_FSR, m_GD20HM303DAccelFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Accel low pass filter - ");
-    setComment("  0 = 773Hz");
-    setComment("  1 = 194Hz");
-    setComment("  2 = 362Hz");
-    setComment("  3 = 50Hz");
-    setValue(RTIMULIB_GD20HM303D_ACCEL_LPF, m_GD20HM303DAccelLpf);
-
-    setBlank();
-    setComment("");
-    setComment("Compass sample rate - ");
-    setComment("  0 = 3.125Hz ");
-    setComment("  1 = 6.25Hz ");
-    setComment("  2 = 12.5Hz ");
-    setComment("  3 = 25Hz ");
-    setComment("  4 = 50Hz ");
-    setComment("  5 = 100Hz ");
-    setValue(RTIMULIB_GD20HM303D_COMPASS_SAMPLERATE, m_GD20HM303DCompassSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Compass full scale range - ");
-    setComment("  0 = +/- 200 uT ");
-    setComment("  1 = +/- 400 uT ");
-    setComment("  2 = +/- 800 uT ");
-    setComment("  3 = +/- 1200 uT ");
-    setValue(RTIMULIB_GD20HM303D_COMPASS_FSR, m_GD20HM303DCompassFsr);
-
-    //  GD20M303DLHC settings
-
-    setBlank();
-    setComment("#####################################################################");
-    setComment("");
-    setComment("L3GD20 + LSM303DLHC settings");
-    setComment("");
-
-    setBlank();
-    setComment("Gyro sample rate - ");
-    setComment("  0 = 95z ");
-    setComment("  1 = 190Hz ");
-    setComment("  2 = 380Hz ");
-    setComment("  3 = 760Hz ");
-    setValue(RTIMULIB_GD20M303DLHC_GYRO_SAMPLERATE, m_GD20M303DLHCGyroSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro full scale range - ");
-    setComment("  0 = 250 degrees per second ");
-    setComment("  1 = 500 degrees per second ");
-    setComment("  2 = 2000 degrees per second ");
-    setValue(RTIMULIB_GD20M303DLHC_GYRO_FSR, m_GD20M303DLHCGyroFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro high pass filter - ");
-    setComment("  0 - 9 but see the L3GD20 manual for details");
-    setValue(RTIMULIB_GD20M303DLHC_GYRO_HPF, m_GD20M303DLHCGyroHpf);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro bandwidth - ");
-    setComment("  0 - 3 but see the L3GD20 manual for details");
-    setValue(RTIMULIB_GD20M303DLHC_GYRO_BW, m_GD20M303DLHCGyroBW);
-
-    setBlank();
-    setComment("Accel sample rate - ");
-    setComment("  1 = 1Hz ");
-    setComment("  2 = 10Hz ");
-    setComment("  3 = 25Hz ");
-    setComment("  4 = 50Hz ");
-    setComment("  5 = 100Hz ");
-    setComment("  6 = 200Hz ");
-    setComment("  7 = 400Hz ");
-    setValue(RTIMULIB_GD20M303DLHC_ACCEL_SAMPLERATE, m_GD20M303DLHCAccelSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Accel full scale range - ");
-    setComment("  0 = +/- 2g ");
-    setComment("  1 = +/- 4g ");
-    setComment("  2 = +/- 8g ");
-    setComment("  3 = +/- 16g ");
-    setValue(RTIMULIB_GD20M303DLHC_ACCEL_FSR, m_GD20M303DLHCAccelFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Compass sample rate - ");
-    setComment("  0 = 0.75Hz ");
-    setComment("  1 = 1.5Hz ");
-    setComment("  2 = 3Hz ");
-    setComment("  3 = 7.5Hz ");
-    setComment("  4 = 15Hz ");
-    setComment("  5 = 30Hz ");
-    setComment("  6 = 75Hz ");
-    setComment("  7 = 220Hz ");
-    setValue(RTIMULIB_GD20M303DLHC_COMPASS_SAMPLERATE, m_GD20M303DLHCCompassSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Compass full scale range - ");
-    setComment("  1 = +/- 130 uT ");
-    setComment("  2 = +/- 190 uT ");
-    setComment("  3 = +/- 250 uT ");
-    setComment("  4 = +/- 400 uT ");
-    setComment("  5 = +/- 470 uT ");
-    setComment("  6 = +/- 560 uT ");
-    setComment("  7 = +/- 810 uT ");
-    setValue(RTIMULIB_GD20M303DLHC_COMPASS_FSR, m_GD20M303DLHCCompassFsr);
-
-    //  GD20HM303DLHC settings
-
-    setBlank();
-    setComment("#####################################################################");
-    setComment("");
-    setComment("L3GD20H + LSM303DLHC settings");
-    setComment("");
-
-    setBlank();
-    setComment("");
-    setComment("Gyro sample rate - ");
-    setComment("  0 = 12.5Hz ");
-    setComment("  1 = 25Hz ");
-    setComment("  2 = 50Hz ");
-    setComment("  3 = 100Hz ");
-    setComment("  4 = 200Hz ");
-    setComment("  5 = 400Hz ");
-    setComment("  6 = 800Hz ");
-    setValue(RTIMULIB_GD20HM303DLHC_GYRO_SAMPLERATE, m_GD20HM303DLHCGyroSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro full scale range - ");
-    setComment("  0 = 245 degrees per second ");
-    setComment("  1 = 500 degrees per second ");
-    setComment("  2 = 2000 degrees per second ");
-    setValue(RTIMULIB_GD20HM303DLHC_GYRO_FSR, m_GD20HM303DLHCGyroFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro high pass filter - ");
-    setComment("  0 - 9 but see the L3GD20H manual for details");
-    setValue(RTIMULIB_GD20HM303DLHC_GYRO_HPF, m_GD20HM303DLHCGyroHpf);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro bandwidth - ");
-    setComment("  0 - 3 but see the L3GD20H manual for details");
-    setValue(RTIMULIB_GD20HM303DLHC_GYRO_BW, m_GD20HM303DLHCGyroBW);
-    setBlank();
-    setComment("Accel sample rate - ");
-    setComment("  1 = 1Hz ");
-    setComment("  2 = 10Hz ");
-    setComment("  3 = 25Hz ");
-    setComment("  4 = 50Hz ");
-    setComment("  5 = 100Hz ");
-    setComment("  6 = 200Hz ");
-    setComment("  7 = 400Hz ");
-    setValue(RTIMULIB_GD20HM303DLHC_ACCEL_SAMPLERATE, m_GD20HM303DLHCAccelSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Accel full scale range - ");
-    setComment("  0 = +/- 2g ");
-    setComment("  1 = +/- 4g ");
-    setComment("  2 = +/- 8g ");
-    setComment("  3 = +/- 16g ");
-    setValue(RTIMULIB_GD20HM303DLHC_ACCEL_FSR, m_GD20HM303DLHCAccelFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Compass sample rate - ");
-    setComment("  0 = 0.75Hz ");
-    setComment("  1 = 1.5Hz ");
-    setComment("  2 = 3Hz ");
-    setComment("  3 = 7.5Hz ");
-    setComment("  4 = 15Hz ");
-    setComment("  5 = 30Hz ");
-    setComment("  6 = 75Hz ");
-    setComment("  7 = 220Hz ");
-    setValue(RTIMULIB_GD20HM303DLHC_COMPASS_SAMPLERATE, m_GD20HM303DLHCCompassSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Compass full scale range - ");
-    setComment("  1 = +/- 130 uT ");
-    setComment("  2 = +/- 190 uT ");
-    setComment("  3 = +/- 250 uT ");
-    setComment("  4 = +/- 400 uT ");
-    setComment("  5 = +/- 470 uT ");
-    setComment("  6 = +/- 560 uT ");
-    setComment("  7 = +/- 810 uT ");
-    setValue(RTIMULIB_GD20HM303DLHC_COMPASS_FSR, m_GD20HM303DLHCCompassFsr);
-
-    //  LSM9DS0 settings
-
-    setBlank();
-    setComment("#####################################################################");
-    setComment("");
-    setComment("LSM9DS0 settings");
-    setComment("");
-
-    setBlank();
-    setComment("Gyro sample rate - ");
-    setComment("  0 = 95z ");
-    setComment("  1 = 190Hz ");
-    setComment("  2 = 380Hz ");
-    setComment("  3 = 760Hz ");
-    setValue(RTIMULIB_LSM9DS0_GYRO_SAMPLERATE, m_LSM9DS0GyroSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro full scale range - ");
-    setComment("  0 = 250 degrees per second ");
-    setComment("  1 = 500 degrees per second ");
-    setComment("  2 = 2000 degrees per second ");
-    setValue(RTIMULIB_LSM9DS0_GYRO_FSR, m_LSM9DS0GyroFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro high pass filter - ");
-    setComment("  0 - 9 but see the LSM9DS0 manual for details");
-    setValue(RTIMULIB_LSM9DS0_GYRO_HPF, m_LSM9DS0GyroHpf);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro bandwidth - ");
-    setComment("  0 - 3 but see the LSM9DS0 manual for details");
-    setValue(RTIMULIB_LSM9DS0_GYRO_BW, m_LSM9DS0GyroBW);
-
-    setBlank();
-    setComment("Accel sample rate - ");
-    setComment("  1 = 3.125Hz ");
-    setComment("  2 = 6.25Hz ");
-    setComment("  3 = 12.5Hz ");
-    setComment("  4 = 25Hz ");
-    setComment("  5 = 50Hz ");
-    setComment("  6 = 100Hz ");
-    setComment("  7 = 200Hz ");
-    setComment("  8 = 400Hz ");
-    setComment("  9 = 800Hz ");
-    setComment("  10 = 1600Hz ");
-    setValue(RTIMULIB_LSM9DS0_ACCEL_SAMPLERATE, m_LSM9DS0AccelSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Accel full scale range - ");
-    setComment("  0 = +/- 2g ");
-    setComment("  1 = +/- 4g ");
-    setComment("  2 = +/- 6g ");
-    setComment("  3 = +/- 8g ");
-    setComment("  4 = +/- 16g ");
-    setValue(RTIMULIB_LSM9DS0_ACCEL_FSR, m_LSM9DS0AccelFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Accel low pass filter - ");
-    setComment("  0 = 773Hz");
-    setComment("  1 = 194Hz");
-    setComment("  2 = 362Hz");
-    setComment("  3 = 50Hz");
-    setValue(RTIMULIB_LSM9DS0_ACCEL_LPF, m_LSM9DS0AccelLpf);
-
-    setBlank();
-    setComment("");
-    setComment("Compass sample rate - ");
-    setComment("  0 = 3.125Hz ");
-    setComment("  1 = 6.25Hz ");
-    setComment("  2 = 12.5Hz ");
-    setComment("  3 = 25Hz ");
-    setComment("  4 = 50Hz ");
-    setComment("  5 = 100Hz ");
-    setValue(RTIMULIB_LSM9DS0_COMPASS_SAMPLERATE, m_LSM9DS0CompassSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Compass full scale range - ");
-    setComment("  0 = +/- 200 uT ");
-    setComment("  1 = +/- 400 uT ");
-    setComment("  2 = +/- 800 uT ");
-    setComment("  3 = +/- 1200 uT ");
-    setValue(RTIMULIB_LSM9DS0_COMPASS_FSR, m_LSM9DS0CompassFsr);
-
-    //  LSM9DS1 settings
-
-    setBlank();
-    setComment("#####################################################################");
-    setComment("");
-    setComment("LSM9DS1 settings");
-    setComment("");
-
-    setBlank();
-    setComment("Gyro sample rate - ");
-    setComment("  0 = 95Hz ");
-    setComment("  1 = 190Hz ");
-    setComment("  2 = 380Hz ");
-    setComment("  3 = 760Hz ");
-    setValue(RTIMULIB_LSM9DS1_GYRO_SAMPLERATE, m_LSM9DS1GyroSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro full scale range - ");
-    setComment("  0 = 250 degrees per second ");
-    setComment("  1 = 500 degrees per second ");
-    setComment("  2 = 2000 degrees per second ");
-    setValue(RTIMULIB_LSM9DS1_GYRO_FSR, m_LSM9DS1GyroFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro high pass filter - ");
-    setComment("  0 - 9 but see the LSM9DS1 manual for details");
-    setValue(RTIMULIB_LSM9DS1_GYRO_HPF, m_LSM9DS1GyroHpf);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro bandwidth - ");
-    setComment("  0 - 3 but see the LSM9DS1 manual for details");
-    setValue(RTIMULIB_LSM9DS1_GYRO_BW, m_LSM9DS1GyroBW);
-
-    setBlank();
-    setComment("Accel sample rate - ");
-    setComment("  1 = 14.9Hz ");
-    setComment("  2 = 59.5Hz ");
-    setComment("  3 = 119Hz ");
-    setComment("  4 = 238Hz ");
-    setComment("  5 = 476Hz ");
-    setComment("  6 = 952Hz ");
-    setValue(RTIMULIB_LSM9DS1_ACCEL_SAMPLERATE, m_LSM9DS1AccelSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Accel full scale range - ");
-    setComment("  0 = +/- 2g ");
-    setComment("  1 = +/- 16g ");
-    setComment("  2 = +/- 4g ");
-    setComment("  3 = +/- 8g ");
-    setValue(RTIMULIB_LSM9DS1_ACCEL_FSR, m_LSM9DS1AccelFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Accel low pass filter - ");
-    setComment("  0 = 408Hz");
-    setComment("  1 = 211Hz");
-    setComment("  2 = 105Hz");
-    setComment("  3 = 50Hz");
-    setValue(RTIMULIB_LSM9DS1_ACCEL_LPF, m_LSM9DS1AccelLpf);
-
-    setBlank();
-    setComment("");
-    setComment("Compass sample rate - ");
-    setComment("  0 = 0.625Hz ");
-    setComment("  1 = 1.25Hz ");
-    setComment("  2 = 2.5Hz ");
-    setComment("  3 = 5Hz ");
-    setComment("  4 = 10Hz ");
-    setComment("  5 = 20Hz ");
-    setComment("  6 = 40Hz ");
-    setComment("  7 = 80Hz ");
-    setValue(RTIMULIB_LSM9DS1_COMPASS_SAMPLERATE, m_LSM9DS1CompassSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Compass full scale range - ");
-    setComment("  0 = +/- 400 uT ");
-    setComment("  1 = +/- 800 uT ");
-    setComment("  2 = +/- 1200 uT ");
-    setComment("  3 = +/- 1600 uT ");
-    setValue(RTIMULIB_LSM9DS1_COMPASS_FSR, m_LSM9DS1CompassFsr);
-
-    //  BMX055 settings
-
-    setBlank();
-    setComment("#####################################################################");
-    setComment("");
-    setComment("BMX055 settings");
-    setComment("");
-
-    setBlank();
-    setComment("");
-    setComment("Gyro sample rate - ");
-    setComment("  0 = 2000Hz (532Hz filter)");
-    setComment("  1 = 2000Hz (230Hz filter)");
-    setComment("  2 = 1000Hz (116Hz filter)");
-    setComment("  3 = 400Hz (47Hz filter)");
-    setComment("  4 = 200Hz (23Hz filter)");
-    setComment("  5 = 100Hz (12Hz filter)");
-    setComment("  6 = 200Hz (64Hz filter)");
-    setComment("  7 = 100Hz (32Hz filter)");
-    setValue(RTIMULIB_BMX055_GYRO_SAMPLERATE, m_BMX055GyroSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Gyro full scale range - ");
-    setComment("  0 = 2000 deg/s");
-    setComment("  1 = 1000 deg/s");
-    setComment("  2 = 500 deg/s");
-    setComment("  3 = 250 deg/s");
-    setComment("  4 = 125 deg/s");
-    setValue(RTIMULIB_BMX055_GYRO_FSR, m_BMX055GyroFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Accel sample rate - ");
-    setComment("  0 = 15.63Hz");
-    setComment("  1 = 31.25");
-    setComment("  2 = 62.5");
-    setComment("  3 = 125");
-    setComment("  4 = 250");
-    setComment("  5 = 500");
-    setComment("  6 = 1000");
-    setComment("  7 = 2000");
-    setValue(RTIMULIB_BMX055_ACCEL_SAMPLERATE, m_BMX055AccelSampleRate);
-
-    setBlank();
-    setComment("");
-    setComment("Accel full scale range - ");
-    setComment("  0 = +/- 2g");
-    setComment("  1 = +/- 4g");
-    setComment("  2 = +/- 8g");
-    setComment("  3 = +/- 16g");
-    setValue(RTIMULIB_BMX055_ACCEL_FSR, m_BMX055AccelFsr);
-
-    setBlank();
-    setComment("");
-    setComment("Mag presets - ");
-    setComment("  0 = Low power");
-    setComment("  1 = Regular");
-    setComment("  2 = Enhanced");
-    setComment("  3 = High accuracy");
-    setValue(RTIMULIB_BMX055_MAG_PRESET, m_BMX055MagPreset);
-
     //  LSM6DS33 LIS3MDL settings
 
     setBlank();
@@ -1532,5 +674,115 @@ void RTIMUSettings::setValue(const char *key, const RTFLOAT val)
     fprintf(m_fd, "%s=%f\n", key, val);
 }
 
+} // namespace drivers
+} // namespace isaac
+
+// // // //----------------------------------------------------------
+// // //
+//  The RTVector3 class
+namespace isaac
+{
+namespace drivers
+{
+RTVector3::RTVector3()
+{
+    zero();
+}
+
+RTVector3::RTVector3(RTFLOAT x, RTFLOAT y, RTFLOAT z)
+{
+    m_data[0] = x;
+    m_data[1] = y;
+    m_data[2] = z;
+}
+
+RTVector3 &RTVector3::operator=(const RTVector3 &vec)
+{
+    if (this == &vec)
+        return *this;
+
+    m_data[0] = vec.m_data[0];
+    m_data[1] = vec.m_data[1];
+    m_data[2] = vec.m_data[2];
+
+    return *this;
+}
+
+const RTVector3 &RTVector3::operator+=(RTVector3 &vec)
+{
+    for (int i = 0; i < 3; i++)
+        m_data[i] += vec.m_data[i];
+    return *this;
+}
+
+const RTVector3 &RTVector3::operator-=(RTVector3 &vec)
+{
+    for (int i = 0; i < 3; i++)
+        m_data[i] -= vec.m_data[i];
+    return *this;
+}
+
+void RTVector3::zero()
+{
+    for (int i = 0; i < 3; i++)
+        m_data[i] = 0;
+}
+
+RTFLOAT RTVector3::dotProduct(const RTVector3 &a, const RTVector3 &b)
+{
+    return a.x() * b.x() + a.y() * b.y() + a.z() * b.z();
+}
+
+void RTVector3::crossProduct(const RTVector3 &a, const RTVector3 &b, RTVector3 &d)
+{
+    d.setX(a.y() * b.z() - a.z() * b.y());
+    d.setY(a.z() * b.x() - a.x() * b.z());
+    d.setZ(a.x() * b.y() - a.y() * b.x());
+}
+
+void RTVector3::accelToEuler(RTVector3 &rollPitchYaw) const
+{
+    RTVector3 normAccel = *this;
+
+    normAccel.normalize();
+
+    rollPitchYaw.setX(atan2(normAccel.y(), normAccel.z()));
+    rollPitchYaw.setY(-atan2(normAccel.x(), sqrt(normAccel.y() * normAccel.y() + normAccel.z() * normAccel.z())));
+    rollPitchYaw.setZ(0);
+}
+
+// void RTVector3::accelToQuaternion(RTQuaternion &qPose) const
+// {
+//     RTVector3 normAccel = *this;
+//     RTVector3 vec;
+//     RTVector3 z(0, 0, 1.0);
+
+//     normAccel.normalize();
+
+//     RTFLOAT angle = acos(RTVector3::dotProduct(z, normAccel));
+//     RTVector3::crossProduct(normAccel, z, vec);
+//     vec.normalize();
+
+//     qPose.fromAngleVector(angle, vec);
+// }
+
+void RTVector3::normalize()
+{
+    RTFLOAT length = sqrt(m_data[0] * m_data[0] + m_data[1] * m_data[1] +
+                          m_data[2] * m_data[2]);
+
+    if (length == 0)
+        return;
+
+    m_data[0] /= length;
+    m_data[1] /= length;
+    m_data[2] /= length;
+}
+
+RTFLOAT RTVector3::length()
+{
+    return sqrt(m_data[0] * m_data[0] + m_data[1] * m_data[1] +
+                m_data[2] * m_data[2]);
+}
 } // namespace drivers
 } // namespace isaac
