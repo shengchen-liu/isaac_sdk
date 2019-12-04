@@ -24,6 +24,8 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 
 namespace isaac {
 
+using drivers::RTIMUSettings;
+
 // Goal tolerance in meters
 constexpr double kGoalTolerance = 0.1;
 
@@ -42,8 +44,10 @@ void ImuDriver::start() {
   goal_position_ = Vector2d::Zero();
   tickBlocking();
 
-  settings_.reset(new drivers::RTIMUSettings("RTIMULib"));
-  std::cout<<settings_->m_imuType<<std::endl;
+  // settings_.reset(new drivers::RTIMUSettings("RTIMULib"));
+  RTIMUSettings *settings = new RTIMUSettings("RTIMULib");
+
+  std::cout<<settings->m_imuType<<std::endl;
 
   
   // rtimusettings_.reset(new drivers::RTIMUSettings());
