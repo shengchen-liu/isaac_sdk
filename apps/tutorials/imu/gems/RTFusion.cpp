@@ -5,7 +5,7 @@
 //  0 = measured state ignored (just gyros), 1 = measured state overrides predicted state.
 //  In between 0 and 1 mixes the two conditions
 
-#define RTQF_SLERP_POWER (RTFLOAT)0.02;
+#define RTQF_SLERP_POWER (float)0.02;
 
 namespace isaac
 {

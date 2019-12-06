@@ -192,20 +192,20 @@ void RTVector3::accelToEuler(RTVector3 &rollPitchYaw) const
     rollPitchYaw.setZ(0);
 }
 
-void RTVector3::accelToQuaternion(RTQuaternion &qPose) const
-{
-    RTVector3 normAccel = *this;
-    RTVector3 vec;
-    RTVector3 z(0, 0, 1.0);
+// void RTVector3::accelToQuaternion(RTQuaternion &qPose) const
+// {
+//     RTVector3 normAccel = *this;
+//     RTVector3 vec;
+//     RTVector3 z(0, 0, 1.0);
 
-    normAccel.normalize();
+//     normAccel.normalize();
 
-    RTFLOAT angle = acos(RTVector3::dotProduct(z, normAccel));
-    RTVector3::crossProduct(normAccel, z, vec);
-    vec.normalize();
+//     RTFLOAT angle = acos(RTVector3::dotProduct(z, normAccel));
+//     RTVector3::crossProduct(normAccel, z, vec);
+//     vec.normalize();
 
-    qPose.fromAngleVector(angle, vec);
-}
+//     qPose.fromAngleVector(angle, vec);
+// }
 
 void RTVector3::normalize()
 {

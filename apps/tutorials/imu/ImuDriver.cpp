@@ -21,17 +21,22 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 #include "apps/tutorials/imu/gems/RTIMUHal.hpp"
 #include "apps/tutorials/imu/gems/RTIMUSettings.hpp"
 #include "apps/tutorials/imu/gems/RTIMU.hpp"
+#include "apps/tutorials/imu/gems/RTMath.hpp"
+#include "apps/tutorials/imu/gems/RTFusion.hpp"
 
-namespace isaac {
+namespace isaac
+{
 
-using drivers::RTIMUSettings;
 using drivers::RTIMU;
+using drivers::RTIMUSettings;
+using drivers::RTVector3;
+using drivers::RTFusion;
 
 // Goal tolerance in meters
 constexpr double kGoalTolerance = 0.1;
 
-
-void ImuDriver::start() {
+void ImuDriver::start()
+{
   // This part will be run once in the beginning of the program
 
   // We can tick periodically, on every message, or blocking. The tick period is set in the
@@ -48,11 +53,36 @@ void ImuDriver::start() {
   // settings_.reset(new drivers::RTIMUSettings("RTIMULib"));
   RTIMUSettings *settings = new RTIMUSettings("RTIMULib");
 
-  RTIMU *rtimu = new RTIMU(settings); 
+  RTIMU *imu = new RTIMU(settings);
 
-  std::cout<<rtimu->IMUType()<<std::endl;
+  std::cout << imu->IMUType() << std::endl;
 
-  
+  if ((imu == NULL) || (imu->IMUType() == RTIMU_TYPE_NULL))
+  {
+    printf("No IMU found\n");
+    exit(1);
+  }
+
+  //  This is an opportunity to manually override any settings before the call IMUInit
+
+  //  set up IMU
+
+  imu->IMUInit();
+
+
+  // RTVector3 *residuals = new RTVector3();
+  // std::cout<<residuals->length()<<std::endl;
+
+  // RTFusion *m_fusion = new RTFusion();
+  // std::cout<<m_fusion->fusionName(0)<<std::endl;
+
+  //  this is a convenient place to change fusion parameters
+
+  imu->setSlerpPower(0.02);
+  imu->setGyroEnable(true);
+  imu->setAccelEnable(true);
+  imu->setCompassEnable(false);
+
   // rtimusettings_.reset(new drivers::RTIMUSettings());
 
   // rtimu_.reset(new drivers::RTIMU());
@@ -65,10 +95,10 @@ void ImuDriver::start() {
   // rtimuhal_->HALOpen();
   // segway_.reset(new drivers::Segway(get_ip(), get_port()));
   // segway_->start();
-
 }
 
-void ImuDriver::publishGoal(const Vector2d& position){
+void ImuDriver::publishGoal(const Vector2d &position)
+{
   // Save the timestamp to later check it against the feedback timestamp
   goal_timestamp_ = node()->clock()->timestamp();
   // Update the last goal information to avoid transmitting repeated messages
@@ -88,24 +118,26 @@ void ImuDriver::publishGoal(const Vector2d& position){
   tx_goal().publish(goal_timestamp_);
 }
 
-void ImuDriver::tick() {
+void ImuDriver::tick()
+{
   // This part will be run at every tick. We are ticking periodically in this example.
   // Read desired position parameter <- ISAAC_PARAM(Vector2d, desired_position, Vector2d(9.0, 25.0));
   const Vector2d position = get_desired_position();
   // Publish goal, if there has been a location change
-  if (isFirstTick() || (position - goal_position_).norm() > kGoalTolerance) {
+  if (isFirstTick() || (position - goal_position_).norm() > kGoalTolerance)
+  {
     publishGoal(position);
   }
 
   // auto state = segway_->getSegwayState();
   // std::cout<<state.linear_accel_msp2<<std::endl;
 
-
   // Process feedback
   rx_feedback().processLatestNewMessage(
       [this](auto feedback_proto, int64_t pubtime, int64_t acqtime) {
         // Check if this feedback is associated with the last goal we transmitted
-        if (goal_timestamp_ != acqtime) {
+        if (goal_timestamp_ != acqtime)
+        {
           return;
         }
         // const float A_x = feedback_proto.getLinearAccelerationX();
@@ -117,4 +149,4 @@ void ImuDriver::tick() {
   // LOG_INFO(get_message().c_str());
 }
 
-}  // namespace isaac
+} // namespace isaac

@@ -47,40 +47,9 @@ namespace isaac
 namespace drivers
 {
 
-class RTVector3;
-class RTMatrix4x4;
-class RTQuaternion;
-
-class RTMath
-{
-public:
-    // convenient display routines
-
-    static const char *displayRadians(const char *label, RTVector3 &vec);
-    static const char *displayDegrees(const char *label, RTVector3 &vec);
-    static const char *display(const char *label, RTQuaternion &quat);
-    static const char *display(const char *label, RTMatrix4x4 &mat);
-
-    //  currentUSecsSinceEpoch() is the source of all timestamps and
-    //  is the number of uS since the standard epoch
-
-    static uint64_t currentUSecsSinceEpoch();
-
-    //  poseFromAccelMag generates pose Euler angles from measured settings
-
-    static RTVector3 poseFromAccelMag(const RTVector3 &accel, const RTVector3 &mag);
-
-    //  Takes signed 16 bit data from a char array and converts it to a vector of scaled RTFLOATs
-
-    static void convertToVector(unsigned char *rawData, RTVector3 &vec, RTFLOAT scale, bool bigEndian);
-
-    //  Takes a pressure in hPa and returns height above sea level in meters
-
-    static RTFLOAT convertPressureToHeight(RTFLOAT pressure, RTFLOAT staticPressure = 1013.25);
-
-private:
-    static char m_string[1000]; // for the display routines
-};
+// class RTVector3;
+// class RTMatrix4x4;
+// class RTQuaternion;
 
 class RTVector3
 {
@@ -88,10 +57,10 @@ public:
     RTVector3();
     RTVector3(RTFLOAT x, RTFLOAT y, RTFLOAT z);
 
-    const RTVector3 &operator+=(RTVector3 &vec);
-    const RTVector3 &operator-=(RTVector3 &vec);
+    const RTVector3&  operator +=(RTVector3& vec);
+    const RTVector3&  operator -=(RTVector3& vec);
 
-    RTVector3 &operator=(const RTVector3 &vec);
+    RTVector3& operator =(const RTVector3& vec);
 
     RTFLOAT length();
     void normalize();
@@ -99,11 +68,11 @@ public:
     const char *display();
     const char *displayDegrees();
 
-    static float dotProduct(const RTVector3 &a, const RTVector3 &b);
-    static void crossProduct(const RTVector3 &a, const RTVector3 &b, RTVector3 &d);
+    static float dotProduct(const RTVector3& a, const RTVector3& b);
+    static void crossProduct(const RTVector3& a, const RTVector3& b, RTVector3& d);
 
-    void accelToEuler(RTVector3 &rollPitchYaw) const;
-    void accelToQuaternion(RTQuaternion &qPose) const;
+    void accelToEuler(RTVector3& rollPitchYaw) const;
+    // void accelToQuaternion(RTQuaternion& qPose) const;
 
     inline RTFLOAT x() const { return m_data[0]; }
     inline RTFLOAT y() const { return m_data[1]; }
@@ -195,6 +164,38 @@ private:
 
     RTFLOAT matDet();
     RTFLOAT matMinor(const int row, const int col);
+};
+
+
+class RTMath
+{
+public:
+    // convenient display routines
+
+    static const char *displayRadians(const char *label, RTVector3& vec);
+    static const char *displayDegrees(const char *label, RTVector3& vec);
+    static const char *display(const char *label, RTQuaternion& quat);
+    static const char *display(const char *label, RTMatrix4x4& mat);
+
+    //  currentUSecsSinceEpoch() is the source of all timestamps and
+    //  is the number of uS since the standard epoch
+
+    static uint64_t currentUSecsSinceEpoch();
+
+    //  poseFromAccelMag generates pose Euler angles from measured settings
+
+    static RTVector3 poseFromAccelMag(const RTVector3& accel, const RTVector3& mag);
+
+    //  Takes signed 16 bit data from a char array and converts it to a vector of scaled RTFLOATs
+
+    static void convertToVector(unsigned char *rawData, RTVector3& vec, RTFLOAT scale, bool bigEndian);
+
+    //  Takes a pressure in hPa and returns height above sea level in meters
+
+    static RTFLOAT convertPressureToHeight(RTFLOAT pressure, RTFLOAT staticPressure = 1013.25);
+
+private:
+    static char m_string[1000];                             // for the display routines
 };
 
 } // namespace drivers
