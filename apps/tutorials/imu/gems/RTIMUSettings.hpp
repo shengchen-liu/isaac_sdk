@@ -78,6 +78,10 @@
 
 # define RTFLOAT float
 
+#define RTMATH_PI 3.1415926535
+#define RTMATH_DEGREE_TO_RAD (RTMATH_PI / 180.0)
+#define RTMATH_RAD_TO_DEGREE (180.0 / RTMATH_PI)
+
 namespace isaac
 {
 namespace drivers
@@ -133,14 +137,14 @@ public:
 
     RTIMUSettings(const char *productType = "RTIMULib");
 
-    //     //  Alternate constructor allow ini file to be in any directory
+    //  Alternate constructor allow ini file to be in any directory
 
-    //     RTIMUSettings(const char *settingsDirectory, const char *productType);
+    RTIMUSettings(const char *settingsDirectory, const char *productType);
 
     //  This function tries to find an IMU. It stops at the first valid one
     //  and returns true or else false
 
-    // bool discoverIMU(int &imuType, bool &busIsI2C, unsigned char &slaveAddress);
+    bool discoverIMU(int &imuType, bool &busIsI2C, unsigned char &slaveAddress);
 
     //  This function sets the settings to default values.
 
@@ -204,6 +208,52 @@ private:
     char m_filename[256]; // the settings file name
 
     FILE *m_fd;
+};
+
+class RTQuaternion
+{
+public:
+    RTQuaternion();
+    RTQuaternion(RTFLOAT scalar, RTFLOAT x, RTFLOAT y, RTFLOAT z);
+
+    RTQuaternion &operator+=(const RTQuaternion &quat);
+    RTQuaternion &operator-=(const RTQuaternion &quat);
+    RTQuaternion &operator*=(const RTQuaternion &qb);
+    RTQuaternion &operator*=(const RTFLOAT val);
+    RTQuaternion &operator-=(const RTFLOAT val);
+
+    RTQuaternion &operator=(const RTQuaternion &quat);
+    const RTQuaternion operator*(const RTQuaternion &qb) const;
+    const RTQuaternion operator*(const RTFLOAT val) const;
+    const RTQuaternion operator-(const RTQuaternion &qb) const;
+    const RTQuaternion operator-(const RTFLOAT val) const;
+
+    void normalize();
+    void toEuler(RTVector3 &vec);
+    void fromEuler(RTVector3 &vec);
+    RTQuaternion conjugate() const;
+    void toAngleVector(RTFLOAT &angle, RTVector3 &vec);
+    void fromAngleVector(const RTFLOAT &angle, const RTVector3 &vec);
+
+    void zero();
+    const char *display();
+
+    inline RTFLOAT scalar() const { return m_data[0]; }
+    inline RTFLOAT x() const { return m_data[1]; }
+    inline RTFLOAT y() const { return m_data[2]; }
+    inline RTFLOAT z() const { return m_data[3]; }
+    inline RTFLOAT data(const int i) const { return m_data[i]; }
+
+    inline void setScalar(const RTFLOAT val) { m_data[0] = val; }
+    inline void setX(const RTFLOAT val) { m_data[1] = val; }
+    inline void setY(const RTFLOAT val) { m_data[2] = val; }
+    inline void setZ(const RTFLOAT val) { m_data[3] = val; }
+    inline void setData(const int i, RTFLOAT val) { m_data[i] = val; }
+    inline void fromArray(RTFLOAT *val) { memcpy(m_data, val, 4 * sizeof(RTFLOAT)); }
+    inline void toArray(RTFLOAT *val) const { memcpy(val, m_data, 4 * sizeof(RTFLOAT)); }
+
+private:
+    RTFLOAT m_data[4];
 };
 } // namespace drivers
 } // namespace isaac

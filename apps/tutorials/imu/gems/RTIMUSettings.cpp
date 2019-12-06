@@ -24,79 +24,79 @@ RTIMUSettings::RTIMUSettings(const char *productType)
     loadSettings();
 }
 
-// RTIMUSettings::RTIMUSettings(const char *settingsDirectory, const char *productType)
-// {
-//     if (((strlen(productType) + strlen(settingsDirectory)) > 200) || (strlen(productType) == 0))
-//     {
-//         HAL_ERROR("Product name too long or null - using default\n");
-//         strcpy(m_filename, "RTIMULib.ini");
-//     }
-//     else
-//     {
-//         sprintf(m_filename, "%s/%s.ini", settingsDirectory, productType);
-//     }
-//     loadSettings();
-// }
+RTIMUSettings::RTIMUSettings(const char *settingsDirectory, const char *productType)
+{
+    if (((strlen(productType) + strlen(settingsDirectory)) > 200) || (strlen(productType) == 0))
+    {
+        HAL_ERROR("Product name too long or null - using default\n");
+        strcpy(m_filename, "RTIMULib.ini");
+    }
+    else
+    {
+        sprintf(m_filename, "%s/%s.ini", settingsDirectory, productType);
+    }
+    loadSettings();
+}
 
-// bool RTIMUSettings::discoverIMU(int &imuType, bool &busIsI2C, unsigned char &slaveAddress)
-// {
-//     unsigned char result;
-//     unsigned char altResult;
+bool RTIMUSettings::discoverIMU(int &imuType, bool &busIsI2C, unsigned char &slaveAddress)
+{
+    unsigned char result;
+    unsigned char altResult;
 
-//     //  auto detect on I2C bus
+    //  auto detect on I2C bus
 
-//     m_busIsI2C = true;
+    m_busIsI2C = true;
 
-//     if (HALOpen())
-//     {
-//         if (HALRead(LSM6DS33_ADDRESS0, LSM6DS33_WHO_AM_I, 1, &result, ""))
-//         {
-//             if (result == LSM6DS33_ID)
-//             {
-//                 imuType = RTIMU_TYPE_LSM6DS33LIS3MDL;
-//                 slaveAddress = LSM6DS33_ADDRESS0;
-//                 busIsI2C = true;
-//                 HAL_INFO("Detected LSM6DS33 at standard/standard address\n");
-//                 return true;
-//             }
-//         }
+    if (HALOpen())
+    {
+        if (HALRead(LSM6DS33_ADDRESS0, LSM6DS33_WHO_AM_I, 1, &result, ""))
+        {
+            if (result == LSM6DS33_ID)
+            {
+                imuType = RTIMU_TYPE_LSM6DS33LIS3MDL;
+                slaveAddress = LSM6DS33_ADDRESS0;
+                busIsI2C = true;
+                HAL_INFO("Detected LSM6DS33 at standard/standard address\n");
+                return true;
+            }
+        }
 
-//         if (HALRead(LSM6DS33_ADDRESS1, LSM6DS33_WHO_AM_I, 1, &result, ""))
-//         {
-//             if (result == LSM6DS33_ID)
-//             {
-//                 if (HALRead(LIS3MDL_ADDRESS1, LIS3MDL_WHO_AM_I, 1, &altResult, ""))
-//                 {
-//                     if (altResult == LIS3MDL_ID)
-//                     {
-//                         imuType = RTIMU_TYPE_LSM6DS33LIS3MDL;
-//                         slaveAddress = LSM6DS33_ADDRESS1;
-//                         busIsI2C = true;
-//                         HAL_INFO("Detected LSM6DS33/LIS3MDL at option/option address\n");
-//                         std::cout << "FOUND IMU LSM6DS33 and Result was " << static_cast<unsigned>(result) << " alt result was " << static_cast<unsigned>(altResult) << std::endl;
-//                         return true;
-//                     }
-//                 }
-//                 if (HALRead(LIS3MDL_ADDRESS0, LIS3MDL_WHO_AM_I, 1, &altResult, ""))
-//                 {
-//                     if (altResult == LIS3MDL_ID)
-//                     {
-//                         imuType = RTIMU_TYPE_LSM6DS33LIS3MDL;
-//                         slaveAddress = LSM6DS33_ADDRESS1;
-//                         busIsI2C = true;
-//                         HAL_INFO("Detected LSM6DS33/LIS3MDL at option/standard address\n");
-//                         std::cout << "FOUND IMU LIS3MDL and Result was " << static_cast<unsigned>(altResult) << std::endl;
-//                         return true;
-//                     }
-//                 }
-//             }
-//         }
-//         HALClose();
-//     }
+        if (HALRead(LSM6DS33_ADDRESS1, LSM6DS33_WHO_AM_I, 1, &result, ""))
+        {
+            if (result == LSM6DS33_ID)
+            {
+                if (HALRead(LIS3MDL_ADDRESS1, LIS3MDL_WHO_AM_I, 1, &altResult, ""))
+                {
+                    if (altResult == LIS3MDL_ID)
+                    {
+                        imuType = RTIMU_TYPE_LSM6DS33LIS3MDL;
+                        slaveAddress = LSM6DS33_ADDRESS1;
+                        busIsI2C = true;
+                        HAL_INFO("Detected LSM6DS33/LIS3MDL at option/option address\n");
+                        std::cout << "FOUND IMU LSM6DS33 and Result was " << static_cast<unsigned>(result) << " alt result was " << static_cast<unsigned>(altResult) << std::endl;
+                        return true;
+                    }
+                }
+                if (HALRead(LIS3MDL_ADDRESS0, LIS3MDL_WHO_AM_I, 1, &altResult, ""))
+                {
+                    if (altResult == LIS3MDL_ID)
+                    {
+                        imuType = RTIMU_TYPE_LSM6DS33LIS3MDL;
+                        slaveAddress = LSM6DS33_ADDRESS1;
+                        busIsI2C = true;
+                        HAL_INFO("Detected LSM6DS33/LIS3MDL at option/standard address\n");
+                        std::cout << "FOUND IMU LIS3MDL and Result was " << static_cast<unsigned>(altResult) << std::endl;
+                        return true;
+                    }
+                }
+            }
+        }
+        HALClose();
+    }
 
-//     HAL_ERROR("No IMU detected\n");
-//     return false;
-// }
+    HAL_ERROR("No IMU detected\n");
+    return false;
+}
 
 
 void RTIMUSettings::setDefaults()
@@ -784,5 +784,199 @@ RTFLOAT RTVector3::length()
     return sqrt(m_data[0] * m_data[0] + m_data[1] * m_data[1] +
                 m_data[2] * m_data[2]);
 }
+
+
+//----------------------------------------------------------
+//
+//  The RTQuaternion class
+
+RTQuaternion::RTQuaternion()
+{
+    zero();
+}
+
+RTQuaternion::RTQuaternion(RTFLOAT scalar, RTFLOAT x, RTFLOAT y, RTFLOAT z)
+{
+    m_data[0] = scalar;
+    m_data[1] = x;
+    m_data[2] = y;
+    m_data[3] = z;
+}
+
+RTQuaternion &RTQuaternion::operator=(const RTQuaternion &quat)
+{
+    if (this == &quat)
+        return *this;
+
+    m_data[0] = quat.m_data[0];
+    m_data[1] = quat.m_data[1];
+    m_data[2] = quat.m_data[2];
+    m_data[3] = quat.m_data[3];
+
+    return *this;
+}
+
+RTQuaternion &RTQuaternion::operator+=(const RTQuaternion &quat)
+{
+    for (int i = 0; i < 4; i++)
+        m_data[i] += quat.m_data[i];
+    return *this;
+}
+
+RTQuaternion &RTQuaternion::operator-=(const RTQuaternion &quat)
+{
+    for (int i = 0; i < 4; i++)
+        m_data[i] -= quat.m_data[i];
+    return *this;
+}
+
+RTQuaternion &RTQuaternion::operator-=(const RTFLOAT val)
+{
+    for (int i = 0; i < 4; i++)
+        m_data[i] -= val;
+    return *this;
+}
+
+RTQuaternion &RTQuaternion::operator*=(const RTQuaternion &qb)
+{
+    RTQuaternion qa;
+
+    qa = *this;
+
+    m_data[0] = qa.scalar() * qb.scalar() - qa.x() * qb.x() - qa.y() * qb.y() - qa.z() * qb.z();
+    m_data[1] = qa.scalar() * qb.x() + qa.x() * qb.scalar() + qa.y() * qb.z() - qa.z() * qb.y();
+    m_data[2] = qa.scalar() * qb.y() - qa.x() * qb.z() + qa.y() * qb.scalar() + qa.z() * qb.x();
+    m_data[3] = qa.scalar() * qb.z() + qa.x() * qb.y() - qa.y() * qb.x() + qa.z() * qb.scalar();
+
+    return *this;
+}
+
+RTQuaternion &RTQuaternion::operator*=(const RTFLOAT val)
+{
+    m_data[0] *= val;
+    m_data[1] *= val;
+    m_data[2] *= val;
+    m_data[3] *= val;
+
+    return *this;
+}
+
+const RTQuaternion RTQuaternion::operator*(const RTQuaternion &qb) const
+{
+    RTQuaternion result = *this;
+    result *= qb;
+    return result;
+}
+
+const RTQuaternion RTQuaternion::operator*(const RTFLOAT val) const
+{
+    RTQuaternion result = *this;
+    result *= val;
+    return result;
+}
+
+const RTQuaternion RTQuaternion::operator-(const RTQuaternion &qb) const
+{
+    RTQuaternion result = *this;
+    result -= qb;
+    return result;
+}
+
+const RTQuaternion RTQuaternion::operator-(const RTFLOAT val) const
+{
+    RTQuaternion result = *this;
+    result -= val;
+    return result;
+}
+
+void RTQuaternion::zero()
+{
+    for (int i = 0; i < 4; i++)
+        m_data[i] = 0;
+}
+
+void RTQuaternion::normalize()
+{
+    RTFLOAT length = sqrt(m_data[0] * m_data[0] + m_data[1] * m_data[1] +
+                          m_data[2] * m_data[2] + m_data[3] * m_data[3]);
+
+    if ((length == 0) || (length == 1))
+        return;
+
+    m_data[0] /= length;
+    m_data[1] /= length;
+    m_data[2] /= length;
+    m_data[3] /= length;
+}
+
+void RTQuaternion::toEuler(RTVector3 &vec)
+{
+    vec.setX(atan2(2.0 * (m_data[2] * m_data[3] + m_data[0] * m_data[1]),
+                   1 - 2.0 * (m_data[1] * m_data[1] + m_data[2] * m_data[2])));
+
+    vec.setY(asin(2.0 * (m_data[0] * m_data[2] - m_data[1] * m_data[3])));
+
+    vec.setZ(atan2(2.0 * (m_data[1] * m_data[2] + m_data[0] * m_data[3]),
+                   1 - 2.0 * (m_data[2] * m_data[2] + m_data[3] * m_data[3])));
+}
+
+void RTQuaternion::fromEuler(RTVector3 &vec)
+{
+    RTFLOAT cosX2 = cos(vec.x() / 2.0f);
+    RTFLOAT sinX2 = sin(vec.x() / 2.0f);
+    RTFLOAT cosY2 = cos(vec.y() / 2.0f);
+    RTFLOAT sinY2 = sin(vec.y() / 2.0f);
+    RTFLOAT cosZ2 = cos(vec.z() / 2.0f);
+    RTFLOAT sinZ2 = sin(vec.z() / 2.0f);
+
+    m_data[0] = cosX2 * cosY2 * cosZ2 + sinX2 * sinY2 * sinZ2;
+    m_data[1] = sinX2 * cosY2 * cosZ2 - cosX2 * sinY2 * sinZ2;
+    m_data[2] = cosX2 * sinY2 * cosZ2 + sinX2 * cosY2 * sinZ2;
+    m_data[3] = cosX2 * cosY2 * sinZ2 - sinX2 * sinY2 * cosZ2;
+    normalize();
+}
+
+RTQuaternion RTQuaternion::conjugate() const
+{
+    RTQuaternion q;
+    q.setScalar(m_data[0]);
+    q.setX(-m_data[1]);
+    q.setY(-m_data[2]);
+    q.setZ(-m_data[3]);
+    return q;
+}
+
+void RTQuaternion::toAngleVector(RTFLOAT &angle, RTVector3 &vec)
+{
+    RTFLOAT halfTheta;
+    RTFLOAT sinHalfTheta;
+
+    halfTheta = acos(m_data[0]);
+    sinHalfTheta = sin(halfTheta);
+
+    if (sinHalfTheta == 0)
+    {
+        vec.setX(1.0);
+        vec.setY(0);
+        vec.setZ(0);
+    }
+    else
+    {
+        vec.setX(m_data[1] / sinHalfTheta);
+        vec.setY(m_data[1] / sinHalfTheta);
+        vec.setZ(m_data[1] / sinHalfTheta);
+    }
+    angle = 2.0 * halfTheta;
+}
+
+void RTQuaternion::fromAngleVector(const RTFLOAT &angle, const RTVector3 &vec)
+{
+    RTFLOAT sinHalfTheta = sin(angle / 2.0);
+    m_data[0] = cos(angle / 2.0);
+    m_data[1] = vec.x() * sinHalfTheta;
+    m_data[2] = vec.y() * sinHalfTheta;
+    m_data[3] = vec.z() * sinHalfTheta;
+}
+
 } // namespace drivers
 } // namespace isaac

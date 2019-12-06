@@ -20,6 +20,7 @@ isaac_cc_module(
         "//apps/tutorials/imu/gems:segway",
         "//apps/tutorials/imu/gems:RTIMUHal",
         "//apps/tutorials/imu/gems:RTIMUSettings",
+        "//apps/tutorials/imu/gems:RTIMU",
     ]
 )
 

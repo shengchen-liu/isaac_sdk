@@ -20,11 +20,12 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 #include "apps/tutorials/imu/gems/segway.hpp"
 #include "apps/tutorials/imu/gems/RTIMUHal.hpp"
 #include "apps/tutorials/imu/gems/RTIMUSettings.hpp"
-// #include "apps/tutorials/imu/gems/RTIMU.hpp"
+#include "apps/tutorials/imu/gems/RTIMU.hpp"
 
 namespace isaac {
 
 using drivers::RTIMUSettings;
+using drivers::RTIMU;
 
 // Goal tolerance in meters
 constexpr double kGoalTolerance = 0.1;
@@ -47,13 +48,17 @@ void ImuDriver::start() {
   // settings_.reset(new drivers::RTIMUSettings("RTIMULib"));
   RTIMUSettings *settings = new RTIMUSettings("RTIMULib");
 
-  std::cout<<settings->m_imuType<<std::endl;
+  RTIMU *rtimu = new RTIMU(settings); 
+
+  std::cout<<rtimu->IMUType()<<std::endl;
 
   
   // rtimusettings_.reset(new drivers::RTIMUSettings());
 
   // rtimu_.reset(new drivers::RTIMU());
-  // RTIMU *imu = RTIMU::createIMU(settings);
+
+  // RTIMU::createIMU(settings);
+  // std::cout<<imu->m_imuType<<std::endl;
 
   // rtimu_.reset(new drivers::RTIMU::createIMU());
   // rtimuhal_.reset(new drivers::RTIMUHal());

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RTMath.hpp"
+// #include "RTMath.hpp"
 #include "RTIMUDefs.hpp"
 
 //  these defines describe the various fusion filter options
@@ -21,7 +21,7 @@ typedef struct
     bool fusionPoseValid;
     RTVector3 fusionPose;
     bool fusionQPoseValid;
-    RTQuaternion fusionQPose;
+    // RTQuaternion fusionQPose;
     bool gyroValid;
     RTVector3 gyro;
     bool accelValid;
