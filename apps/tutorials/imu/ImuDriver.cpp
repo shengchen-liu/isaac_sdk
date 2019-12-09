@@ -23,14 +23,17 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 // #include "apps/tutorials/imu/gems/RTIMU.hpp"
 #include "apps/tutorials/imu/gems/RTMath.hpp"
 #include "apps/tutorials/imu/gems/RTFusion.hpp"
+#include "apps/tutorials/imu/gems/RTIMULibDefs.hpp"
 
 namespace isaac
 {
 
-using drivers::RTIMU;
-using drivers::RTIMUSettings;
-using drivers::RTVector3;
 using drivers::RTFusion;
+using drivers::RTIMU;
+using drivers::RTIMU_DATA;
+using drivers::RTIMUSettings;
+using drivers::RTMath;
+using drivers::RTVector3;
 
 // Goal tolerance in meters
 constexpr double kGoalTolerance = 0.1;
@@ -69,7 +72,6 @@ void ImuDriver::start()
 
   imu->IMUInit();
 
-
   // RTVector3 *residuals = new RTVector3();
   // std::cout<<residuals->length()<<std::endl;
 
@@ -82,6 +84,10 @@ void ImuDriver::start()
   imu->setGyroEnable(true);
   imu->setAccelEnable(true);
   imu->setCompassEnable(false);
+
+  //  set up for rate timer
+
+  rateTimer = displayTimer = RTMath::currentUSecsSinceEpoch();
 
   // rtimusettings_.reset(new drivers::RTIMUSettings());
 
@@ -120,14 +126,39 @@ void ImuDriver::publishGoal(const Vector2d &position)
 
 void ImuDriver::tick()
 {
-  if (imu->IMURead()){
-    std::cout<<"true"<<std::endl;
-  }
-  else
+  // if (imu->IMURead()){
+  //   std::cout<<"true"<<std::endl;
+  // }
+  // else
+  // {
+  //   std::cout<<"false"<<std::endl;
+  // }
+
+  while (imu->IMURead())
   {
-    std::cout<<"false"<<std::endl;
+    RTIMU_DATA imuData = imu->getIMUData();
+    sampleCount++;
+
+    now = RTMath::currentUSecsSinceEpoch();
+
+    //  display 10 times per second
+
+    if ((now - displayTimer) > 100000)
+    {
+      printf("Sample rate %d: %s\r", sampleRate, RTMath::displayDegrees("", imuData.fusionPose));
+      fflush(stdout);
+      displayTimer = now;
+    }
+    //  update rate every second
+
+    if ((now - rateTimer) > 1000000)
+    {
+      sampleRate = sampleCount;
+      sampleCount = 0;
+      rateTimer = now;
+    }
   }
-  
+
   // // This part will be run at every tick. We are ticking periodically in this example.
   // // Read desired position parameter <- ISAAC_PARAM(Vector2d, desired_position, Vector2d(9.0, 25.0));
   // const Vector2d position = get_desired_position();

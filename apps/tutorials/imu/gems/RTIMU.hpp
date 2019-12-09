@@ -58,6 +58,10 @@ public:
     void setAccelEnable(bool enable) { m_fusion->setAccelEnable(enable); }
     void setCompassEnable(bool enable) { m_fusion->setCompassEnable(enable); }
 
+    //  getIMUData returns the standard outputs of the IMU and fusion filter
+
+    const RTIMU_DATA &getIMUData() { return m_imuData; }
+
     //  setCalibrationData configures the cal data from settings and also enables use if valid
 
     void setCalibrationData();
@@ -147,6 +151,7 @@ private:
     RTFLOAT m_gyroScale;
     RTFLOAT m_accelScale;
     RTFLOAT m_compassScale;
+    
 };
 
 } // namespace drivers

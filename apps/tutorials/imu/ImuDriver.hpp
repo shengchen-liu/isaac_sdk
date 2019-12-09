@@ -80,6 +80,12 @@ private:
   std::unique_ptr<drivers::Segway> segway_;
   std::unique_ptr<drivers::RTIMUHal> rtimuhal_;
   std::unique_ptr<drivers::RTIMUSettings> settings_;
+
+  int sampleCount = 0;
+  int sampleRate = 0;
+  uint64_t displayTimer;
+  uint64_t now;
+  uint64_t rateTimer;
 };
 
 } // namespace isaac
