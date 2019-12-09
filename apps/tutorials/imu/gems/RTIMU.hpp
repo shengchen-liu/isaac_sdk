@@ -25,11 +25,11 @@ public:
 
     void setSlerpPower(RTFLOAT power) { m_fusion->setSlerpPower(power); }
 
-     //  the following three functions control the influence of the gyro, accel and compass sensors
+    //  the following three functions control the influence of the gyro, accel and compass sensors
 
-    void setGyroEnable(bool enable) { m_fusion->setGyroEnable(enable);}
-    void setAccelEnable(bool enable) { m_fusion->setAccelEnable(enable);}
-    void setCompassEnable(bool enable) { m_fusion->setCompassEnable(enable);}
+    void setGyroEnable(bool enable) { m_fusion->setGyroEnable(enable); }
+    void setAccelEnable(bool enable) { m_fusion->setAccelEnable(enable); }
+    void setCompassEnable(bool enable) { m_fusion->setCompassEnable(enable); }
 
     //  setCalibrationData configures the cal data from settings and also enables use if valid
 
@@ -45,7 +45,7 @@ protected:
 
     RTIMUSettings *m_settings; // the settings object pointer
 
-    RTFusion *m_fusion;                                     // the fusion algorithm
+    RTFusion *m_fusion; // the fusion algorithm
 
     int m_sampleRate = 100;    // samples per second
     uint64_t m_sampleInterval; // interval between samples in microseonds
@@ -68,6 +68,7 @@ private:
 
     RTFLOAT m_gyroScale;
     RTFLOAT m_accelScale;
+    RTFLOAT m_compassScale;
 };
 
 } // namespace drivers

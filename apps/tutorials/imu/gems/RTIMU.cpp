@@ -479,28 +479,44 @@ bool RTIMU::IMURead()
     //          1: a new set of data is available at accelerometer output
     if (!m_settings->HALRead(m_gyroAccelSlaveAddr, LSM6DS33_STATUS_REG, 1, &status, "Failed to read LSM6DS33 status"))
         return false;
-     if (!m_settings->HALRead(m_gyroAccelSlaveAddr, LSM6DS33_OUTX_L_G, 6, gyroData, "Failed to read LSM6DS33 data"))
+    if (!m_settings->HALRead(m_gyroAccelSlaveAddr, LSM6DS33_OUTX_L_G, 6, gyroData, "Failed to read LSM6DS33 data"))
         return false;
 
-
     std::cout << "Gyro Data: "
-    << "  X " << static_cast<int16_t>(gyroData[0] | gyroData[1] << 8) * m_gyroScale 
-    << "; Y " << static_cast<int16_t>(gyroData[2] | gyroData[3] << 8) * m_gyroScale
-    << "; Z " << static_cast<int16_t>(gyroData[4] | gyroData[5] << 8) * m_gyroScale << std::endl;
-
+              << "  X " << static_cast<int16_t>(gyroData[0] | gyroData[1] << 8) * m_gyroScale
+              << "; Y " << static_cast<int16_t>(gyroData[2] | gyroData[3] << 8) * m_gyroScale
+              << "; Z " << static_cast<int16_t>(gyroData[4] | gyroData[5] << 8) * m_gyroScale << std::endl;
 
     m_imuData.timestamp = RTMath::currentUSecsSinceEpoch();
 
     if (!m_settings->HALRead(m_gyroAccelSlaveAddr, LSM6DS33_OUTX_L_XL, 6, accelData, "Failed to read LSM6DS33 accel data"))
         return false;
-    
 
     std::cout << "Accel Data: "
-    << "  X " << static_cast<int16_t>(accelData[0] | accelData[1] << 8) 
-    << "; Y " << static_cast<int16_t>(accelData[2] | accelData[3] << 8)
-    << "; Z " << static_cast<int16_t>(accelData[4] | accelData[5] << 8) << std::endl;
+              << "  X " << static_cast<int16_t>(accelData[0] | accelData[1] << 8)
+              << "; Y " << static_cast<int16_t>(accelData[2] | accelData[3] << 8)
+              << "; Z " << static_cast<int16_t>(accelData[4] | accelData[5] << 8) << std::endl;
 
-    return true;    
+    RTMath::convertToVector(gyroData, m_imuData.gyro, m_gyroScale, false);
+    RTMath::convertToVector(accelData, m_imuData.accel, m_accelScale, false);
+    RTMath::convertToVector(compassData, m_imuData.compass, m_compassScale, false);
+
+    //  sort out gyro axes
+    m_imuData.gyro.setX(m_imuData.gyro.x());
+    m_imuData.gyro.setY(m_imuData.gyro.y());
+    m_imuData.gyro.setZ(m_imuData.gyro.z());
+
+    //  sort out accel data;
+    m_imuData.accel.setX(m_imuData.accel.x());
+    m_imuData.accel.setY(-m_imuData.accel.y());
+    m_imuData.accel.setZ(-m_imuData.accel.z());
+
+    //  sort out compass axes
+    m_imuData.compass.setX(m_imuData.compass.x());
+    m_imuData.compass.setY(-m_imuData.compass.y());
+    m_imuData.compass.setZ(-m_imuData.compass.z());
+    
+    return true;
 }
 } // namespace drivers
 } // namespace isaac
