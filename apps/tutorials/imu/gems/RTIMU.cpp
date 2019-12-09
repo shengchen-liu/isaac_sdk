@@ -538,6 +538,9 @@ bool RTIMU::IMURead()
     handleGyroBias();
     calibrateAverageCompass();
     calibrateAccel();
+    
+    //  now update the filter
+    updateFusion();
 
     return true;
 }
@@ -793,6 +796,11 @@ void RTIMU::calibrateAccel()
         m_imuData.accel.setZ(m_imuData.accel.z() / m_settings->m_accelCalMax.z());
     else
         m_imuData.accel.setZ(m_imuData.accel.z() / -m_settings->m_accelCalMin.z());
+}
+
+void RTIMU::updateFusion()
+{
+    m_fusion->newIMUData(m_imuData, m_settings);
 }
 
 

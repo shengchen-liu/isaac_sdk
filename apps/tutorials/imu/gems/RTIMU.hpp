@@ -79,6 +79,7 @@ protected:
     void handleGyroBias();          // adjust gyro for bias
     void calibrateAverageCompass(); // calibrate and smooth compass
     void calibrateAccel();          // calibrate the accelerometers
+    void updateFusion();            // call when new data to update fusion state
 
     bool m_compassCalibrationMode; // true if cal mode so don't use cal data!
     bool m_accelCalibrationMode;   // true if cal mode so don't use cal data!
