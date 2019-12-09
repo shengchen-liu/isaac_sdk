@@ -537,7 +537,8 @@ bool RTIMU::IMURead()
     //  now do standard processing
     handleGyroBias();
     calibrateAverageCompass();
-    
+    calibrateAccel();
+
     return true;
 }
 
@@ -772,6 +773,28 @@ void RTIMU::calibrateAverageCompass()
 
     m_imuData.compass = m_compassAverage;
 }
+
+void RTIMU::calibrateAccel()
+{
+    if (!getAccelCalibrationValid())
+        return;
+
+    if (m_imuData.accel.x() >= 0)
+        m_imuData.accel.setX(m_imuData.accel.x() / m_settings->m_accelCalMax.x());
+    else
+        m_imuData.accel.setX(m_imuData.accel.x() / -m_settings->m_accelCalMin.x());
+
+    if (m_imuData.accel.y() >= 0)
+        m_imuData.accel.setY(m_imuData.accel.y() / m_settings->m_accelCalMax.y());
+    else
+        m_imuData.accel.setY(m_imuData.accel.y() / -m_settings->m_accelCalMin.y());
+
+    if (m_imuData.accel.z() >= 0)
+        m_imuData.accel.setZ(m_imuData.accel.z() / m_settings->m_accelCalMax.z());
+    else
+        m_imuData.accel.setZ(m_imuData.accel.z() / -m_settings->m_accelCalMin.z());
+}
+
 
 } // namespace drivers
 } // namespace isaac

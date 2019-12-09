@@ -70,10 +70,15 @@ public:
 
     bool getRuntimeCompassCalibrationValid() { return !m_compassCalibrationMode && m_runtimeMagCalValid; }
 
+    //  getAccelCalibrationValid() returns true if the accel calibration data is being used
+
+    bool getAccelCalibrationValid() { return !m_accelCalibrationMode && m_settings->m_accelCalValid; }
+
 protected:
     void gyroBiasInit();            // sets up gyro bias calculation
     void handleGyroBias();          // adjust gyro for bias
     void calibrateAverageCompass(); // calibrate and smooth compass
+    void calibrateAccel();          // calibrate the accelerometers
 
     bool m_compassCalibrationMode; // true if cal mode so don't use cal data!
     bool m_accelCalibrationMode;   // true if cal mode so don't use cal data!
