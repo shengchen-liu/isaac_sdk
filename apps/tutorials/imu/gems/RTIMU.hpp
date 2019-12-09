@@ -63,7 +63,8 @@ public:
     void setCalibrationData();
 
 protected:
-    void gyroBiasInit(); // sets up gyro bias calculation
+    void gyroBiasInit();   // sets up gyro bias calculation
+    void handleGyroBias(); // adjust gyro for bias
 
     bool m_compassCalibrationMode; // true if cal mode so don't use cal data!
     bool m_accelCalibrationMode;   // true if cal mode so don't use cal data!
@@ -80,6 +81,8 @@ protected:
     RTFLOAT m_gyroLearningAlpha;   // gyro bias rapid learning rate
     RTFLOAT m_gyroContinuousAlpha; // gyro bias continuous (slow) learning rate
     int m_gyroSampleCount;         // number of gyro samples used
+
+    RTVector3 m_previousAccel; // previous step accel for gyro learning
 
     float m_compassCalOffset[3];
     float m_compassCalScale[3];
