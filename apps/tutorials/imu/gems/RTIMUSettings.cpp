@@ -1,5 +1,8 @@
 #include "RTIMUSettings.hpp"
 #include "RTIMUDefs.hpp"
+#include "RTIMULibDefs.hpp"
+#include "RTIMU.hpp"
+
 // #include "RTIMULSM6DS33LIS3MDL.hpp"
 
 #include <iostream>
@@ -107,8 +110,8 @@ void RTIMUSettings::setDefaults()
     m_I2CSlaveAddress = 0;
     m_busIsI2C = true;
     m_I2CBus = 1;
-    m_fusionType = 3;
-    m_axisRotation = 0;
+    m_fusionType = RTFUSION_TYPE_KALMANSTATE4;
+    m_axisRotation = RTIMU_XNORTH_YEAST;
     m_compassCalValid = false;
     m_compassCalEllipsoidValid = false;
     for (int i = 0; i < 3; i++)

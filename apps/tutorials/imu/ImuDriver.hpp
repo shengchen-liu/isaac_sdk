@@ -64,10 +64,6 @@ public:
   // Isaac will use this port to talk to segway
   ISAAC_PARAM(int, port, 8080);
 
-  drivers::RTIMUSettings *settings = new drivers::RTIMUSettings("RTIMULib");
-
-  drivers::RTIMU *imu = new drivers::RTIMU(settings);
-
 private:
   // Publishes a goal message with given target position.
   void publishGoal(const Vector2d &position);
@@ -81,6 +77,10 @@ private:
   std::unique_ptr<drivers::RTIMUHal> rtimuhal_;
   std::unique_ptr<drivers::RTIMUSettings> settings_;
 
+  drivers::RTIMUSettings *settings = new drivers::RTIMUSettings("RTIMULib");
+
+  drivers::RTIMU *imu = new drivers::RTIMU(settings);
+  
   int sampleCount = 0;
   int sampleRate = 0;
   uint64_t displayTimer;

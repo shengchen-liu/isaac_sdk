@@ -22,7 +22,8 @@ isaac_cc_module(
         "//apps/tutorials/imu/gems:RTIMUSettings",
         "//apps/tutorials/imu/gems:RTMath",
         "//apps/tutorials/imu/gems:RTFusion",
-        "//apps/tutorials/imu/gems:RTIMU"
+        "//apps/tutorials/imu/gems:RTIMU",
+        "//apps/tutorials/imu/gems:RTFusionKalman4",
     ]
 )
 

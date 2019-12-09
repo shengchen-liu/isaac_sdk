@@ -24,6 +24,7 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 #include "apps/tutorials/imu/gems/RTMath.hpp"
 #include "apps/tutorials/imu/gems/RTFusion.hpp"
 #include "apps/tutorials/imu/gems/RTIMULibDefs.hpp"
+#include "apps/tutorials/imu/gems/RTFusionKalman4.hpp"
 
 namespace isaac
 {
@@ -53,10 +54,8 @@ void ImuDriver::start()
   goal_position_ = Vector2d::Zero();
   tickBlocking();
 
-  // settings_.reset(new drivers::RTIMUSettings("RTIMULib"));
-  // RTIMUSettings *settings = new RTIMUSettings("RTIMULib");
-
-  // RTIMU *imu = new RTIMU(settings);
+  // drivers::RTFusionKalman4 *m_fusion = new drivers::RTFusionKalman4();
+  // std::cout<<m_fusion->fusionType()<<std::endl;
 
   std::cout << imu->IMUType() << std::endl;
 
@@ -101,6 +100,37 @@ void ImuDriver::start()
   // rtimuhal_->HALOpen();
   // segway_.reset(new drivers::Segway(get_ip(), get_port()));
   // segway_->start();
+
+  while (1)
+  {
+    //  poll at the rate recommended by the IMU
+
+    usleep(imu->IMUGetPollInterval() * 1000);
+    while (imu->IMURead())
+    {
+      RTIMU_DATA imuData = imu->getIMUData();
+      sampleCount++;
+
+      now = RTMath::currentUSecsSinceEpoch();
+      std::cout<<now<<std::endl;
+      // //  display 10 times per second
+
+      // if ((now - displayTimer) > 100000)
+      // {
+      //   printf("Sample rate %d: %s\r", sampleRate, RTMath::displayDegrees("", imuData.fusionPose));
+      //   fflush(stdout);
+      //   displayTimer = now;
+      // }
+      // //  update rate every second
+
+      // if ((now - rateTimer) > 1000000)
+      // {
+      //   sampleRate = sampleCount;
+      //   sampleCount = 0;
+      //   rateTimer = now;
+      // }
+    }
+  }
 }
 
 void ImuDriver::publishGoal(const Vector2d &position)
@@ -134,30 +164,30 @@ void ImuDriver::tick()
   //   std::cout<<"false"<<std::endl;
   // }
 
-  while (imu->IMURead())
-  {
-    RTIMU_DATA imuData = imu->getIMUData();
-    sampleCount++;
+  // while (imu->IMURead())
+  // {
+  //   RTIMU_DATA imuData = imu->getIMUData();
+  //   sampleCount++;
 
-    now = RTMath::currentUSecsSinceEpoch();
+  //   now = RTMath::currentUSecsSinceEpoch();
 
-    //  display 10 times per second
+  //   //  display 10 times per second
 
-    if ((now - displayTimer) > 100000)
-    {
-      printf("Sample rate %d: %s\r", sampleRate, RTMath::displayDegrees("", imuData.fusionPose));
-      fflush(stdout);
-      displayTimer = now;
-    }
-    //  update rate every second
+  //   if ((now - displayTimer) > 100000)
+  //   {
+  //     printf("Sample rate %d: %s\r", sampleRate, RTMath::displayDegrees("", imuData.fusionPose));
+  //     fflush(stdout);
+  //     displayTimer = now;
+  //   }
+  //   //  update rate every second
 
-    if ((now - rateTimer) > 1000000)
-    {
-      sampleRate = sampleCount;
-      sampleCount = 0;
-      rateTimer = now;
-    }
-  }
+  //   if ((now - rateTimer) > 1000000)
+  //   {
+  //     sampleRate = sampleCount;
+  //     sampleCount = 0;
+  //     rateTimer = now;
+  //   }
+  // }
 
   // // This part will be run at every tick. We are ticking periodically in this example.
   // // Read desired position parameter <- ISAAC_PARAM(Vector2d, desired_position, Vector2d(9.0, 25.0));

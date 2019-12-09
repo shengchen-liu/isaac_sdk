@@ -22,7 +22,7 @@ typedef struct
     bool fusionPoseValid;
     RTVector3 fusionPose;
     bool fusionQPoseValid;
-    // RTQuaternion fusionQPose;
+    RTQuaternion fusionQPose;
     bool gyroValid;
     RTVector3 gyro;
     bool accelValid;

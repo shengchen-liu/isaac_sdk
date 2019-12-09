@@ -61,6 +61,7 @@ isaac_cc_library(
         "RTIMULibDefs.hpp",
         "RTIMUDefs.hpp",
         "RTIMULSM6DS33LIS3MDL.hpp",
+        "RTFusionKalman4.hpp",
     ],
     visibility = ["//visibility:public"],
     deps = [
@@ -127,6 +128,30 @@ isaac_cc_library(
     hdrs = [
         "RTMath.hpp",
         "RTIMUHal.hpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//engine/core",
+        "//engine/gems/coms:socket",
+        "//engine/gems/math",
+        "//engine/gems/serialization:crc16",
+        "//engine/gems/sight",
+    ],
+)
+
+isaac_cc_library(
+    name = "RTFusionKalman4",
+    srcs = [
+        "RTFusionKalman4.cpp",
+    ],
+    hdrs = [
+        "RTFusionKalman4.hpp",
+        "RTIMUSettings.hpp",
+        "RTFusion.hpp",
+        "RTIMULibDefs.hpp",
+        "RTMath.hpp",
+        "RTIMUHal.hpp",
+        "RTIMUDefs.hpp",
     ],
     visibility = ["//visibility:public"],
     deps = [

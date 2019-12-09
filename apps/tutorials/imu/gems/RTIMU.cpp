@@ -55,6 +55,10 @@ RTIMU::RTIMU(RTIMUSettings *settings)
     HAL_INFO1("Using fusion algorithm %s\n", RTFusion::fusionName(m_settings->m_fusionType));
 };
 
+int RTIMU::IMUGetPollInterval(){
+    return (400 / m_sampleRate);
+}
+
 bool RTIMU::IMUInit()
 {
     unsigned char result;
@@ -538,7 +542,7 @@ bool RTIMU::IMURead()
     handleGyroBias();
     calibrateAverageCompass();
     calibrateAccel();
-    
+
     //  now update the filter
     updateFusion();
 
