@@ -62,9 +62,18 @@ public:
 
     void setCalibrationData();
 
+    //  getCompassCalibrationValid() returns true if the compass min/max calibration data is being used
+
+    bool getCompassCalibrationValid() { return !m_compassCalibrationMode && m_settings->m_compassCalValid; }
+
+    //  getRuntimeCompassCalibrationValid() returns true if the runtime compass min/max calibration data is being used
+
+    bool getRuntimeCompassCalibrationValid() { return !m_compassCalibrationMode && m_runtimeMagCalValid; }
+
 protected:
-    void gyroBiasInit();   // sets up gyro bias calculation
-    void handleGyroBias(); // adjust gyro for bias
+    void gyroBiasInit();            // sets up gyro bias calculation
+    void handleGyroBias();          // adjust gyro for bias
+    void calibrateAverageCompass(); // calibrate and smooth compass
 
     bool m_compassCalibrationMode; // true if cal mode so don't use cal data!
     bool m_accelCalibrationMode;   // true if cal mode so don't use cal data!
@@ -86,6 +95,7 @@ protected:
 
     float m_compassCalOffset[3];
     float m_compassCalScale[3];
+    RTVector3 m_compassAverage; // a running average to smooth the mag outputs
 
     bool m_runtimeMagCalValid;   // true if the runtime mag calibration has valid data
     float m_runtimeMagCalMax[3]; // runtime max mag values seen
