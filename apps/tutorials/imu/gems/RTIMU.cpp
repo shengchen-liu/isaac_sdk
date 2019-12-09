@@ -1,10 +1,30 @@
 #include "RTIMU.hpp"
 #include "RTFusionKalman4.hpp"
 #include <iostream>
+
+
+//  this sets the learning rate for compass running average calculation
+
+#define COMPASS_ALPHA 0.2f
+
+//  this sets the min range (max - min) of values to trigger runtime mag calibration
+
+#define RTIMU_RUNTIME_MAGCAL_RANGE  30
+
+//  this defines the accelerometer noise level
+
+#define RTIMU_FUZZY_GYRO_ZERO      0.20
+
+//  this defines the accelerometer noise level
+
+#define RTIMU_FUZZY_ACCEL_ZERO      0.05
+
 namespace isaac
 {
 namespace drivers
 {
+
+
 RTIMU::RTIMU(RTIMUSettings *settings)
 {
     m_settings = settings;
