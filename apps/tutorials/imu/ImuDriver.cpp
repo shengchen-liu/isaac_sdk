@@ -19,8 +19,8 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 #include "messages/state/differential_base.hpp"
 #include "apps/tutorials/imu/gems/segway.hpp"
 #include "apps/tutorials/imu/gems/RTIMUHal.hpp"
-#include "apps/tutorials/imu/gems/RTIMUSettings.hpp"
-#include "apps/tutorials/imu/gems/RTIMU.hpp"
+// #include "apps/tutorials/imu/gems/RTIMUSettings.hpp"
+// #include "apps/tutorials/imu/gems/RTIMU.hpp"
 #include "apps/tutorials/imu/gems/RTMath.hpp"
 #include "apps/tutorials/imu/gems/RTFusion.hpp"
 
@@ -51,9 +51,9 @@ void ImuDriver::start()
   tickBlocking();
 
   // settings_.reset(new drivers::RTIMUSettings("RTIMULib"));
-  RTIMUSettings *settings = new RTIMUSettings("RTIMULib");
+  // RTIMUSettings *settings = new RTIMUSettings("RTIMULib");
 
-  RTIMU *imu = new RTIMU(settings);
+  // RTIMU *imu = new RTIMU(settings);
 
   std::cout << imu->IMUType() << std::endl;
 
@@ -120,33 +120,41 @@ void ImuDriver::publishGoal(const Vector2d &position)
 
 void ImuDriver::tick()
 {
-  // This part will be run at every tick. We are ticking periodically in this example.
-  // Read desired position parameter <- ISAAC_PARAM(Vector2d, desired_position, Vector2d(9.0, 25.0));
-  const Vector2d position = get_desired_position();
-  // Publish goal, if there has been a location change
-  if (isFirstTick() || (position - goal_position_).norm() > kGoalTolerance)
-  {
-    publishGoal(position);
+  if (imu->IMURead()){
+    std::cout<<"true"<<std::endl;
   }
+  else
+  {
+    std::cout<<"false"<<std::endl;
+  }
+  
+  // // This part will be run at every tick. We are ticking periodically in this example.
+  // // Read desired position parameter <- ISAAC_PARAM(Vector2d, desired_position, Vector2d(9.0, 25.0));
+  // const Vector2d position = get_desired_position();
+  // // Publish goal, if there has been a location change
+  // if (isFirstTick() || (position - goal_position_).norm() > kGoalTolerance)
+  // {
+  //   publishGoal(position);
+  // }
 
-  // auto state = segway_->getSegwayState();
-  // std::cout<<state.linear_accel_msp2<<std::endl;
+  // // auto state = segway_->getSegwayState();
+  // // std::cout<<state.linear_accel_msp2<<std::endl;
 
-  // Process feedback
-  rx_feedback().processLatestNewMessage(
-      [this](auto feedback_proto, int64_t pubtime, int64_t acqtime) {
-        // Check if this feedback is associated with the last goal we transmitted
-        if (goal_timestamp_ != acqtime)
-        {
-          return;
-        }
-        // const float A_x = feedback_proto.getLinearAccelerationX();
-        // std::cout<<A_x<<std::endl;
-        // // Show information on WebSight
-        // show("arrived", arrived ? 1.0 : 0.0);
-      });
-  // // Print the desired message to the console <- ISAAC_PARAM(std::string, message, "Hello World!");
-  // LOG_INFO(get_message().c_str());
+  // // Process feedback
+  // rx_feedback().processLatestNewMessage(
+  //     [this](auto feedback_proto, int64_t pubtime, int64_t acqtime) {
+  //       // Check if this feedback is associated with the last goal we transmitted
+  //       if (goal_timestamp_ != acqtime)
+  //       {
+  //         return;
+  //       }
+  //       // const float A_x = feedback_proto.getLinearAccelerationX();
+  //       // std::cout<<A_x<<std::endl;
+  //       // // Show information on WebSight
+  //       // show("arrived", arrived ? 1.0 : 0.0);
+  //     });
+  // // // Print the desired message to the console <- ISAAC_PARAM(std::string, message, "Hello World!");
+  // // LOG_INFO(get_message().c_str());
 }
 
 } // namespace isaac

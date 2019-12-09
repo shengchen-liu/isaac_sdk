@@ -26,9 +26,9 @@ RTIMU::RTIMU(RTIMUSettings *settings)
         m_fusion = new RTFusionKalman4();
         break;
 
-    // case RTFUSION_TYPE_RTQF:
-    //     m_fusion = new RTFusionRTQF();
-    //     break;
+        // case RTFUSION_TYPE_RTQF:
+        //     m_fusion = new RTFusionRTQF();
+        //     break;
 
     default:
         m_fusion = new RTFusion();
@@ -306,13 +306,14 @@ bool RTIMU::setAccel()
 {
     unsigned char ctrl1_xl;
 
-    if ((m_settings->m_GD20HM303DAccelSampleRate < 0) || (m_settings->m_GD20HM303DAccelSampleRate > 10)) 
+    if ((m_settings->m_GD20HM303DAccelSampleRate < 0) || (m_settings->m_GD20HM303DAccelSampleRate > 10))
     {
         HAL_ERROR1("Illegal LSM303D accel sample rate code %d\n", m_settings->m_GD20HM303DAccelSampleRate);
         return false;
     }
 
-    switch (m_settings->m_LSM6DS33LIS3MDLAccelSampleRate) {
+    switch (m_settings->m_LSM6DS33LIS3MDLAccelSampleRate)
+    {
     case LSM6DS33_ACCEL_SAMPLERATE_0:
         ctrl1_xl = 0x00;
         m_sampleRate = 0;
@@ -375,25 +376,25 @@ bool RTIMU::setAccel()
 
     m_sampleInterval = (uint64_t)1000000 / m_sampleRate;
 
-
-    switch (m_settings->m_LSM6DS33LIS3MDLAccelFsr) {
+    switch (m_settings->m_LSM6DS33LIS3MDLAccelFsr)
+    {
     case LSM6DS33_ACCEL_FSR_2:
-        ctrl1_xl |= (0x00<<2);
+        ctrl1_xl |= (0x00 << 2);
         m_accelScale = (RTFLOAT)0.000061;
         break;
 
     case LSM6DS33_ACCEL_FSR_16:
-        ctrl1_xl |= (0x01<<2);
+        ctrl1_xl |= (0x01 << 2);
         m_accelScale = (RTFLOAT)0.000488;
         break;
 
     case LSM6DS33_ACCEL_FSR_4:
-        ctrl1_xl |= (0x10<<2);
+        ctrl1_xl |= (0x10 << 2);
         m_accelScale = (RTFLOAT)0.000122;
         break;
 
     case LSM6DS33_ACCEL_FSR_8:
-        ctrl1_xl |= (0x11<<2);
+        ctrl1_xl |= (0x11 << 2);
         m_accelScale = (RTFLOAT)0.000244;
         break;
 
@@ -402,8 +403,8 @@ bool RTIMU::setAccel()
         return false;
     }
 
-
-    switch (m_settings->m_LSM6DS33LIS3MDLAccelLpf) {
+    switch (m_settings->m_LSM6DS33LIS3MDLAccelLpf)
+    {
     case LSM6DS33_ACCEL_LPF_400:
         ctrl1_xl |= 0x00;
         break;
@@ -419,15 +420,14 @@ bool RTIMU::setAccel()
     case LSM6DS33_ACCEL_LPF_50:
         ctrl1_xl |= 0x03;
         break;
-
     }
 
     if (!m_settings->HALWrite(m_gyroAccelSlaveAddr, LSM6DS33_CTRL1_XL, ctrl1_xl, "Failed to set LSM6DS33 CTRL1_XL"))
-	return false;
+        return false;
 
     //std::cout << "Writing LSM6DS33 CTRL1_XL: " << static_cast<unsigned>(ctrl1_xl) << std::endl;
 
-    if ((m_settings->m_LSM6DS33LIS3MDLAccelHpf < LSM6DS33_ACCEL_HPF_0) || (m_settings->m_LSM6DS33LIS3MDLAccelHpf > LSM6DS33_ACCEL_HPF_3)) 
+    if ((m_settings->m_LSM6DS33LIS3MDLAccelHpf < LSM6DS33_ACCEL_HPF_0) || (m_settings->m_LSM6DS33LIS3MDLAccelHpf > LSM6DS33_ACCEL_HPF_3))
     {
         HAL_ERROR1("Illegal LSM6DS33 high pass filter code %d\n", m_settings->m_LSM6DS33LIS3MDLAccelHpf);
         return false;
@@ -439,7 +439,7 @@ bool RTIMU::setAccel()
     unsigned char accelHpf = m_settings->m_LSM6DS33LIS3MDLAccelHpf;
 
     // LPF2_XL_EN, HPCF_XL1, HPCF_XL0, 0, 0, HP_SLOPE_XL_EN, 0, LOW_PASS_ON_6D
-    unsigned char ctrl8_xl = (LPF2_XL_EN<<7) | (accelHpf<<5) | (HP_SLOPE_XL_EN<<2) | (HP_SLOPE_XL_EN<<0) | 0x00;
+    unsigned char ctrl8_xl = (LPF2_XL_EN << 7) | (accelHpf << 5) | (HP_SLOPE_XL_EN << 2) | (HP_SLOPE_XL_EN << 0) | 0x00;
 
     //std::cout << "Writing LSM6DS33 CTRL8_XL: " << static_cast<unsigned>(ctrl8_xl) << std::endl;
 
@@ -448,7 +448,6 @@ bool RTIMU::setAccel()
 
     std::cout << "LSM6DS33 Accel set" << std::endl;
     return true;
-
 }
 
 void RTIMU::gyroBiasInit()
@@ -456,6 +455,52 @@ void RTIMU::gyroBiasInit()
     m_gyroLearningAlpha = 2.0f / m_sampleRate;
     m_gyroContinuousAlpha = 0.01f / m_sampleRate;
     m_gyroSampleCount = 0;
+}
+
+bool RTIMU::IMURead()
+{
+    unsigned char status;
+    unsigned char gyroData[6];
+    unsigned char accelData[6];
+    unsigned char compassData[6];
+
+    // STATUS_REG
+    // -, -, -, -, EV_BOOT, TDA, GDA, XLDA
+    // EV_BOOT: Boot running flag signal. Default value: 0
+    //          0: no boot running; 1: boot running
+    // TDA:     Temperature new data available. Default value: 0
+    //          0: no set of data is available at temperature sensor output;
+    //          1: a new set of data is available at temperature sensor output
+    // GDA:     Gyroscope new data available. Default value: 0
+    //          0: no set of data available at gyroscope output
+    //          1: a new set of data is available at gyroscope sensor output
+    // XLDA:    Accelerometer new data available. Default value: 0
+    //          0: no set of data available at accelerometer output
+    //          1: a new set of data is available at accelerometer output
+    if (!m_settings->HALRead(m_gyroAccelSlaveAddr, LSM6DS33_STATUS_REG, 1, &status, "Failed to read LSM6DS33 status"))
+        return false;
+     if (!m_settings->HALRead(m_gyroAccelSlaveAddr, LSM6DS33_OUTX_L_G, 6, gyroData, "Failed to read LSM6DS33 data"))
+        return false;
+
+
+    std::cout << "Gyro Data: "
+    << "  X " << static_cast<int16_t>(gyroData[0] | gyroData[1] << 8) * m_gyroScale 
+    << "; Y " << static_cast<int16_t>(gyroData[2] | gyroData[3] << 8) * m_gyroScale
+    << "; Z " << static_cast<int16_t>(gyroData[4] | gyroData[5] << 8) * m_gyroScale << std::endl;
+
+
+    m_imuData.timestamp = RTMath::currentUSecsSinceEpoch();
+
+    if (!m_settings->HALRead(m_gyroAccelSlaveAddr, LSM6DS33_OUTX_L_XL, 6, accelData, "Failed to read LSM6DS33 accel data"))
+        return false;
+    
+
+    std::cout << "Accel Data: "
+    << "  X " << static_cast<int16_t>(accelData[0] | accelData[1] << 8) 
+    << "; Y " << static_cast<int16_t>(accelData[2] | accelData[3] << 8)
+    << "; Z " << static_cast<int16_t>(accelData[4] | accelData[5] << 8) << std::endl;
+
+    return true;    
 }
 } // namespace drivers
 } // namespace isaac
