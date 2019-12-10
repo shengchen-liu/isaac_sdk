@@ -87,51 +87,6 @@ void ImuDriver::start()
   //  set up for rate timer
 
   rateTimer = displayTimer = RTMath::currentUSecsSinceEpoch();
-
-  // rtimusettings_.reset(new drivers::RTIMUSettings());
-
-  // rtimu_.reset(new drivers::RTIMU());
-
-  // RTIMU::createIMU(settings);
-  // std::cout<<imu->m_imuType<<std::endl;
-
-  // rtimu_.reset(new drivers::RTIMU::createIMU());
-  // rtimuhal_.reset(new drivers::RTIMUHal());
-  // rtimuhal_->HALOpen();
-  // segway_.reset(new drivers::Segway(get_ip(), get_port()));
-  // segway_->start();
-
-  int count = 0;
-  while (count < 1000)
-  {
-    count++;
-    //  poll at the rate recommended by the IMU
-
-    usleep(imu->IMUGetPollInterval() * 1000);
-    while (imu->IMURead())
-    {
-      RTIMU_DATA imuData = imu->getIMUData();
-      sampleCount++;
-
-      now = RTMath::currentUSecsSinceEpoch();
-      //  display 10 times per second
-
-      if ((now - displayTimer) > 100000)
-      {
-        printf("Sample rate %d: %s\r", sampleRate, RTMath::displayDegrees("", imuData.fusionPose));
-        fflush(stdout);
-        displayTimer = now;
-      }
-      //  update rate every second
-
-      if ((now - rateTimer) > 1000000)
-      {
-        sampleRate = sampleCount;
-        sampleCount = 0;
-        rateTimer = now;
-      }
-    }
-  }
 }
 
 void ImuDriver::publishGoal(const Vector2d &position)
@@ -157,6 +112,31 @@ void ImuDriver::publishGoal(const Vector2d &position)
 
 void ImuDriver::tick()
 {
+  // This part will be run at every tick. We are ticking periodically in this example.
+  // usleep(imu->IMUGetPollInterval() * 1000); // 4000 micro second = 4 ms
+  while (imu->IMURead())
+  {
+    RTIMU_DATA imuData = imu->getIMUData();
+    sampleCount++;
+
+    now = RTMath::currentUSecsSinceEpoch();
+    //  display 10 times per second
+
+    if ((now - displayTimer) > 100000)
+    {
+      printf("Sample rate %d: %s\r", sampleRate, RTMath::displayDegrees("", imuData.fusionPose));
+      fflush(stdout);
+      displayTimer = now;
+    }
+    //  update rate every second
+
+    if ((now - rateTimer) > 1000000)
+    {
+      sampleRate = sampleCount;
+      sampleCount = 0;
+      rateTimer = now;
+    }
+  }
   // if (imu->IMURead()){
   //   std::cout<<"true"<<std::endl;
   // }

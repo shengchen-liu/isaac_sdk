@@ -48,7 +48,7 @@
     "imu" : {
       "imu" : {
         "message": "My own hello world!",
-        "tick_period" : "1Hz"
+        "tick_period" : "4ms"
       }
     },
     "go_to_mockup" : {
