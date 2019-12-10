@@ -55,7 +55,8 @@ RTIMU::RTIMU(RTIMUSettings *settings)
     HAL_INFO1("Using fusion algorithm %s\n", RTFusion::fusionName(m_settings->m_fusionType));
 };
 
-int RTIMU::IMUGetPollInterval(){
+int RTIMU::IMUGetPollInterval()
+{
     return (400 / m_sampleRate);
 }
 
@@ -110,9 +111,6 @@ bool RTIMU::IMUInit()
     if (!m_settings->HALOpen())
         return false;
 
-    HAL_INFO("LSM6DS33LIS3MDL init complete\n");
-    return true;
-
     //  Set up the gyro/accel
 
     // IF_INC = 1 (automatically increment address register)
@@ -140,6 +138,9 @@ bool RTIMU::IMUInit()
     }
 
     gyroBiasInit();
+
+    HAL_INFO("LSM6DS33LIS3MDL init complete\n");
+    return true;
 }
 
 void RTIMU::setCalibrationData()
@@ -504,20 +505,20 @@ bool RTIMU::IMURead()
     if (!m_settings->HALRead(m_gyroAccelSlaveAddr, LSM6DS33_OUTX_L_G, 6, gyroData, "Failed to read LSM6DS33 data"))
         return false;
 
-    std::cout << "Gyro Data: "
-              << "  X " << static_cast<int16_t>(gyroData[0] | gyroData[1] << 8) * m_gyroScale
-              << "; Y " << static_cast<int16_t>(gyroData[2] | gyroData[3] << 8) * m_gyroScale
-              << "; Z " << static_cast<int16_t>(gyroData[4] | gyroData[5] << 8) * m_gyroScale << std::endl;
+    // std::cout << "Gyro Data: "
+    //           << "  X " << static_cast<int16_t>(gyroData[0] | gyroData[1] << 8) * m_gyroScale
+    //           << "; Y " << static_cast<int16_t>(gyroData[2] | gyroData[3] << 8) * m_gyroScale
+    //           << "; Z " << static_cast<int16_t>(gyroData[4] | gyroData[5] << 8) * m_gyroScale << std::endl;
 
     m_imuData.timestamp = RTMath::currentUSecsSinceEpoch();
 
     if (!m_settings->HALRead(m_gyroAccelSlaveAddr, LSM6DS33_OUTX_L_XL, 6, accelData, "Failed to read LSM6DS33 accel data"))
         return false;
 
-    std::cout << "Accel Data: "
-              << "  X " << static_cast<int16_t>(accelData[0] | accelData[1] << 8)
-              << "; Y " << static_cast<int16_t>(accelData[2] | accelData[3] << 8)
-              << "; Z " << static_cast<int16_t>(accelData[4] | accelData[5] << 8) << std::endl;
+    // std::cout << "Accel Data: "
+    //           << "  X " << static_cast<int16_t>(accelData[0] | accelData[1] << 8)
+    //           << "; Y " << static_cast<int16_t>(accelData[2] | accelData[3] << 8)
+    //           << "; Z " << static_cast<int16_t>(accelData[4] | accelData[5] << 8) << std::endl;
 
     RTMath::convertToVector(gyroData, m_imuData.gyro, m_gyroScale, false);
     RTMath::convertToVector(accelData, m_imuData.accel, m_accelScale, false);
@@ -806,7 +807,6 @@ void RTIMU::updateFusion()
 {
     m_fusion->newIMUData(m_imuData, m_settings);
 }
-
 
 } // namespace drivers
 } // namespace isaac

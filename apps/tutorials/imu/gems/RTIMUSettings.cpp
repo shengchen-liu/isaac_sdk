@@ -130,6 +130,19 @@ void RTIMUSettings::setDefaults()
     m_accelCalValid = false;
     m_gyroBiasValid = false;
 
+     //  GD20HM303D defaults
+
+    m_GD20HM303DGyroSampleRate = L3GD20H_SAMPLERATE_50;
+    m_GD20HM303DGyroHpf = L3GD20H_HPF_4;
+    m_GD20HM303DGyroFsr = L3GD20H_FSR_500;
+
+    m_GD20HM303DAccelSampleRate = LSM303D_ACCEL_SAMPLERATE_50;
+    m_GD20HM303DAccelFsr = LSM303D_ACCEL_FSR_8;
+    m_GD20HM303DAccelLpf = LSM303D_ACCEL_LPF_50;
+
+    m_GD20HM303DCompassSampleRate = LSM303D_COMPASS_SAMPLERATE_50;
+    m_GD20HM303DCompassFsr = LSM303D_COMPASS_FSR_2;
+    
     //  LSM6DS33LIS3MDL defaults
 
     m_LSM6DS33LIS3MDLGyroSampleRate = LSM6DS33_SAMPLERATE_1660;
