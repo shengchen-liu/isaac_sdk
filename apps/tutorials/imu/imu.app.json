@@ -48,7 +48,8 @@
     "imu" : {
       "imu" : {
         "message": "My own hello world!",
-        "tick_period" : "4ms"
+        "tick_period" : "4ms",
+        "device_id": 1
       }
     },
     "go_to_mockup" : {

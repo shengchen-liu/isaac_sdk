@@ -50,12 +50,14 @@ void ImuDriver::start()
   // in the example file fast_ping.json. Run the application like this to use an additional config
   // file:
   //   bazel run //apps/tutorials/ping -- --config apps/tutorials/ping/fast_ping.json
+    
+  // Read device_id parameter
+  const int device_id = get_device_id();
+  std::cout << device_id << std::endl;
+
   goal_timestamp_ = 0;
   goal_position_ = Vector2d::Zero();
   tickBlocking();
-
-  // drivers::RTFusionKalman4 *m_fusion = new drivers::RTFusionKalman4();
-  // std::cout<<m_fusion->fusionType()<<std::endl;
 
   std::cout << imu->IMUType() << std::endl;
 
@@ -71,22 +73,22 @@ void ImuDriver::start()
 
   imu->IMUInit();
 
-  // RTVector3 *residuals = new RTVector3();
-  // std::cout<<residuals->length()<<std::endl;
+  // // RTVector3 *residuals = new RTVector3();
+  // // std::cout<<residuals->length()<<std::endl;
 
-  // RTFusion *m_fusion = new RTFusion();
-  // std::cout<<m_fusion->fusionName(0)<<std::endl;
+  // // RTFusion *m_fusion = new RTFusion();
+  // // std::cout<<m_fusion->fusionName(0)<<std::endl;
 
-  //  this is a convenient place to change fusion parameters
+  // //  this is a convenient place to change fusion parameters
 
-  imu->setSlerpPower(0.02);
-  imu->setGyroEnable(true);
-  imu->setAccelEnable(true);
-  imu->setCompassEnable(false);
+  // imu->setSlerpPower(0.02);
+  // imu->setGyroEnable(true);
+  // imu->setAccelEnable(true);
+  // imu->setCompassEnable(false);
 
-  //  set up for rate timer
+  // //  set up for rate timer
 
-  rateTimer = displayTimer = RTMath::currentUSecsSinceEpoch();
+  // rateTimer = displayTimer = RTMath::currentUSecsSinceEpoch();
 }
 
 void ImuDriver::publishGoal(const Vector2d &position)
@@ -114,29 +116,29 @@ void ImuDriver::tick()
 {
   // This part will be run at every tick. We are ticking periodically in this example.
   // usleep(imu->IMUGetPollInterval() * 1000); // 4000 micro second = 4 ms
-  while (imu->IMURead())
-  {
-    RTIMU_DATA imuData = imu->getIMUData();
-    sampleCount++;
+  // while (imu->IMURead())
+  // {
+  //   RTIMU_DATA imuData = imu->getIMUData();
+  //   sampleCount++;
 
-    now = RTMath::currentUSecsSinceEpoch();
-    //  display 10 times per second
+  //   now = RTMath::currentUSecsSinceEpoch();
+  //   //  display 10 times per second
 
-    if ((now - displayTimer) > 100000)
-    {
-      printf("Sample rate %d: %s\r", sampleRate, RTMath::displayDegrees("", imuData.fusionPose));
-      fflush(stdout);
-      displayTimer = now;
-    }
-    //  update rate every second
+  //   if ((now - displayTimer) > 100000)
+  //   {
+  //     printf("Sample rate %d: %s\r", sampleRate, RTMath::displayDegrees("", imuData.fusionPose));
+  //     fflush(stdout);
+  //     displayTimer = now;
+  //   }
+  //   //  update rate every second
 
-    if ((now - rateTimer) > 1000000)
-    {
-      sampleRate = sampleCount;
-      sampleCount = 0;
-      rateTimer = now;
-    }
-  }
+  //   if ((now - rateTimer) > 1000000)
+  //   {
+  //     sampleRate = sampleCount;
+  //     sampleCount = 0;
+  //     rateTimer = now;
+  //   }
+  // }
   // if (imu->IMURead()){
   //   std::cout<<"true"<<std::endl;
   // }

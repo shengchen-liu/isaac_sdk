@@ -64,6 +64,9 @@ public:
   // Isaac will use this port to talk to segway
   ISAAC_PARAM(int, port, 8080);
 
+  // Isaac will use this device_id to talk to imu
+  ISAAC_PARAM(int, device_id, 1);
+
 private:
   // Publishes a goal message with given target position.
   void publishGoal(const Vector2d &position);
