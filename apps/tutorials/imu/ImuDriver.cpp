@@ -23,7 +23,6 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 // #include "apps/tutorials/imu/gems/RTIMU.hpp"
 #include "apps/tutorials/imu/gems/RTMath.hpp"
 #include "apps/tutorials/imu/gems/RTFusion.hpp"
-#include "apps/tutorials/imu/gems/RTIMULibDefs.hpp"
 #include "apps/tutorials/imu/gems/RTFusionKalman4.hpp"
 
 namespace isaac
@@ -50,7 +49,7 @@ void ImuDriver::start()
   // in the example file fast_ping.json. Run the application like this to use an additional config
   // file:
   //   bazel run //apps/tutorials/ping -- --config apps/tutorials/ping/fast_ping.json
-    
+
   // Read device_id parameter
   const int device_id = get_device_id();
   std::cout << device_id << std::endl;
@@ -73,18 +72,12 @@ void ImuDriver::start()
 
   imu->IMUInit();
 
-  // // RTVector3 *residuals = new RTVector3();
-  // // std::cout<<residuals->length()<<std::endl;
+  //  this is a convenient place to change fusion parameters
 
-  // // RTFusion *m_fusion = new RTFusion();
-  // // std::cout<<m_fusion->fusionName(0)<<std::endl;
-
-  // //  this is a convenient place to change fusion parameters
-
-  // imu->setSlerpPower(0.02);
-  // imu->setGyroEnable(true);
-  // imu->setAccelEnable(true);
-  // imu->setCompassEnable(false);
+  imu->setSlerpPower(0.02);
+  imu->setGyroEnable(true);
+  imu->setAccelEnable(true);
+  imu->setCompassEnable(false);
 
   // //  set up for rate timer
 
@@ -112,33 +105,72 @@ void ImuDriver::publishGoal(const Vector2d &position)
   tx_goal().publish(goal_timestamp_);
 }
 
+void ImuDriver::publishIMU_raw(const RTIMU_DATA &imu_data)
+{
+  // Save the timestamp to later check it against the feedback timestamp
+  imu_raw_timestamp_ = node()->clock()->timestamp();
+
+  float a_x = imu_data.gyro.x();
+  float a_y = imu_data.gyro.y();
+  float a_z = imu_data.gyro.z();
+
+  float v_x = imu_data.accel.x();
+  float v_y = imu_data.accel.y();
+  float v_z = imu_data.accel.z();
+
+  float roll = imu_data.fusionPose.x() * RTMATH_RAD_TO_DEGREE;
+  float pitch = imu_data.fusionPose.y() * RTMATH_RAD_TO_DEGREE;
+  float yaw = imu_data.fusionPose.z() * RTMATH_RAD_TO_DEGREE;
+
+  // Publish a imu_data
+  auto imu_proto = tx_imu_raw().initProto();
+  // assign values
+  imu_proto.setLinearAccelerationX(a_x);
+  imu_proto.setLinearAccelerationY(a_y);
+  imu_proto.setLinearAccelerationZ(a_z);
+
+  imu_proto.setAngularVelocityX(v_x);
+  imu_proto.setAngularVelocityY(v_y);
+  imu_proto.setAngularVelocityZ(v_z);
+
+  imu_proto.setAngleRoll(roll);
+  imu_proto.setAnglePitch(pitch);
+  imu_proto.setAngleYaw(yaw);
+
+  tx_imu_raw().publish(imu_raw_timestamp_);
+  std::cout<<imu_proto.getAngleYaw()<<std::endl;
+  
+}
+
 void ImuDriver::tick()
 {
   // This part will be run at every tick. We are ticking periodically in this example.
   // usleep(imu->IMUGetPollInterval() * 1000); // 4000 micro second = 4 ms
-  // while (imu->IMURead())
-  // {
-  //   RTIMU_DATA imuData = imu->getIMUData();
-  //   sampleCount++;
+  if (imu->IMURead())
+  {
+    RTIMU_DATA imuData = imu->getIMUData();
+    publishIMU_raw(imuData);
 
-  //   now = RTMath::currentUSecsSinceEpoch();
-  //   //  display 10 times per second
+    // sampleCount++;
 
-  //   if ((now - displayTimer) > 100000)
-  //   {
-  //     printf("Sample rate %d: %s\r", sampleRate, RTMath::displayDegrees("", imuData.fusionPose));
-  //     fflush(stdout);
-  //     displayTimer = now;
-  //   }
-  //   //  update rate every second
+    // now = RTMath::currentUSecsSinceEpoch();
+    // //  display 10 times per second
 
-  //   if ((now - rateTimer) > 1000000)
-  //   {
-  //     sampleRate = sampleCount;
-  //     sampleCount = 0;
-  //     rateTimer = now;
-  //   }
-  // }
+    // if ((now - displayTimer) > 100000)
+    // {
+    //   printf("Sample rate %d: %s\r", sampleRate, RTMath::displayDegrees("", imuData.fusionPose));
+    //   fflush(stdout);
+    //   displayTimer = now;
+    // }
+    // //  update rate every second
+
+    // if ((now - rateTimer) > 1000000)
+    // {
+    //   sampleRate = sampleCount;
+    //   sampleCount = 0;
+    //   rateTimer = now;
+    // }
+  }
   // if (imu->IMURead()){
   //   std::cout<<"true"<<std::endl;
   // }

@@ -18,6 +18,7 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 
 #include "apps/tutorials/imu/gems/RTIMUSettings.hpp"
 #include "apps/tutorials/imu/gems/RTIMU.hpp"
+#include "apps/tutorials/imu/gems/RTIMULibDefs.hpp"
 
 namespace isaac
 {
@@ -47,6 +48,9 @@ public:
   // Has whatever needs to be run repeatedly
   void tick() override;
 
+  // Output IMU data
+  ISAAC_PROTO_TX(ImuProto, imu_raw);
+
   // Output goal for the robot
   ISAAC_PROTO_TX(Goal2Proto, goal);
   // Feedback about imu
@@ -71,10 +75,15 @@ private:
   // Publishes a goal message with given target position.
   void publishGoal(const Vector2d &position);
 
+  void publishIMU_raw(const drivers::RTIMU_DATA &imu_data);
+
   // Location of the last goal that is transmitted
   Vector2d goal_position_;
   // Timestamp of the last goal that is transmitted
   int64_t goal_timestamp_;
+
+  // Timestamp of the last imu_raw that is transmitted
+  int64_t imu_raw_timestamp_;
 
   std::unique_ptr<drivers::Segway> segway_;
   std::unique_ptr<drivers::RTIMUHal> rtimuhal_;
@@ -83,7 +92,7 @@ private:
   drivers::RTIMUSettings *settings = new drivers::RTIMUSettings("RTIMULib");
 
   drivers::RTIMU *imu = new drivers::RTIMU(settings);
-  
+
   int sampleCount = 0;
   int sampleRate = 0;
   uint64_t displayTimer;

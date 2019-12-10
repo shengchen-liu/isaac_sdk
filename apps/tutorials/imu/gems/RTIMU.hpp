@@ -36,6 +36,7 @@ namespace isaac
 {
 namespace drivers
 {
+
 class RTIMU
 {
 public:
@@ -151,7 +152,6 @@ private:
     RTFLOAT m_gyroScale;
     RTFLOAT m_accelScale;
     RTFLOAT m_compassScale;
-    
 };
 
 } // namespace drivers
