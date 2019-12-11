@@ -1,13 +1,14 @@
 {
-  "name": "imu_lsm6ds33",
+  "name": "imu",
   "modules": [
-    "imu"
+    "imu",
+    "imu_lsm6ds33"
   ],
   "config": {
     "imu": {
       "lsm6ds33": {
         "i2c_device_id": 1,
-        "tick_period": "100Hz"
+        "tick_period": "4ms"
       }
     },
     "websight": {
@@ -139,7 +140,7 @@
           },
           {
             "name": "lsm6ds33",
-            "type": "isaac::imu::lsm6ds33"
+            "type": "isaac::ImuDriver"
           },
           {
             "name": "imu_corrector",

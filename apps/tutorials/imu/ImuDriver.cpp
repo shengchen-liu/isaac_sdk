@@ -16,11 +16,8 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 #include "engine/core/constants.hpp"
 #include "engine/gems/sight/sight.hpp"
 #include "engine/gems/state/io.hpp"
-#include "messages/state/differential_base.hpp"
 #include "apps/tutorials/imu/gems/segway.hpp"
 #include "apps/tutorials/imu/gems/RTIMUHal.hpp"
-// #include "apps/tutorials/imu/gems/RTIMUSettings.hpp"
-// #include "apps/tutorials/imu/gems/RTIMU.hpp"
 #include "apps/tutorials/imu/gems/RTMath.hpp"
 #include "apps/tutorials/imu/gems/RTFusion.hpp"
 #include "apps/tutorials/imu/gems/RTFusionKalman4.hpp"
@@ -82,27 +79,6 @@ void ImuDriver::start()
   // //  set up for rate timer
 
   // rateTimer = displayTimer = RTMath::currentUSecsSinceEpoch();
-}
-
-void ImuDriver::publishGoal(const Vector2d &position)
-{
-  // Save the timestamp to later check it against the feedback timestamp
-  goal_timestamp_ = node()->clock()->timestamp();
-  // Update the last goal information to avoid transmitting repeated messages
-  goal_position_ = position;
-  // Show the new goal on WebSight
-  show("goal_timestamp", goal_timestamp_);
-  show("goal_position_x", goal_position_.x());
-  show("goal_position_y", goal_position_.y());
-  // Publish a goal with the new goal location
-  auto goal_proto = tx_goal().initProto();
-  goal_proto.setStopRobot(false);
-  ToProto(Pose2d::Translation(position), goal_proto.initGoal());
-  // Use a goal tolerance of kGoalTolerance meters
-  goal_proto.setTolerance(kGoalTolerance);
-  // The goal we publish is with respect to the global "world" coordinate frame
-  goal_proto.setGoalFrame("world");
-  tx_goal().publish(goal_timestamp_);
 }
 
 void ImuDriver::publishIMU_raw(const RTIMU_DATA &imu_data)

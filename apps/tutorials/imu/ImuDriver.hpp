@@ -51,30 +51,10 @@ public:
   // Output IMU data
   ISAAC_PROTO_TX(ImuProto, imu_raw);
 
-  // Output goal for the robot
-  ISAAC_PROTO_TX(Goal2Proto, goal);
-  // Feedback about imu
-  ISAAC_PROTO_RX(ImuProto, feedback);
-
-  // Desired x and y position of the robot on map in meters
-  ISAAC_PARAM(Vector2d, desired_position, Vector2d(9.0, 25.0));
-
-  // Message to be printed at every tick
-  ISAAC_PARAM(std::string, message, "Hello World!");
-
-  // Isaac will use this IP to talk to segway
-  ISAAC_PARAM(std::string, ip, "192.168.0.40");
-
-  // Isaac will use this port to talk to segway
-  ISAAC_PARAM(int, port, 8080);
-
   // Isaac will use this device_id to talk to imu
   ISAAC_PARAM(int, device_id, 1);
 
 private:
-  // Publishes a goal message with given target position.
-  void publishGoal(const Vector2d &position);
-
   void publishIMU_raw(const drivers::RTIMU_DATA &imu_data);
 
   // Location of the last goal that is transmitted

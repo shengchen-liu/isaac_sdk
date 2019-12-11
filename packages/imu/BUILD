@@ -8,22 +8,13 @@ distribution of this software and related documentation without an express
 license agreement from NVIDIA CORPORATION is strictly prohibited.
 """
 
-load("//engine/build:isaac.bzl", "isaac_app")
-
-isaac_app(
-    name = "imu",
-    app_json_file = "imu.app.json",
-    modules = [
-        "imu",
-    ],
+filegroup(
+    name = "libimu_module.so",
+    tags = ["manual"],
+    data = select({
+        "//engine/build:platform_x86_64": ["//packages_x86_64/imu:libimu_module.so_release"],
+        "//engine/build:platform_jetpack42": ["//packages_jetpack42/imu:libimu_module.so_release"],
+    }),
+    visibility = ["//visibility:public"],
 )
 
-isaac_app(
-    name = "imu_lsm6ds33",
-    app_json_file = "imu_lsm6ds33.app.json",
-    modules = [
-        "imu",
-        "//apps/tutorials/imu:imu_lsm6ds33",
-        "//apps/tutorials/webinar_1:go_to_mockup",
-    ],
-)

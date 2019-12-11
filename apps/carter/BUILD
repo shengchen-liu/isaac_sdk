@@ -11,6 +11,18 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 load("//engine/build:isaac.bzl", "isaac_app", "isaac_doc_dep", "isaac_subgraph")
 
 isaac_subgraph(
+    name = "carter_hardware_lsm6ds33__subgraph",
+    modules = [
+        "//apps/tutorials/imu:imu_lsm6ds33",
+        "segway",
+        "velodyne_lidar",
+    ],
+    subgraph = "carter_hardware.subgraph.json",
+    visibility = ["//visibility:public"],
+)
+
+
+isaac_subgraph(
     name = "carter_hardware_subgraph",
     modules = [
         "imu",
@@ -24,7 +36,7 @@ isaac_subgraph(
 isaac_subgraph(
     name = "2d_carter_subgraph",
     data = [
-        ":carter_hardware_subgraph",
+        ":carter_hardware_lsm6ds33__subgraph",
         "//packages/navigation/apps:scan_flattener_subgraph",
     ],
     modules = [],
