@@ -24,6 +24,5 @@ isaac_app(
     modules = [
         "imu",
         "//apps/tutorials/imu:imu_lsm6ds33",
-        "//apps/tutorials/webinar_1:go_to_mockup",
     ],
 )

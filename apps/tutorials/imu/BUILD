@@ -31,7 +31,16 @@ isaac_app(
     name = "imu",
     data = [],
     modules = [
-        "//apps/tutorials/imu:imu_lsm6ds33"
+        "//apps/tutorials/imu:imu_lsm6ds33",
+        "imu",
+    ],
+)
+
+isaac_app(
+    name = "lsm6ds33",
+    modules = [
+        "//apps/tutorials/imu:imu_lsm6ds33",
+        "imu"
     ],
 )
 

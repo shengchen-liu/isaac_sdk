@@ -17,7 +17,7 @@ isaac_subgraph(
         "segway",
         "velodyne_lidar",
     ],
-    subgraph = "carter_hardware.subgraph.json",
+    subgraph = "carter_hardware_lsm6ds33.subgraph.json",
     visibility = ["//visibility:public"],
 )
 

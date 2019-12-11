@@ -16,7 +16,7 @@
       },
       {
         "name": "carter_hardware",
-        "subgraph": "apps/carter/carter_hardware.subgraph.json"
+        "subgraph": "apps/carter/carter_hardware_lsm6ds33.subgraph.json"
       },
       {
         "name": "scan_flattener",
