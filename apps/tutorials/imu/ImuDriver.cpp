@@ -138,8 +138,22 @@ void ImuDriver::publishIMU_raw(const RTIMU_DATA &imu_data)
   imu_proto.setAngleYaw(yaw);
 
   tx_imu_raw().publish(imu_raw_timestamp_);
-  std::cout<<imu_proto.getAngleYaw()<<std::endl;
-  
+
+  // Show the new goal on WebSight
+  show("imu_raw_timestamp_", imu_raw_timestamp_);
+  show("LinearAccelerationX", a_x);
+  show("LinearAccelerationY", a_y);
+  show("LinearAccelerationZ", a_z);
+
+  show("AngularVelocityX", v_x);
+  show("AngularVelocityY", v_y);
+  show("AngularVelocityZ", v_z);
+
+  show("Roll", roll);
+  show("Pitch", pitch);
+  show("Yaw", yaw);
+
+  // std::cout<<roll<<std::endl;
 }
 
 void ImuDriver::tick()
@@ -151,25 +165,25 @@ void ImuDriver::tick()
     RTIMU_DATA imuData = imu->getIMUData();
     publishIMU_raw(imuData);
 
-    // sampleCount++;
+    sampleCount++;
 
-    // now = RTMath::currentUSecsSinceEpoch();
-    // //  display 10 times per second
+    now = RTMath::currentUSecsSinceEpoch();
+    //  display 10 times per second
 
-    // if ((now - displayTimer) > 100000)
-    // {
-    //   printf("Sample rate %d: %s\r", sampleRate, RTMath::displayDegrees("", imuData.fusionPose));
-    //   fflush(stdout);
-    //   displayTimer = now;
-    // }
-    // //  update rate every second
+    if ((now - displayTimer) > 100000)
+    {
+      printf("Sample rate %d: %s\r", sampleRate, RTMath::displayDegrees("", imuData.fusionPose));
+      fflush(stdout);
+      displayTimer = now;
+    }
+    //  update rate every second
 
-    // if ((now - rateTimer) > 1000000)
-    // {
-    //   sampleRate = sampleCount;
-    //   sampleCount = 0;
-    //   rateTimer = now;
-    // }
+    if ((now - rateTimer) > 1000000)
+    {
+      sampleRate = sampleCount;
+      sampleCount = 0;
+      rateTimer = now;
+    }
   }
   // if (imu->IMURead()){
   //   std::cout<<"true"<<std::endl;

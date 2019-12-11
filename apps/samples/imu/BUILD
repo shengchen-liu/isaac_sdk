@@ -22,6 +22,6 @@ isaac_app(
     name = "imu_lsm6ds33",
     app_json_file = "imu_lsm6ds33.app.json",
     modules = [
-        'imu_lsm6ds33',
+        'imu',
     ],
 )

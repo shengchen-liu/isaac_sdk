@@ -1,7 +1,7 @@
 {
   "name": "imu_lsm6ds33",
   "modules": [
-    "imu_lsm6ds33"
+    "imu"
   ],
   "config": {
     "imu": {
