@@ -11,8 +11,8 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 load("//engine/build:isaac.bzl", "isaac_app")
 
 isaac_app(
-    name = "carter_sim",
-    app_json_file = "carter_sim.app.json",
+    name = "lawson_sim",
+    app_json_file = "lawson_sim.app.json",
     data = [
         "carter.config.json",
         "carter.graph.json",

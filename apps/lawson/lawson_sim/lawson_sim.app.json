@@ -1,12 +1,12 @@
 {
-  "name": "carter_sim",
+  "name": "lawson_sim",
   "config_files": [
-    "apps/lawson/carter_sim/navigation.config.json",
-    "apps/lawson/carter_sim/carter.config.json"
+    "apps/lawson/lawson_sim/navigation.config.json",
+    "apps/lawson/lawson_sim/carter.config.json"
   ],
   "graph_files": [
-    "apps/lawson/carter_sim/navigation.graph.json",
-    "apps/lawson/carter_sim/carter.graph.json"
+    "apps/lawson/lawson_sim/navigation.graph.json",
+    "apps/lawson/lawson_sim/carter.graph.json"
   ],
   "modules": [
     "map",

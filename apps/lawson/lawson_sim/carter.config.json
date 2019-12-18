@@ -148,19 +148,19 @@
             },
             "channels": [
               {
-                "name": "carter_sim/local_map/isaac.navigation.LocalMap/local_map",
+                "name": "lawson_sim/local_map/isaac.navigation.LocalMap/local_map",
                 "active": true
               },
               {
-                "name": "carter_sim/global_plan/isaac.planner.GlobalPlanner/target",
+                "name": "lawson_sim/global_plan/isaac.planner.GlobalPlanner/target",
                 "active": true
               },
               {
-                "name": "carter_sim/global_plan_smoother/smoother/smooth_plan.path",
+                "name": "lawson_sim/global_plan_smoother/smoother/smooth_plan.path",
                 "active": true
               },
               {
-                "name": "carter_sim/lqr/isaac.planner.DifferentialBaseLqrPlanner/plan",
+                "name": "lawson_sim/lqr/isaac.planner.DifferentialBaseLqrPlanner/plan",
                 "active": true
               }
             ]
@@ -173,27 +173,27 @@
             },
             "channels": [
               {
-                "name": "carter_sim/map/occupancy/map",
+                "name": "lawson_sim/map/occupancy/map",
                 "active": true
               },
               {
-                "name": "carter_sim/global_plan/isaac.planner.GlobalPlanner/target",
+                "name": "lawson_sim/global_plan/isaac.planner.GlobalPlanner/target",
                 "active": true
               },
               {
-                "name": "carter_sim/global_plan_smoother/smoother/smooth_plan.path",
+                "name": "lawson_sim/global_plan_smoother/smoother/smooth_plan.path",
                 "active": true
               },
               {
-                "name": "carter_sim/scan_localization/flatscan_viewer/beam_lines",
+                "name": "lawson_sim/scan_localization/flatscan_viewer/beam_lines",
                 "active": true
               },
               {
-                "name": "carter_sim/scan_localization/flatscan_viewer/beam_endpoints",
+                "name": "lawson_sim/scan_localization/flatscan_viewer/beam_endpoints",
                 "active": true
               },
               {
-                "name": "carter_sim/scan_localization/isaac.navigation.ParticleFilterLocalization/particles",
+                "name": "lawson_sim/scan_localization/isaac.navigation.ParticleFilterLocalization/particles",
                 "active": true
               }
             ]
@@ -206,11 +206,11 @@
             },
             "channels": [
               {
-                "name": "carter_sim/LeftColorCameraViewer/isaac.viewers.ColorCameraViewer/Color",
+                "name": "lawson_sim/LeftColorCameraViewer/isaac.viewers.ColorCameraViewer/Color",
                 "active": true
               },
               {
-                "name": "carter_sim/LeftDetectionsViewer/isaac.viewers.DetectionsViewer/detections",
+                "name": "lawson_sim/LeftDetectionsViewer/isaac.viewers.DetectionsViewer/detections",
                 "active": true
               }
             ]
@@ -223,7 +223,7 @@
             },
             "channels": [
               {
-                "name": "carter_sim/LeftDepthCameraViewer/isaac.viewers.DepthCameraViewer/Depth",
+                "name": "lawson_sim/LeftDepthCameraViewer/isaac.viewers.DepthCameraViewer/Depth",
                 "active": true
               }
             ]
@@ -236,11 +236,11 @@
             },
             "channels": [
               {
-                "name": "carter_sim/LeftSegmentationCameraViewer/isaac.viewers.SegmentationCameraViewer/Instances",
+                "name": "lawson_sim/LeftSegmentationCameraViewer/isaac.viewers.SegmentationCameraViewer/Instances",
                 "active": false
               },
               {
-                "name": "carter_sim/LeftSegmentationCameraViewer/isaac.viewers.SegmentationCameraViewer/Classes",
+                "name": "lawson_sim/LeftSegmentationCameraViewer/isaac.viewers.SegmentationCameraViewer/Classes",
                 "active": true
               }
             ]
@@ -253,7 +253,7 @@
             },
             "channels": [
               {
-                "name": "carter_sim/RightColorCameraViewer/isaac.viewers.ColorCameraViewer/Color",
+                "name": "lawson_sim/RightColorCameraViewer/isaac.viewers.ColorCameraViewer/Color",
                 "active": true
               }
             ]
