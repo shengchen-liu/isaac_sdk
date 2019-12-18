@@ -14,8 +14,8 @@ isaac_app(
     name = "lawson_sim",
     app_json_file = "lawson_sim.app.json",
     data = [
-        "carter.config.json",
-        "carter.graph.json",
+        "lawson.config.json",
+        "lawson.graph.json",
         "navigation.config.json",
         "navigation.graph.json",
         "//apps/assets/maps",
