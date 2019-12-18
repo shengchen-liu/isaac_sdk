@@ -23,7 +23,7 @@
       "tick_period": "100Hz"
     },
     "isaac.alice.Failsafe": {
-      "name": "carter"
+      "name": "lawson"
     }
   },
   "scan_accumulator": {
@@ -140,7 +140,7 @@
       "assetroot": "external/isaac_assets",
       "ui_config": {
         "windows": {
-          "Carter Sim - Local View": {
+          "Lawson Sim - Local View": {
             "renderer": "2d",
             "dims": {
               "width": 256,
@@ -165,7 +165,7 @@
               }
             ]
           },
-          "Carter Sim - Localization": {
+          "Lawson Sim - Localization": {
             "renderer": "2d",
             "dims": {
               "width": 432,
@@ -198,7 +198,7 @@
               }
             ]
           },
-          "Carter Sim - Left Color": {
+          "Lawson Sim - Left Color": {
             "renderer": "2d",
             "dims": {
               "width": 480,
@@ -215,7 +215,7 @@
               }
             ]
           },
-          "Carter Sim - Left Depth": {
+          "Lawson Sim - Left Depth": {
             "renderer": "2d",
             "dims": {
               "width": 480,
@@ -228,7 +228,7 @@
               }
             ]
           },
-          "Carter Sim - Left Segmentation": {
+          "Lawson Sim - Left Segmentation": {
             "renderer": "2d",
             "dims": {
               "width": 480,
@@ -245,7 +245,7 @@
               }
             ]
           },
-          "Carter Sim - Right Color": {
+          "Lawson Sim - Right Color": {
             "renderer": "2d",
             "dims": {
               "width": 480,

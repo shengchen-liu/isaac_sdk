@@ -29,3 +29,48 @@ isaac_app(
         "flatsim",
     ],
 )
+
+isaac_app(
+    name = "lawson_sim_joystick",
+    app_json_file = "lawson_sim_joystick.app.json",
+    data = [
+        "lawson.config.json",
+        "lawson.graph.json",
+        "joystick.config.json",
+        "joystick.graph.json",
+        "navigation.config.json",
+        "navigation.graph.json",
+        "//apps/assets/maps",
+        "//packages/map:libmap_module.so",
+    ],
+    modules = [
+        "navigation",
+        "perception",
+        "planner",
+        "viewers",
+        "flatsim",
+        "sensors:joystick",
+    ],
+)
+
+isaac_app(
+    name = "lawson_sim_mapping",
+    app_json_file = "lawson_sim_mapping.app.json",
+    data = [
+        "lawson.config.json",
+        "lawson.graph.json",
+        "lawson.lua",
+        "joystick.config.json",
+        "joystick.graph.json",
+        "//packages/map:libmap_module.so",
+    ],
+    modules = [
+        "perception",
+        "planner",
+        "viewers",
+        "flatsim",
+        "navigation",
+        "navigation:cartographer",
+        "sensors:joystick",
+    ],
+)
