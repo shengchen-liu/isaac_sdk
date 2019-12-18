@@ -33,7 +33,7 @@ then
   MAP="nvidia_R_180306"
 fi
 
-engine/alice/tools/main --app apps/lawson/carter.app.json \
---config "apps/lawson/robots/carter_$ROBOT_ID.config.json,apps/assets/maps/$MAP.config.json" \
+engine/alice/tools/main --app apps/lawson/lawson.app.json \
+--config "apps/lawson/robots/lawson_$ROBOT_ID.config.json,apps/assets/maps/$MAP.config.json" \
 --graph "apps/assets/maps/$MAP.graph.json" $@
 

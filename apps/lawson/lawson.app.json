@@ -1,11 +1,11 @@
 {
-  "name": "carter",
+  "name": "lawson",
   "modules": [ ],
   "graph": {
     "nodes": [
       {
-        "name": "2d_carter",
-        "subgraph": "apps/lawson/2d_carter.subgraph.json"
+        "name": "2d_lawson",
+        "subgraph": "apps/lawson/2d_lawson.subgraph.json"
       },
       {
         "name": "navigation",
@@ -23,7 +23,7 @@
     "edges": [
       {
         "source": "commander.subgraph/interface/command",
-        "target": "2d_carter.subgraph/interface/diff_base_command"
+        "target": "2d_lawson.subgraph/interface/diff_base_command"
       },
       {
         "source": "goals.subgraph/interface/goal",
@@ -34,19 +34,19 @@
         "target": "goals.subgraph/interface/feedback"
       },
       {
-        "source": "2d_carter.subgraph/interface/flatscan",
+        "source": "2d_lawson.subgraph/interface/flatscan",
         "target": "navigation.subgraph/interface/flatscan_for_localization"
       },
       {
-        "source": "2d_carter.subgraph/interface/flatscan",
+        "source": "2d_lawson.subgraph/interface/flatscan",
         "target": "navigation.subgraph/interface/flatscan_for_obstacles"
       },
       {
-        "source": "2d_carter.subgraph/interface/diff_base_state",
+        "source": "2d_lawson.subgraph/interface/diff_base_state",
         "target": "navigation.subgraph/interface/state"
       },
       {
-        "source": "2d_carter.subgraph/interface/imu_raw",
+        "source": "2d_lawson.subgraph/interface/imu_raw",
         "target": "navigation.subgraph/interface/imu_raw"
       },
       {
@@ -80,57 +80,57 @@
         "assetroot": "external/isaac_assets",
         "ui_config": {
           "windows": {
-            "carter - Local View": {
+            "lawson - Local View": {
               "renderer": "2d",
               "dims": {
                 "width": 256,
                 "height": 256
               },
               "channels": [
-                { "name": "carter/navigation.local_map.local_map/isaac.navigation.LocalMap/local_map" },
-                { "name": "carter/navigation.localization.scan_localization/robot_viewer/robot" },
-                { "name": "carter/navigation.control.lqr/isaac.planner.DifferentialBaseLqrPlanner/plan" },
-                { "name": "carter/navigation.planner.global_plan_smoother/smoother/smooth_plan.path" }
+                { "name": "lawson/navigation.local_map.local_map/isaac.navigation.LocalMap/local_map" },
+                { "name": "lawson/navigation.localization.scan_localization/robot_viewer/robot" },
+                { "name": "lawson/navigation.control.lqr/isaac.planner.DifferentialBaseLqrPlanner/plan" },
+                { "name": "lawson/navigation.planner.global_plan_smoother/smoother/smooth_plan.path" }
               ]
             },
-            "carter - Global View": {
+            "lawson - Global View": {
               "renderer": "2d",
               "dims": {
                 "width": 432,
                 "height": 548
               },
               "channels": [
-                { "name": "carter/map/occupancy/map" },
-                { "name": "carter/navigation.localization.scan_localization/flatscan_viewer/beam_lines" },
+                { "name": "lawson/map/occupancy/map" },
+                { "name": "lawson/navigation.localization.scan_localization/flatscan_viewer/beam_lines" },
                 {
-                  "name": "carter/map/restricted_area/polygons",
+                  "name": "lawson/map/restricted_area/polygons",
                   "active": true
                 },
-                { "name": "carter/map/waypoints/waypoints" },
-                { "name": "carter/navigation.planner.global_plan/isaac.planner.GlobalPlanner/target" },
-                { "name": "carter/navigation.planner.global_plan_smoother/smoother/smooth_plan.path" },
+                { "name": "lawson/map/waypoints/waypoints" },
+                { "name": "lawson/navigation.planner.global_plan/isaac.planner.GlobalPlanner/target" },
+                { "name": "lawson/navigation.planner.global_plan_smoother/smoother/smooth_plan.path" },
                 {
-                  "name": "carter/navigation.localization.global_localization/grid_search_localizer/error",
+                  "name": "lawson/navigation.localization.global_localization/grid_search_localizer/error",
                   "active": false
                 },
-                { "name": "carter/navigation.localization.scan_localization/robot_viewer/robot" },
+                { "name": "lawson/navigation.localization.scan_localization/robot_viewer/robot" },
                 {
-                  "name": "carter/navigation.localization.scan_localization/flatscan_viewer/beam_endpoints",
+                  "name": "lawson/navigation.localization.scan_localization/flatscan_viewer/beam_endpoints",
                   "active": true
                 },
                 {
-                  "name": "carter/navigation.localization.scan_localization/isaac.navigation.ParticleFilterLocalization/particles",
+                  "name": "lawson/navigation.localization.scan_localization/isaac.navigation.ParticleFilterLocalization/particles",
                   "active": true
                 }
               ]
             },
-            "carter - Segway": {
+            "lawson - Segway": {
               "renderer": "plot",
               "channels": [
-                { "name": "carter/2d_carter.carter_hardware.segway_rmp/isaac.SegwayRmpDriver/aux_batt_soc" },
-                { "name": "carter/2d_carter.carter_hardware.segway_rmp/isaac.SegwayRmpDriver/min_propulsion_batt_soc" },
-                { "name": "carter/2d_carter.carter_hardware.segway_rmp/isaac.SegwayRmpDriver/linear_accel_msp2" },
-                { "name": "carter/2d_carter.carter_hardware.segway_rmp/isaac.SegwayRmpDriver/linear_vel_mps" }
+                { "name": "lawson/2d_lawson.lawson_hardware.segway_rmp/isaac.SegwayRmpDriver/aux_batt_soc" },
+                { "name": "lawson/2d_lawson.lawson_hardware.segway_rmp/isaac.SegwayRmpDriver/min_propulsion_batt_soc" },
+                { "name": "lawson/2d_lawson.lawson_hardware.segway_rmp/isaac.SegwayRmpDriver/linear_accel_msp2" },
+                { "name": "lawson/2d_lawson.lawson_hardware.segway_rmp/isaac.SegwayRmpDriver/linear_vel_mps" }
               ]
             }
           },
@@ -144,7 +144,7 @@
         }
       }
     },
-    "2d_carter.carter_hardware.segway_rmp": {
+    "2d_lawson.lawson_hardware.segway_rmp": {
       "isaac.SegwayRmpDriver": {
         "speed_limit_angular": 0.1,
         "speed_limit_linear": 0.1
