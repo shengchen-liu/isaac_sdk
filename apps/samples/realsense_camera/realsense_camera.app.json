@@ -8,7 +8,7 @@
   "config": {
     "camera": {
       "realsense": {
-        "rows": 360,
+        "rows": 480,
         "cols": 640,
         "rgb_framerate": 15,
         "depth_framerate": 15,

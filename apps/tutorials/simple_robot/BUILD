@@ -18,6 +18,7 @@ isaac_app(
     ],
     modules = [
         "imu",
+        "//apps/tutorials/imu:imu_lsm6ds33",
         "navigation",
         "segway",
         "sensors:joystick",
@@ -25,13 +26,14 @@ isaac_app(
     ],
 )
 isaac_app(
-    name = "simple_robot_imu",
+    name = "simple_robot_imu_lsm6ds33",
     data = [
         "//apps/carter:2d_carter_subgraph",
         "//packages/navigation/apps:differential_base_commander_subgraph",
     ],
     modules = [
         "imu",
+        "//apps/tutorials/imu:imu_lsm6ds33",
         "navigation",
         "segway",
         "sensors:joystick",
