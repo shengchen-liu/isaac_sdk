@@ -1,4 +1,0 @@
-Barel
-Bottle
-CardBox
-Person

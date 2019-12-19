@@ -1,4 +1,0 @@
-{
-  "graphs": ["packages/freespace_dnn/apps/training/bridge_config/training_sim.graph.json"],
-  "configs": ["packages/freespace_dnn/apps/training/bridge_config/training_sim.config.json"]
-}
