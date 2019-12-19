@@ -1,9 +1,9 @@
 {
-  "A_CarterGroup": {
+  "A_LawsonGroup": {
     "ActorGroup": {
       "actors": [
         {
-          "name": "carter_1",
+          "name": "lawson_1",
           "reference": "Blueprint'/Game/Carter/VehicleRigs/Pawn_Carter_FirstPerson.Pawn_Carter_FirstPerson'",
           "pose": [1, 0, 0, 0, -11.01, 63.47, 0.92]
         }
@@ -43,9 +43,9 @@
       ]
     }
   },
-  "CarterLidar": {
+  "LawsonLidar": {
     "LidarComponent": {
-      "parent_actor": "carter_1",
+      "parent_actor": "lawson_1",
       "parent_T_lidar": [1, 0, 0, 0, -0.06, 0.0, 0.38],
       "horizontal_fov": 360.0,
       "vertical_fov": 30.0,
@@ -57,9 +57,9 @@
       "draw_lidar_points": false
     }
   },
-  "CarterLeftCamera": {
+  "LawsonLeftCamera": {
     "CameraComponent": {
-      "parent_actor": "carter_1",
+      "parent_actor": "lawson_1",
       "parent_T_camera": [1, 0, 0, 0, 0.11, 0.06, 0.31],
       "cols": 960,
       "rows": 540,
@@ -115,9 +115,9 @@
       }
     }
   },
-  "CarterRightCamera": {
+  "LawsonRightCamera": {
     "CameraComponent": {
-      "parent_actor": "carter_1",
+      "parent_actor": "lawson_1",
       "parent_T_camera": [1, 0, 0, 0, 0.11, -0.06, 0.31],
       "cols": 960,
       "rows": 540,
@@ -128,9 +128,9 @@
       "only_publish_latest": true
     }
   },
-  "CarterActuator": {
+  "LawsonActuator": {
     "ActuatorComponent": {
-      "parent_actor": "carter_1"
+      "parent_actor": "lawson_1"
     }
   },
   "TimeSyncedTcpConnections": {

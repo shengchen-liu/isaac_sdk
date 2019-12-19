@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "name": "A_CarterGroup",
+      "name": "A_LawsonGroup",
       "components": [
         {
           "name": "MessageLedger",
@@ -18,7 +18,7 @@
       ]
     },
     {
-      "name": "CarterLidar",
+      "name": "LawsonLidar",
       "components": [
         {
           "name": "MessageLedger",
@@ -31,7 +31,7 @@
       ]
     },
     {
-      "name": "CarterLeftCamera",
+      "name": "LawsonLeftCamera",
       "components": [
         {
           "name": "MessageLedger",
@@ -44,7 +44,7 @@
       ]
     },
     {
-      "name": "CarterRightCamera",
+      "name": "LawsonRightCamera",
       "components": [
         {
           "name": "MessageLedger",
@@ -57,7 +57,7 @@
       ]
     },
     {
-      "name": "CarterActuator",
+      "name": "LawsonActuator",
       "components": [
         {
           "name": "MessageLedger",
@@ -105,35 +105,35 @@
   ],
   "edges": [
     {
-      "source": "CarterLidar/LidarComponent/range_scan",
+      "source": "LawsonLidar/LidarComponent/range_scan",
       "target": "TimeSyncedTcpConnections/LidarPublisher/LidarSensor"
     },
     {
-      "source": "A_CarterGroup/ActorGroup/rigid_state",
+      "source": "A_LawsonGroup/ActorGroup/rigid_state",
       "target": "TimeSyncedTcpConnections/ActorPublisher/bodies"
     },
     {
       "source": "TimeSyncedTcpConnections/ActuatorSubscriber/physics_actuation",
-      "target": "CarterActuator/ActuatorComponent/physics_actuation"
+      "target": "LawsonActuator/ActuatorComponent/physics_actuation"
     },
     {
-      "source": "CarterLeftCamera/CameraComponent/color_image",
+      "source": "LawsonLeftCamera/CameraComponent/color_image",
       "target": "TimeSyncedTcpConnections/LeftCameraPublisher/ColorSensor"
     },
     {
-      "source": "CarterLeftCamera/CameraComponent/depth_image",
+      "source": "LawsonLeftCamera/CameraComponent/depth_image",
       "target": "TimeSyncedTcpConnections/LeftCameraPublisher/DepthSensor"
     },
     {
-      "source": "CarterLeftCamera/CameraComponent/segmentation_image",
+      "source": "LawsonLeftCamera/CameraComponent/segmentation_image",
       "target": "TimeSyncedTcpConnections/LeftCameraPublisher/SegmentationSensor"
     },
     {
-      "source": "CarterLeftCamera/CameraComponent/bounding_box",
+      "source": "LawsonLeftCamera/CameraComponent/bounding_box",
       "target": "TimeSyncedTcpConnections/LeftCameraPublisher/BoundingBox"
     },
     {
-      "source": "CarterRightCamera/CameraComponent/color_image",
+      "source": "LawsonRightCamera/CameraComponent/color_image",
       "target": "TimeSyncedTcpConnections/RightCameraPublisher/ColorSensor"
     }
   ]
