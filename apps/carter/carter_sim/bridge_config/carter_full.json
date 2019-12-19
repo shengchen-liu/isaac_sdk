@@ -1,4 +1,4 @@
 {
-  "graphs": ["carter_full_graph.json"],
-  "configs": ["carter_full_config.json"]
+  "graphs": ["/home/shengchen/isaac/isaac_sdk/apps/carter/carter_sim/bridge_config/carter_full_graph.json"],
+  "configs": ["/home/shengchen/isaac/isaac_sdk/apps/carter/carter_sim/bridge_config/carter_full_config.json"]
 }

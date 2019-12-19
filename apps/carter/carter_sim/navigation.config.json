@@ -7,7 +7,7 @@
   },
   "lqr": {
     "isaac.planner.DifferentialBaseLqrPlanner": {
-      "max_speed": 0.65,
+      "max_speed": 0.1,
       "num_controls": 50,
       "obstacle_names": ["local_map", "map/restricted_area"],
       "robot_model": "shared_robot_model/SphericalRobotShapeComponent",
