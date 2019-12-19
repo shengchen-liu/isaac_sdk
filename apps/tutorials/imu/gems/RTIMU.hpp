@@ -1,15 +1,9 @@
 #pragma once
+
 #include "RTMath.hpp"
 #include "RTFusion.hpp"
-#include "RTIMULibDefs.hpp"
 #include "RTIMUSettings.hpp"
-
-//  Axis rotation defs
-//
-//  These allow the IMU to be virtually repositioned if it is in a non-standard configuration
-//  Standard configuration is X pointing at north, Y pointing east and Z pointing down
-//  with the IMU horizontal. There are 24 different possible orientations as defined
-//  below. Setting the axis rotation code to non-zero values performs the repositioning.
+#include "RTIMULibDefs.hpp"
 
 #define RTIMU_XNORTH_YEAST 0 // this is the default identity matrix
 #define RTIMU_XEAST_YSOUTH 1
@@ -42,51 +36,22 @@ namespace isaac
 {
 namespace drivers
 {
-class RTIMUSettings;
-}
-} // namespace isaac
 
-namespace isaac
-{
-namespace drivers
-{
 class RTIMU
 {
 public:
-    //  IMUs should always be created with the following call
-    //it's just a declaration, not a definition!
-    //The * belongs to the return type (RTIMU), and not to the function name, i.e.:
-    static RTIMU *createIMU();
-
     //  Constructor/destructor
-
     RTIMU(RTIMUSettings *settings);
-    virtual ~RTIMU();
 
-    //  These functions must be provided by sub classes
-
-    virtual const char *IMUName() = 0;    // the name of the IMU
-    virtual int IMUType() = 0;            // the type code of the IMU
-    virtual bool IMUInit() = 0;           // set up the IMU
-    virtual int IMUGetPollInterval() = 0; // returns the recommended poll interval in mS
-    virtual bool IMURead() = 0;           // get a sample
-
-    // setGyroContinuousALearninglpha allows the continuous learning rate to be over-ridden
-    // The value must be between 0.0 and 1.0 and will generally be close to 0
-
-    bool setGyroContinuousLearningAlpha(RTFLOAT alpha);
-
-    // returns true if enough samples for valid data
-
-    virtual bool IMUGyroBiasValid();
+    const char *IMUName() { return "LSM6DS33 + LIS3MDL"; } // the name of the IMU
+    int IMUType() { return RTIMU_TYPE_LSM6DS33LIS3MDL; }   // the type code of the IMU
+    bool IMUInit();                                        // set up the IMU
+    int IMUGetPollInterval();                              // returns the recommended poll interval in mS
+    bool IMURead();                                        // get a sample
 
     //  the following function can be called to set the SLERP power
 
     void setSlerpPower(RTFLOAT power) { m_fusion->setSlerpPower(power); }
-
-    //  call the following to reset the fusion algorithm
-
-    void resetFusion() { m_fusion->reset(); }
 
     //  the following three functions control the influence of the gyro, accel and compass sensors
 
@@ -94,33 +59,9 @@ public:
     void setAccelEnable(bool enable) { m_fusion->setAccelEnable(enable); }
     void setCompassEnable(bool enable) { m_fusion->setCompassEnable(enable); }
 
-    //  call the following to enable debug messages
-
-    void setDebugEnable(bool enable) { m_fusion->setDebugEnable(enable); }
-
     //  getIMUData returns the standard outputs of the IMU and fusion filter
 
     const RTIMU_DATA &getIMUData() { return m_imuData; }
-
-    //  setExtIMUData allows data from some external IMU to be injected to the fusion algorithm
-
-    void setExtIMUData(RTFLOAT gx, RTFLOAT gy, RTFLOAT gz, RTFLOAT ax, RTFLOAT ay, RTFLOAT az,
-                       RTFLOAT mx, RTFLOAT my, RTFLOAT mz, uint64_t timestamp);
-
-    //  the following two functions get access to the measured pose (accel and compass)
-
-    const RTVector3 &getMeasuredPose() { return m_fusion->getMeasuredPose(); }
-    const RTQuaternion &getMeasuredQPose() { return m_fusion->getMeasuredQPose(); }
-
-    //  setCompassCalibrationMode() turns off use of cal data so that raw data can be accumulated
-    //  to derive calibration data
-
-    void setCompassCalibrationMode(bool enable) { m_compassCalibrationMode = enable; }
-
-    //  setAccelCalibrationMode() turns off use of cal data so that raw data can be accumulated
-    //  to derive calibration data
-
-    void setAccelCalibrationMode(bool enable) { m_accelCalibrationMode = enable; }
 
     //  setCalibrationData configures the cal data from settings and also enables use if valid
 
@@ -134,19 +75,9 @@ public:
 
     bool getRuntimeCompassCalibrationValid() { return !m_compassCalibrationMode && m_runtimeMagCalValid; }
 
-    //  getCompassCalibrationEllipsoidValid() returns true if the compass ellipsoid calibration data is being used
-
-    bool getCompassCalibrationEllipsoidValid() { return !m_compassCalibrationMode && m_settings->m_compassCalEllipsoidValid; }
-
     //  getAccelCalibrationValid() returns true if the accel calibration data is being used
 
     bool getAccelCalibrationValid() { return !m_accelCalibrationMode && m_settings->m_accelCalValid; }
-
-    const RTVector3 &getGyro() { return m_imuData.gyro; }       // gets gyro rates in radians/sec
-    const RTVector3 &getAccel() { return m_imuData.accel; }     // get accel data in gs
-    const RTVector3 &getCompass() { return m_imuData.compass; } // gets compass data in uT
-
-    RTVector3 getAccelResiduals() { return m_fusion->getAccelResiduals(); }
 
 protected:
     void gyroBiasInit();            // sets up gyro bias calculation
@@ -164,7 +95,7 @@ protected:
 
     RTFusion *m_fusion; // the fusion algorithm
 
-    int m_sampleRate;          // samples per second
+    int m_sampleRate = 100;    // samples per second
     uint64_t m_sampleInterval; // interval between samples in microseonds
 
     RTFLOAT m_gyroLearningAlpha;   // gyro bias rapid learning rate
@@ -181,7 +112,46 @@ protected:
     float m_runtimeMagCalMax[3]; // runtime max mag values seen
     float m_runtimeMagCalMin[3]; // runtime min mag values seen
 
-    static float m_axisRotation[RTIMU_AXIS_ROTATION_COUNT][9]; // array of rotation matrices
+    float m_axisRotation[RTIMU_AXIS_ROTATION_COUNT][9] = {
+        {1, 0, 0, 0, 1, 0, 0, 0, 1},   // RTIMU_XNORTH_YEAST
+        {0, -1, 0, 1, 0, 0, 0, 0, 1},  // RTIMU_XEAST_YSOUTH
+        {-1, 0, 0, 0, -1, 0, 0, 0, 1}, // RTIMU_XSOUTH_YWEST
+        {0, 1, 0, -1, 0, 0, 0, 0, 1},  // RTIMU_XWEST_YNORTH
+
+        {1, 0, 0, 0, -1, 0, 0, 0, -1},  // RTIMU_XNORTH_YWEST
+        {0, 1, 0, 1, 0, 0, 0, 0, -1},   // RTIMU_XEAST_YNORTH
+        {-1, 0, 0, 0, 1, 0, 0, 0, -1},  // RTIMU_XSOUTH_YEAST
+        {0, -1, 0, -1, 0, 0, 0, 0, -1}, // RTIMU_XWEST_YSOUTH
+
+        {0, 1, 0, 0, 0, -1, -1, 0, 0},  // RTIMU_XUP_YNORTH
+        {0, 0, 1, 0, 1, 0, -1, 0, 0},   // RTIMU_XUP_YEAST
+        {0, -1, 0, 0, 0, 1, -1, 0, 0},  // RTIMU_XUP_YSOUTH
+        {0, 0, -1, 0, -1, 0, -1, 0, 0}, // RTIMU_XUP_YWEST
+
+        {0, 1, 0, 0, 0, 1, 1, 0, 0},   // RTIMU_XDOWN_YNORTH
+        {0, 0, -1, 0, 1, 0, 1, 0, 0},  // RTIMU_XDOWN_YEAST
+        {0, -1, 0, 0, 0, -1, 1, 0, 0}, // RTIMU_XDOWN_YSOUTH
+        {0, 0, 1, 0, -1, 0, 1, 0, 0},  // RTIMU_XDOWN_YWEST
+
+        {1, 0, 0, 0, 0, 1, 0, -1, 0},   // RTIMU_XNORTH_YUP
+        {0, 0, -1, 1, 0, 0, 0, -1, 0},  // RTIMU_XEAST_YUP
+        {-1, 0, 0, 0, 0, -1, 0, -1, 0}, // RTIMU_XSOUTH_YUP
+        {0, 0, 1, -1, 0, 0, 0, -1, 0},  // RTIMU_XWEST_YUP
+
+        {1, 0, 0, 0, 0, -1, 0, 1, 0}, // RTIMU_XNORTH_YDOWN
+        {0, 0, 1, 1, 0, 0, 0, 1, 0},  // RTIMU_XEAST_YDOWN
+        {-1, 0, 0, 0, 0, 1, 0, 1, 0}, // RTIMU_XSOUTH_YDOWN
+        {0, 0, -1, -1, 0, 0, 0, 1, 0} // RTIMU_XWEST_YDOWN
+    };                                // array of rotation matrices
+
+private:
+    unsigned char m_gyroAccelSlaveAddr; // I2C address of LSM6DS33
+    bool setGyro();
+    bool setAccel();
+
+    RTFLOAT m_gyroScale;
+    RTFLOAT m_accelScale;
+    RTFLOAT m_compassScale;
 };
 
 } // namespace drivers

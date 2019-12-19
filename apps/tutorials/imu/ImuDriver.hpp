@@ -16,68 +16,70 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 #include "messages/messages.hpp"
 #include "engine/core/math/pose2.hpp"
 
-namespace isaac {
-  namespace drivers{
-    class Segway;
-  }
+#include "apps/tutorials/imu/gems/RTIMUSettings.hpp"
+#include "apps/tutorials/imu/gems/RTIMU.hpp"
+#include "apps/tutorials/imu/gems/RTIMULibDefs.hpp"
+
+namespace isaac
+{
+namespace drivers
+{
+class Segway;
 }
+} // namespace isaac
 
-namespace isaac{
-  namespace drivers{
-    class RTIMUHal;
-  }
+namespace isaac
+{
+namespace drivers
+{
+class RTIMUHal;
 }
+} // namespace isaac
 
-namespace isaac{
-  namespace drivers{
-    class RTIMUSettings;
-  }
-}
-
-
-namespace isaac {
+namespace isaac
+{
 
 // A simple C++ codelet that prints periodically
-class ImuDriver : public alice::Codelet {
-  public:
-    // Has whatever needs to be run in the beginning of the program
-    void start() override;
-    // Has whatever needs to be run repeatedly
-    void tick() override;
+class ImuDriver : public alice::Codelet
+{
+public:
+  // Has whatever needs to be run in the beginning of the program
+  void start() override;
+  // Has whatever needs to be run repeatedly
+  void tick() override;
 
+  // Output IMU data
+  ISAAC_PROTO_TX(ImuProto, imu_raw);
 
-    // Output goal for the robot
-    ISAAC_PROTO_TX(Goal2Proto, goal);
-    // Feedback about imu
-    ISAAC_PROTO_RX(ImuProto, feedback);
+  // Isaac will use this device_id to talk to imu
+  ISAAC_PARAM(int, device_id, 1);
 
-    // Desired x and y position of the robot on map in meters
-    ISAAC_PARAM(Vector2d, desired_position, Vector2d(9.0, 25.0));
+private:
+  void publishIMU_raw(const drivers::RTIMU_DATA &imu_data);
 
-    // Message to be printed at every tick
-    ISAAC_PARAM(std::string, message, "Hello World!");
+  // Location of the last goal that is transmitted
+  Vector2d goal_position_;
+  // Timestamp of the last goal that is transmitted
+  int64_t goal_timestamp_;
 
-     // Isaac will use this IP to talk to segway
-    ISAAC_PARAM(std::string, ip, "192.168.0.40");
+  // Timestamp of the last imu_raw that is transmitted
+  int64_t imu_raw_timestamp_;
 
-    // Isaac will use this port to talk to segway
-    ISAAC_PARAM(int, port, 8080);
+  std::unique_ptr<drivers::Segway> segway_;
+  std::unique_ptr<drivers::RTIMUHal> rtimuhal_;
+  std::unique_ptr<drivers::RTIMUSettings> settings_;
 
-  private:
-  // Publishes a goal message with given target position.
-    void publishGoal(const Vector2d& position);
+  drivers::RTIMUSettings *settings = new drivers::RTIMUSettings("RTIMULib");
 
-    // Location of the last goal that is transmitted
-    Vector2d goal_position_;
-    // Timestamp of the last goal that is transmitted
-    int64_t goal_timestamp_;
+  drivers::RTIMU *imu = new drivers::RTIMU(settings);
 
-    std::unique_ptr<drivers::Segway> segway_;
-    std::unique_ptr<drivers::RTIMUHal> rtimuhal_;
-    std::unique_ptr<drivers::RTIMUSettings> settings_;
-
+  int sampleCount = 0;
+  int sampleRate = 0;
+  uint64_t displayTimer;
+  uint64_t now;
+  uint64_t rateTimer;
 };
 
-}  // namespace isaac
+} // namespace isaac
 
 ISAAC_ALICE_REGISTER_CODELET(isaac::ImuDriver);

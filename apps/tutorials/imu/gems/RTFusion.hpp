@@ -50,7 +50,7 @@ public:
     inline const RTVector3 &getMeasuredPose() { return m_measuredPose; }
     inline const RTQuaternion &getMeasuredQPose() { return m_measuredQPose; }
 
-    //  getAccelResiduals() gets the residual after subtracting gravity
+    // //  getAccelResiduals() gets the residual after subtracting gravity
 
     RTVector3 getAccelResiduals();
 
@@ -70,7 +70,7 @@ protected:
 
     RTQuaternion m_gravity; // the gravity vector as a quaternion
 
-    RTFLOAT m_slerpPower;           // a value 0 to 1 that controls measured state influence
+    float m_slerpPower;           // a value 0 to 1 that controls measured state influence
     RTQuaternion m_rotationDelta;   // amount by which measured state differs from predicted
     RTQuaternion m_rotationPower;   // delta raised to the appopriate power
     RTVector3 m_rotationUnitVector; // the vector part of the rotation delta

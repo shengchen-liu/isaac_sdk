@@ -1,6 +1,6 @@
 #pragma once
 
-// #include "RTMath.hpp"
+#include "RTMath.hpp"
 #include "RTIMUHal.hpp"
 
 //  Settings keys
@@ -76,51 +76,55 @@
 #define RTIMULIB_ACCELCAL_MINZ "AccelCalMinZ"
 #define RTIMULIB_ACCELCAL_MAXZ "AccelCalMaxZ"
 
-# define RTFLOAT float
+// #define RTFLOAT float
 
-namespace isaac
-{
-namespace drivers
-{
-class RTVector3
-{
-public:
-    RTVector3();
-    RTVector3(RTFLOAT x, RTFLOAT y, RTFLOAT z);
+#define RTMATH_PI 3.1415926535
+#define RTMATH_DEGREE_TO_RAD (RTMATH_PI / 180.0)
+#define RTMATH_RAD_TO_DEGREE (180.0 / RTMATH_PI)
 
-    RTVector3 &operator=(const RTVector3 &vec);
-    const RTVector3 &operator+=(RTVector3 &vec);
-    const RTVector3 &operator-=(RTVector3 &vec);
+// namespace isaac
+// {
+// namespace drivers
+// {
+// class RTVector3
+// {
+// public:
+//     RTVector3();
+//     RTVector3(RTFLOAT x, RTFLOAT y, RTFLOAT z);
 
-    RTFLOAT length();
-    void normalize();
-    void zero();
-    const char *display();
-    const char *displayDegrees();
+//     RTVector3 &operator=(const RTVector3 &vec);
+//     const RTVector3 &operator+=(RTVector3 &vec);
+//     const RTVector3 &operator-=(RTVector3 &vec);
 
-    static float dotProduct(const RTVector3 &a, const RTVector3 &b);
-    static void crossProduct(const RTVector3 &a, const RTVector3 &b, RTVector3 &d);
+//     RTFLOAT length();
+//     void normalize();
+//     void zero();
+//     const char *display();
+//     const char *displayDegrees();
 
-    void accelToEuler(RTVector3 &rollPitchYaw) const;
-    // void accelToQuaternion(RTQuaternion &qPose) const;
+//     static float dotProduct(const RTVector3 &a, const RTVector3 &b);
+//     static void crossProduct(const RTVector3 &a, const RTVector3 &b, RTVector3 &d);
 
-    inline RTFLOAT x() const { return m_data[0]; }
-    inline RTFLOAT y() const { return m_data[1]; }
-    inline RTFLOAT z() const { return m_data[2]; }
-    inline RTFLOAT data(const int i) const { return m_data[i]; }
+//     void accelToEuler(RTVector3 &rollPitchYaw) const;
+//     // void accelToQuaternion(RTQuaternion &qPose) const;
 
-    inline void setX(const RTFLOAT val) { m_data[0] = val; }
-    inline void setY(const RTFLOAT val) { m_data[1] = val; }
-    inline void setZ(const RTFLOAT val) { m_data[2] = val; }
-    inline void setData(const int i, RTFLOAT val) { m_data[i] = val; }
-    inline void fromArray(RTFLOAT *val) { memcpy(m_data, val, 3 * sizeof(RTFLOAT)); }
-    inline void toArray(RTFLOAT *val) const { memcpy(val, m_data, 3 * sizeof(RTFLOAT)); }
+//     inline RTFLOAT x() const { return m_data[0]; }
+//     inline RTFLOAT y() const { return m_data[1]; }
+//     inline RTFLOAT z() const { return m_data[2]; }
+//     inline RTFLOAT data(const int i) const { return m_data[i]; }
 
-private:
-    float m_data[3];
-};
-} // namespace drivers
-} // namespace isaac
+//     inline void setX(const RTFLOAT val) { m_data[0] = val; }
+//     inline void setY(const RTFLOAT val) { m_data[1] = val; }
+//     inline void setZ(const RTFLOAT val) { m_data[2] = val; }
+//     inline void setData(const int i, RTFLOAT val) { m_data[i] = val; }
+//     inline void fromArray(RTFLOAT *val) { memcpy(m_data, val, 3 * sizeof(RTFLOAT)); }
+//     inline void toArray(RTFLOAT *val) const { memcpy(val, m_data, 3 * sizeof(RTFLOAT)); }
+
+// private:
+//     float m_data[3];
+// };
+// } // namespace drivers
+// } // namespace isaac
 
 namespace isaac
 {
@@ -133,14 +137,14 @@ public:
 
     RTIMUSettings(const char *productType = "RTIMULib");
 
-    //     //  Alternate constructor allow ini file to be in any directory
+    //  Alternate constructor allow ini file to be in any directory
 
-    //     RTIMUSettings(const char *settingsDirectory, const char *productType);
+    RTIMUSettings(const char *settingsDirectory, const char *productType);
 
     //  This function tries to find an IMU. It stops at the first valid one
     //  and returns true or else false
 
-    // bool discoverIMU(int &imuType, bool &busIsI2C, unsigned char &slaveAddress);
+    bool discoverIMU(int &imuType, bool &busIsI2C, unsigned char &slaveAddress);
 
     //  This function sets the settings to default values.
 
@@ -180,6 +184,20 @@ public:
 
     // //  IMU-specific vars
 
+    //  GD20HM303D
+
+    int m_GD20HM303DGyroSampleRate;                         // the gyro sample rate
+    int m_GD20HM303DGyroBW;                                 // the gyro bandwidth code
+    int m_GD20HM303DGyroHpf;                                // the gyro high pass filter cutoff code
+    int m_GD20HM303DGyroFsr;                                // the gyro full scale range
+
+    int m_GD20HM303DAccelSampleRate;                        // the accel sample rate
+    int m_GD20HM303DAccelFsr;                               // the accel full scale range
+    int m_GD20HM303DAccelLpf;                               // the accel low pass filter
+
+    int m_GD20HM303DCompassSampleRate;                      // the compass sample rate
+    int m_GD20HM303DCompassFsr;                             // the compass full scale range
+    
     // //  LSM6DS33LIS3MDL defaults
 
     int m_LSM6DS33LIS3MDLGyroSampleRate; // the gyro sample rate
@@ -205,6 +223,52 @@ private:
 
     FILE *m_fd;
 };
+
+// class RTQuaternion
+// {
+// public:
+//     RTQuaternion();
+//     RTQuaternion(RTFLOAT scalar, RTFLOAT x, RTFLOAT y, RTFLOAT z);
+
+//     RTQuaternion &operator+=(const RTQuaternion &quat);
+//     RTQuaternion &operator-=(const RTQuaternion &quat);
+//     RTQuaternion &operator*=(const RTQuaternion &qb);
+//     RTQuaternion &operator*=(const RTFLOAT val);
+//     RTQuaternion &operator-=(const RTFLOAT val);
+
+//     RTQuaternion &operator=(const RTQuaternion &quat);
+//     const RTQuaternion operator*(const RTQuaternion &qb) const;
+//     const RTQuaternion operator*(const RTFLOAT val) const;
+//     const RTQuaternion operator-(const RTQuaternion &qb) const;
+//     const RTQuaternion operator-(const RTFLOAT val) const;
+
+//     void normalize();
+//     void toEuler(RTVector3 &vec);
+//     void fromEuler(RTVector3 &vec);
+//     RTQuaternion conjugate() const;
+//     void toAngleVector(RTFLOAT &angle, RTVector3 &vec);
+//     void fromAngleVector(const RTFLOAT &angle, const RTVector3 &vec);
+
+//     void zero();
+//     const char *display();
+
+//     inline RTFLOAT scalar() const { return m_data[0]; }
+//     inline RTFLOAT x() const { return m_data[1]; }
+//     inline RTFLOAT y() const { return m_data[2]; }
+//     inline RTFLOAT z() const { return m_data[3]; }
+//     inline RTFLOAT data(const int i) const { return m_data[i]; }
+
+//     inline void setScalar(const RTFLOAT val) { m_data[0] = val; }
+//     inline void setX(const RTFLOAT val) { m_data[1] = val; }
+//     inline void setY(const RTFLOAT val) { m_data[2] = val; }
+//     inline void setZ(const RTFLOAT val) { m_data[3] = val; }
+//     inline void setData(const int i, RTFLOAT val) { m_data[i] = val; }
+//     inline void fromArray(RTFLOAT *val) { memcpy(m_data, val, 4 * sizeof(RTFLOAT)); }
+//     inline void toArray(RTFLOAT *val) const { memcpy(val, m_data, 4 * sizeof(RTFLOAT)); }
+
+// private:
+//     RTFLOAT m_data[4];
+// };
 } // namespace drivers
 } // namespace isaac
 

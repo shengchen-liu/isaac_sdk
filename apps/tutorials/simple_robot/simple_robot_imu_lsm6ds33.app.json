@@ -4,6 +4,12 @@
     "navigation"
   ],
   "config": {
+    "carter_hardware.segway_rmp": {
+      "isaac.SegwayRmpDriver": {
+        "speed_limit_angular": 0.5,
+        "speed_limit_linear": 0.5
+      }
+    },
     "carter_hardware.vlp16": {
       "lidar_initializer": {
         "lhs_frame": "robot",
@@ -48,7 +54,7 @@
     "nodes": [
       {
         "name": "carter_hardware",
-        "subgraph": "apps/carter/carter_hardware.subgraph.json"
+        "subgraph": "apps/carter/carter_hardware_lsm6ds33.subgraph.json"
       },
       {
         "name": "commander",

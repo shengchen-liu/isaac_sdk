@@ -11,45 +11,34 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 load("//engine/build:isaac.bzl", "isaac_app", "isaac_doc_dep", "isaac_subgraph")
 
 isaac_subgraph(
-    name = "carter_hardware_lsm6ds33__subgraph",
+    name = "lawson_hardware_lsm6ds33__subgraph",
     modules = [
         "//apps/tutorials/imu:imu_lsm6ds33",
         "segway",
         "velodyne_lidar",
     ],
-    subgraph = "carter_hardware_lsm6ds33.subgraph.json",
+    subgraph = "lawson_hardware_lsm6ds33.subgraph.json",
     visibility = ["//visibility:public"],
 )
 
 
 isaac_subgraph(
-    name = "carter_hardware_subgraph",
-    modules = [
-        "imu",
-        "segway",
-        "velodyne_lidar",
-    ],
-    subgraph = "carter_hardware.subgraph.json",
-    visibility = ["//visibility:public"],
-)
-
-isaac_subgraph(
-    name = "2d_carter_subgraph",
+    name = "2d_lawson_subgraph",
     data = [
-        ":carter_hardware_lsm6ds33__subgraph",
+        ":lawson_hardware_lsm6ds33__subgraph",
         "//packages/navigation/apps:scan_flattener_subgraph",
     ],
     modules = [],
-    subgraph = "2d_carter.subgraph.json",
+    subgraph = "2d_lawson.subgraph.json",
     visibility = ["//visibility:public"],
 )
 
 isaac_app(
-    name = "carter",
+    name = "lawson",
     data = [
-        ":2d_carter_subgraph",
+        ":2d_lawson_subgraph",
         "//apps/assets/maps",
-        "//apps/carter/robots:robots",
+        "//apps/lawson/robots:robots",
         "//packages/navigation/apps:differential_base_commander_subgraph",
         "//packages/navigation/apps:differential_base_navigation_subgraph",
         "//packages/navigation/apps:goal_generators_subgraph",
@@ -64,8 +53,3 @@ isaac_app(
     script = "select_json.sh",
 )
 
-isaac_doc_dep(
-    name = "doc",
-    visibility = ["//visibility:public"],
-    deps = ["//apps/carter/gmapping/doc"],
-)

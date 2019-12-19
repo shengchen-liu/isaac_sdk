@@ -11,24 +11,36 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 load("//engine/build:isaac.bzl", "isaac_app", "isaac_cc_module", "isaac_component")
 
 isaac_cc_module(
-    name = "imu_components1",
+    name = "imu_lsm6ds33",
     srcs = ["ImuDriver.cpp"],
     hdrs = ["ImuDriver.hpp"],
     deps = [
         "//engine/gems/state:io",
-        "//messages/state:differential_base",
         "//apps/tutorials/imu/gems:segway",
         "//apps/tutorials/imu/gems:RTIMUHal",
         "//apps/tutorials/imu/gems:RTIMUSettings",
+        "//apps/tutorials/imu/gems:RTMath",
+        "//apps/tutorials/imu/gems:RTFusion",
+        "//apps/tutorials/imu/gems:RTIMU",
+        "//apps/tutorials/imu/gems:RTFusionKalman4",
+
     ]
 )
 
 isaac_app(
     name = "imu",
-    data = ["fast_ping.json"],
+    data = [],
     modules = [
-        "//apps/tutorials/imu:imu_components1",
-        "//apps/tutorials/webinar_1:go_to_mockup",
+        "//apps/tutorials/imu:imu_lsm6ds33",
+        "imu",
+    ],
+)
+
+isaac_app(
+    name = "lsm6ds33",
+    modules = [
+        "//apps/tutorials/imu:imu_lsm6ds33",
+        "imu"
     ],
 )
 

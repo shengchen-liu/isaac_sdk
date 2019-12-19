@@ -2,6 +2,7 @@
 
 #include "RTMath.hpp"
 #include "RTIMUDefs.hpp"
+#include <stdint.h>
 
 //  these defines describe the various fusion filter options
 

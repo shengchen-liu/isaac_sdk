@@ -2,7 +2,7 @@
   "name": "imu",
   "modules": [
     "imu",
-    "imu_lsm6ds33"
+    "//apps/tutorials/imu:imu_lsm6ds33"
   ],
   "config": {
     "imu": {

@@ -1,24 +1,10 @@
 {
   "name": "imu",
   "modules": [
-    "//apps/tutorials/imu:imu_components1",
-    "//apps/tutorials/webinar_1:go_to_mockup"
+    "//apps/tutorials/imu:imu_lsm6ds33"
   ],
   "graph": {
     "nodes": [
-      {
-        "name": "go_to_mockup",
-        "components": [
-          {
-            "name": "message_ledger",
-            "type": "isaac::alice::MessageLedger"
-          },
-          {
-            "name": "GoToMockup",
-            "type": "isaac::tutorials::GoToMockup"
-          }
-        ]
-      },
       {
         "name": "imu",
         "components": [
@@ -34,26 +20,77 @@
       }
     ],
     "edges": [
-      {
-        "source": "imu/imu/goal",
-        "target": "go_to_mockup/GoToMockup/goal"
-      },
-      {
-        "source": "go_to_mockup/GoToMockup/feedback",
-        "target": "imu/imu/feedback"
-      }
     ]
   },
   "config": {
-    "imu" : {
-      "imu" : {
+    "imu": {
+      "imu": {
         "message": "My own hello world!",
-        "tick_period" : "1Hz"
+        "tick_period": "4ms",
+        "device_id": 1
       }
     },
-    "go_to_mockup" : {
-      "GoToMockup" : {
-        "tick_period" : "10ms"
+    "websight": {
+      "WebsightServer": {
+        "port": 3000,
+        "ui_config": {
+          "windows": {
+            "imu - AngularVelocity": {
+              "renderer": "plot",
+              "dims": {
+                "width": 600,
+                "height": 600
+              },
+              "channels": [
+                {
+                  "name": "imu/imu/imu/AngularVelocityX"
+                },
+                {
+                  "name": "imu/imu/imu/AngularVelocityY"
+                },
+                {
+                  "name": "imu/imu/imu/AngularVelocityZ"
+                }
+              ]
+            },
+            "imu - LinearAcceleration": {
+              "renderer": "plot",
+              "dims": {
+                "width": 600,
+                "height": 600
+              },
+              "channels": [
+                {
+                  "name": "imu/imu/imu/LinearAccelerationX"
+                },
+                {
+                  "name": "imu/imu/imu/LinearAccelerationY"
+                },
+                {
+                  "name": "imu/imu/imu/LinearAccelerationZ"
+                }
+              ]
+            },
+            "imu - Position": {
+              "renderer": "plot",
+              "dims": {
+                "width": 600,
+                "height": 600
+              },
+              "channels": [
+                {
+                  "name": "imu/imu/imu/Roll"
+                },
+                {
+                  "name": "imu/imu/imu/Pitch"
+                },
+                {
+                  "name": "imu/imu/imu/Yaw"
+                }
+              ]
+            }
+          }
+        }
       }
     }
   }
