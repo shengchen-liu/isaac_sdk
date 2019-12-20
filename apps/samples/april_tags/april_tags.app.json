@@ -2,7 +2,7 @@
   "name": "april_tags",
   "modules": [
     "//packages/perception:april_tags",
-    "sensors:v4l2_camera",
+    "realsense",
     "viewers"
   ],
   "graph": {
@@ -15,8 +15,8 @@
             "type": "isaac::alice::MessageLedger"
           },
           {
-            "name": "isaac.V4L2Camera",
-            "type": "isaac::V4L2Camera"
+            "name": "isaac.RealsenseCamera",
+            "type": "isaac::RealsenseCamera"
           }
         ]
       },
@@ -53,7 +53,7 @@
     ],
     "edges": [
       {
-        "source": "input_images/isaac.V4L2Camera/frame",
+        "source": "input_images/isaac.RealsenseCamera/color",
         "target": "april_tags_detection/isaac.perception.AprilTagsDetection/image"
       },
       {
@@ -61,7 +61,7 @@
         "target": "april_tags_detection/isaac.viewers.FiducialsViewer/fiducials"
       },
       {
-        "source": "input_images/isaac.V4L2Camera/frame",
+        "source": "input_images/isaac.RealsenseCamera/color",
         "target": "image_viewers/isaac.viewers.ColorCameraViewer/color_listener"
       }
     ]
@@ -73,7 +73,7 @@
       }
     },
     "input_images": {
-      "isaac.V4L2Camera": {
+      "isaac.RealsenseCamera": {
         "device_id": 0,
         "rows": 480,
         "cols": 640,

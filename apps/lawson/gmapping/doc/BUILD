@@ -8,13 +8,13 @@ distribution of this software and related documentation without an express
 license agreement from NVIDIA CORPORATION is strictly prohibited.
 """
 
-load("//engine/build:isaac.bzl", "isaac_app")
+load("//engine/build:isaac.bzl", "isaac_doc_dep")
 
-isaac_app(
-    name = "april_tags",
-    modules = [
-        "//packages/perception:april_tags",
-        "realsense",
-        "viewers",
-    ],
+isaac_doc_dep(
+    name = "doc",
+    srcs = glob([
+        "*.png",
+        "*.rst",
+    ]),
+    visibility = ["//visibility:public"],
 )
