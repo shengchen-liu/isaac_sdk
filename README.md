@@ -35,7 +35,7 @@
    ```bash
 shengchen@shengchen-HP:~/isaac/UnrealEngine-IsaacSim_1.2$ ./Engine/Binaries/Linux/UE4Editor IsaacSimProject CarterWarehouse_P -vulkan -isaac_sim_config_json="/home/shengchen/isaac/isaac-sdk-2019.2-30e21124/apps/segway_rmp_lawson/lawson_sim/bridge_config/lawson_full.json"
    ```
-
+   
 3. (video here)
 
 ### lawson_sim_mapping
