@@ -54,13 +54,12 @@ shengchen@shengchen-HP:~/isaac/UnrealEngine-IsaacSim_1.2$ ./Engine/Binaries/Linu
 
 3. (video here)
 
-## simple_robot
+## lawson
 
 1. start application
 
    ```bash
-   shengchen@shengchen-HP:~/isaac/isaac-sdk-2019.2-30e21124$ bazel run apps/segway_rmp_lawson/simple_robot:simple_robot
+   shengchen@shengchen-HP:~/isaac/isaac-sdk-2019.2-30e21124$ bazel run apps/segway_rmp_lawson:lawson
    ```
 
    
-
