@@ -1,12 +1,12 @@
 {
   "name": "lawson_sim",
   "config_files": [
-    "apps/lawson/lawson_sim/lawson.config.json",
-    "apps/lawson/lawson_sim/joystick.config.json"
+    "apps/segway_rmp_lawson/lawson_sim/lawson.config.json",
+    "apps/segway_rmp_lawson/lawson_sim/joystick.config.json"
   ],
   "graph_files": [
-    "apps/lawson/lawson_sim/lawson.graph.json",
-    "apps/lawson/lawson_sim/joystick.graph.json"
+    "apps/segway_rmp_lawson/lawson_sim/lawson.graph.json",
+    "apps/segway_rmp_lawson/lawson_sim/joystick.graph.json"
   ],
   "modules": [
     "map",
@@ -21,7 +21,7 @@
   "config": {
     "cartographer": {
       "isaac.navigation.Cartographer": {
-        "lua_configuration_directory": "apps/lawson/lawson_sim/,../com_github_googlecartographer_cartographer/configuration_files/,external/com_github_googlecartographer_cartographer/configuration_files/",
+        "lua_configuration_directory": "apps/segway_rmp_lawson/lawson_sim/,../com_github_googlecartographer_cartographer/configuration_files/,external/com_github_googlecartographer_cartographer/configuration_files/",
         "lua_configuration_basename": "lawson.lua",
         "background_rows": 3000,
         "background_cols": 3000,

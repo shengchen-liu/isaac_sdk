@@ -1,12 +1,12 @@
 {
   "name": "lawson_sim",
   "config_files": [
-    "apps/lawson/lawson_sim/navigation.config.json",
-    "apps/lawson/lawson_sim/lawson.config.json"
+    "apps/segway_rmp_lawson/lawson_sim/navigation.config.json",
+    "apps/segway_rmp_lawson/lawson_sim/lawson.config.json"
   ],
   "graph_files": [
-    "apps/lawson/lawson_sim/navigation.graph.json",
-    "apps/lawson/lawson_sim/lawson.graph.json"
+    "apps/segway_rmp_lawson/lawson_sim/navigation.graph.json",
+    "apps/segway_rmp_lawson/lawson_sim/lawson.graph.json"
   ],
   "modules": [
     "map",

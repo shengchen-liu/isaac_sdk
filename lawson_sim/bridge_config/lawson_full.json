@@ -1,4 +1,4 @@
 {
-  "graphs": ["/home/shengchen/isaac/isaac_sdk/apps/lawson/lawson_sim/bridge_config/lawson_full_graph.json"],
-  "configs": ["/home/shengchen/isaac/isaac_sdk/apps/lawson/lawson_sim/bridge_config/lawson_full_config.json"]
+  "graphs": ["/home/shengchen/isaac/isaac_sdk/apps/segway_rmp_lawson/lawson_sim/bridge_config/lawson_full_graph.json"],
+  "configs": ["/home/shengchen/isaac/isaac_sdk/apps/segway_rmp_lawson/lawson_sim/bridge_config/lawson_full_config.json"]
 }
