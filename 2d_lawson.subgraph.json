@@ -16,7 +16,7 @@
       },
       {
         "name": "lawson_hardware",
-        "subgraph": "apps/lawson/lawson_hardware_lsm6ds33.subgraph.json"
+        "subgraph": "apps/segway_rmp_lawson/lawson_hardware_lsm6ds33.subgraph.json"
       },
       {
         "name": "scan_flattener",

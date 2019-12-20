@@ -16,13 +16,13 @@ isaac_cc_module(
     hdrs = ["ImuDriver.hpp"],
     deps = [
         "//engine/gems/state:io",
-        "//apps/tutorials/imu/gems:segway",
-        "//apps/tutorials/imu/gems:RTIMUHal",
-        "//apps/tutorials/imu/gems:RTIMUSettings",
-        "//apps/tutorials/imu/gems:RTMath",
-        "//apps/tutorials/imu/gems:RTFusion",
-        "//apps/tutorials/imu/gems:RTIMU",
-        "//apps/tutorials/imu/gems:RTFusionKalman4",
+        "//apps/segway_rmp_lawson/imu/gems:segway",
+        "//apps/segway_rmp_lawson/imu/gems:RTIMUHal",
+        "//apps/segway_rmp_lawson/imu/gems:RTIMUSettings",
+        "//apps/segway_rmp_lawson/imu/gems:RTMath",
+        "//apps/segway_rmp_lawson/imu/gems:RTFusion",
+        "//apps/segway_rmp_lawson/imu/gems:RTIMU",
+        "//apps/segway_rmp_lawson/imu/gems:RTFusionKalman4",
 
     ]
 )
@@ -31,7 +31,7 @@ isaac_app(
     name = "imu",
     data = [],
     modules = [
-        "//apps/tutorials/imu:imu_lsm6ds33",
+        "//apps/segway_rmp_lawson/imu:imu_lsm6ds33",
         "imu",
     ],
 )
@@ -39,7 +39,7 @@ isaac_app(
 isaac_app(
     name = "lsm6ds33",
     modules = [
-        "//apps/tutorials/imu:imu_lsm6ds33",
+        "//apps/segway_rmp_lawson/imu:imu_lsm6ds33",
         "imu"
     ],
 )

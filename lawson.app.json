@@ -5,7 +5,7 @@
     "nodes": [
       {
         "name": "2d_lawson",
-        "subgraph": "apps/lawson/2d_lawson.subgraph.json"
+        "subgraph": "apps/segway_rmp_lawson/2d_lawson.subgraph.json"
       },
       {
         "name": "navigation",

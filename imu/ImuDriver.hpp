@@ -16,9 +16,9 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 #include "messages/messages.hpp"
 #include "engine/core/math/pose2.hpp"
 
-#include "apps/tutorials/imu/gems/RTIMUSettings.hpp"
-#include "apps/tutorials/imu/gems/RTIMU.hpp"
-#include "apps/tutorials/imu/gems/RTIMULibDefs.hpp"
+#include "apps/segway_rmp_lawson/imu/gems/RTIMUSettings.hpp"
+#include "apps/segway_rmp_lawson/imu/gems/RTIMU.hpp"
+#include "apps/segway_rmp_lawson/imu/gems/RTIMULibDefs.hpp"
 
 namespace isaac
 {

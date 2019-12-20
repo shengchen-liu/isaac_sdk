@@ -13,7 +13,7 @@ load("//engine/build:isaac.bzl", "isaac_app", "isaac_doc_dep", "isaac_subgraph")
 isaac_subgraph(
     name = "lawson_hardware_lsm6ds33__subgraph",
     modules = [
-        "//apps/tutorials/imu:imu_lsm6ds33",
+        "//apps/segway_rmp_lawson/imu:imu_lsm6ds33",
         "segway",
         "velodyne_lidar",
     ],
@@ -38,7 +38,7 @@ isaac_app(
     data = [
         ":2d_lawson_subgraph",
         "//apps/assets/maps",
-        "//apps/lawson/robots:robots",
+        "//apps/segway_rmp_lawson/robots:robots",
         "//packages/navigation/apps:differential_base_commander_subgraph",
         "//packages/navigation/apps:differential_base_navigation_subgraph",
         "//packages/navigation/apps:goal_generators_subgraph",

@@ -1,6 +1,6 @@
 {
   "modules": [
-    "//apps/tutorials/imu:imu_lsm6ds33",
+    "//apps/segway_rmp_lawson/imu:imu_lsm6ds33",
     "segway",
     "velodyne_lidar"
   ],

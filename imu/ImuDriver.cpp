@@ -16,11 +16,11 @@ license agreement from NVIDIA CORPORATION is strictly prohibited.
 #include "engine/core/constants.hpp"
 #include "engine/gems/sight/sight.hpp"
 #include "engine/gems/state/io.hpp"
-#include "apps/tutorials/imu/gems/segway.hpp"
-#include "apps/tutorials/imu/gems/RTIMUHal.hpp"
-#include "apps/tutorials/imu/gems/RTMath.hpp"
-#include "apps/tutorials/imu/gems/RTFusion.hpp"
-#include "apps/tutorials/imu/gems/RTFusionKalman4.hpp"
+#include "apps/segway_rmp_lawson/imu/gems/segway.hpp"
+#include "apps/segway_rmp_lawson/imu/gems/RTIMUHal.hpp"
+#include "apps/segway_rmp_lawson/imu/gems/RTMath.hpp"
+#include "apps/segway_rmp_lawson/imu/gems/RTFusion.hpp"
+#include "apps/segway_rmp_lawson/imu/gems/RTFusionKalman4.hpp"
 
 namespace isaac
 {
