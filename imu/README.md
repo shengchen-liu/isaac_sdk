@@ -13,7 +13,6 @@ LSM6DS33 is a 6 DOF imu sensor that combines a digital 3-axis accelerometer and 
 Demo video:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ZNAch-skd68" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 ### Wire hookup
 
 | LSM6DSS33 | Jetson Xavier        |
@@ -24,7 +23,7 @@ Demo video:
 | SCL       | I2C_GP2_CLK (pin 28) |
 | SDO       | GND (pin 6)          |
 
-![alt text][image_imu_hookup_2]
+<img src="./../images/IMU_hookup_2.jpg " height="400px" />
 
 ### Data format
 
@@ -161,7 +160,7 @@ Now we can define ![R](http://s0.wp.com/latex.php?latex=R&bg=ffffff&fg=000000&s=
 
 
 
-More information about covariance can be found on [Wikipedia](http://en.wikipedia.org/wiki/Covariance_matrix#Conflicting_nomenclatures_and_notations) and in [my assignment](http://www.tkjelectronics.dk/uploads/Kalman_SRP.zip).
+More information about covariance can be found on [Wikipedia](http://en.wikipedia.org/wiki/Covariance_matrix#Conflicting_nomenclatures_and_notations).
 
 We will assume that the measurement noise is the same and does not depend on the time k:
 
