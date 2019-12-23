@@ -22,6 +22,8 @@
 
    ![alt text][image_rmp210]
 
+   (source: https://www.segway.com/robotics/commercial/rmp210/)
+
 3. (Side view)
 
 ## IMU
@@ -32,11 +34,46 @@ An **inertial measurement unit** (**IMU**) is an electronic device that measures
 
 ### LSM6DS33
 
+LSM6DS33 is a 6 DOF imu sensorthat combines a digital 3-axis accelerometer and 3-axis gyroscope into a single package.  The sensor provides six independent acceleration and rotation rate readings whose sensitivities can be set in the ranges of ±2 g to ±16 g and ±125°/s to ±2000°/s, available through I²C and SPI interfaces.   Spec details can be found in this document: https://www.st.com/resource/en/datasheet/lsm6ds33.pdf.
+
 Demo video:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ZNAch-skd68" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Wire hookup:
+
+
+
+Each channel from IMU raw data is a 16-bit signal.  LSM6DS33 outputs a 'high' and a 'low' byte for each reading.  So in the code, we need to combine high and low bytes.
+
+#### Gyro
+
+The gyro measures the angular velocity (w's) in three dimensions. 
+$$
+gyroRate=(gyroData[0] | gyroData[1] << 8)*gyroScale
+$$
+Unfortunately, the gyro drifts over time. That means it can not be trusted for a longer timespan, but it is very precise for a short time. This is when the accelerometer comes in handy. It does not have any drift, but it is too unstable for shorter timespan.
+
+#### Accelerometer
+
+The accelerometer measures the acceleration (g's) in three dimensions. 
+$$
+accel = accelData[0] | accelData[1] << 8
+$$
+The accelerometer  does not have any drift, but it is too unstable for shorter timespan. 
+
+#### Fusion Algorithm
+
+Gyro and accelerometer both have their own advantages and disadvantages.  Gyro is very precise, but tend to drift. The accelerometer is a bit unstable, but does not drift.  In order to obtain precise pose estimation, fusion algorithms are utilized. 
+
+##### 1. Kalman Filter
+
+**Kalman filtering**, also known as **linear quadratic estimation** (**LQE**), is an [algorithm](https://en.wikipedia.org/wiki/Algorithm) that uses a series of measurements observed over time,  in this context an accelerometer and a gyroscope.  These measurements containing [statistical noise](https://en.wikipedia.org/wiki/Statistical_noise) and other inaccuracies.  The Kalman filter estimates the state of the system, and produces estimates of unknown variables that tend to be more accurate than those based on a single measurement alone, by estimating a [joint probability distribution](https://en.wikipedia.org/wiki/Joint_probability_distribution) over the variables for each timeframe. 
+
+(source: https://en.wikipedia.org/wiki/Kalman_filter)
+
+In this context the problem is that the accelerometer is in general very noise when it is used to measure the gravitational acceleration since the robot is moving back and forth. The problem with the gyro is that it drifts over time – just like a spinning wheel-gyro will start to fall down when it is losing speed.
+In short you can say that you can only trust the gyroscope on a short term while you can only trust the accelerometer on a long term.
 
 
 
